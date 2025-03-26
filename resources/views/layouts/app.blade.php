@@ -20,7 +20,7 @@
                 </div>
 
                 {{-- Tambahin yield content di sini --}}
-                <div class="p-4">
+                <div>
                     @yield('content')
                 </div>
                 {{-- End yield --}}
