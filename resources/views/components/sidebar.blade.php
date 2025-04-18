@@ -28,24 +28,24 @@
                 <div id="navPages" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-col">
                         <li class="nav-item">
-                            <a class="nav-link " href="#">OP UMKM</a>
+                            <a class="nav-link" href="{{ route('operator', ['jenis' => 'umkm']) }}">OP UMKM</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="#">OP Pariwisata</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link " href="#">OP Investasi</a>
+                            <a class="nav-link" href="{{ route('operator', ['jenis' => 'pariwisata']) }}">OP Pariwisata</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link " href="#">OP Event</a>
+                            <a class="nav-link" href="{{ route('operator', ['jenis' => 'investasi']) }}">OP Investasi</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('operator', ['jenis' => 'event']) }}">OP Event</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="#">OP Entertainment</a>
+                            <a class="nav-link" href="{{ route('operator', ['jenis' => 'entertainment']) }}">OP Entertainment</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="#">OP Box Office</a>
+                            <a class="nav-link" href="{{ route('operator', ['jenis' => 'boxoffice']) }}">OP Box Office</a>
                         </li>
                     </ul>
                 </div>
