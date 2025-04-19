@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserProfileUpdateRequest;
 use App\Http\Requests\UserRegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -21,6 +22,19 @@ class AuthController extends Controller
         ]);
         $token = auth('api')->login($user);
         return $this->respondWithToken($token);
+
+    }
+
+    public function update(UserProfileUpdateRequest $request)
+    {
+        $validateData = $request->validated();
+        $user = auth()->user();
+        $user->update($validateData); // Update langsung dengan data tervalidasi
+
+        return response()->json([
+            'message' => 'Profil berhasil diperbarui.',
+            'user' => $user
+        ]);
 
     }
     public function login()
