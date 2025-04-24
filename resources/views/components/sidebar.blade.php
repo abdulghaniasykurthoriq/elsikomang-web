@@ -2,7 +2,9 @@
     <div id="myScrollableElement" class="h-screen" data-simplebar>
         <!-- brand logo -->
         <a class="navbar-brand" href="{{ route('dashboard') }}">
-            <img src="./assets/images/brand/logo/logo.svg" alt="" />
+            {{-- <img src="./assets/images/brand/logo/logo.svg" alt="" /> --}}
+            <img src="{{ asset('assets/images/brand/logo/logo.svg') }}" alt="Logo">
+
         </a>
 
         <!-- navbar nav -->
@@ -28,24 +30,24 @@
                 <div id="navPages" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-col">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('operator', ['jenis' => 'umkm']) }}">OP UMKM</a>
+                            <a class="nav-link" href="{{ route('operator.index', ['role' => 'umkm']) }}">OP UMKM</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('operator', ['jenis' => 'pariwisata']) }}">OP Pariwisata</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('operator', ['jenis' => 'investasi']) }}">OP Investasi</a>
+                            <a class="nav-link" href="{{ route('operator.index', ['role' => 'pariwisata']) }}">OP Pariwisata</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('operator', ['jenis' => 'event']) }}">OP Event</a>
+                            <a class="nav-link" href="{{ route('operator.index', ['role' => 'investasi']) }}">OP Investasi</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('operator.index', ['role' => 'event']) }}">OP Event</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('operator', ['jenis' => 'entertainment']) }}">OP Entertainment</a>
+                            <a class="nav-link" href="{{ route('operator.index', ['role' => 'entertainment']) }}">OP Entertainment</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('operator', ['jenis' => 'boxoffice']) }}">OP Box Office</a>
+                            <a class="nav-link" href="{{ route('operator.index', ['role' => 'box-office']) }}">OP Box Office</a>
                         </li>
                     </ul>
                 </div>
