@@ -37,7 +37,6 @@
                     <label class="block mb-1 text-sm font-medium text-gray-700">Role</label>
                     <select  name="role" class="w-full input input-bordered" required>
                         <option selected value="{{ $role }}" > {{ $role }}
-
                         </option>
                     </select>
                 </div>

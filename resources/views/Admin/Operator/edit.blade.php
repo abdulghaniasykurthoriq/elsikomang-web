@@ -30,19 +30,15 @@
                     <input type="email" name="email" value="{{ old('email', $user->email) }}" class="w-full input input-bordered" required>
                 </div>
 
-                <div>
-                    <label class="block mb-1 text-sm font-medium text-gray-700">Role</label>
-                    <select name="role" class="w-full input input-bordered" required>
-                        @foreach ($jenisOperator as $item)
-                            <option value="{{ $item->name }}" {{ (old('role', $user->role) == $item->name) ? 'selected' : '' }}>
-                                {{ $item->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('role')
-                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                    @enderror
-                </div>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Role</label>
+                <select  name="role" class="w-full input input-bordered" required>
+                    @foreach ($jenisOperator as $item)
+                        <option value="{{ $item->name }}"
+                            {{ (old('role', str_replace('Operator ', '', $user->role)) == $item->name) ? 'selected' : '' }}>
+                            {{ $item->name }}
+                        </option>
+                    @endforeach
+                </select>
                 
 
                 <div class="pt-4 flex justify-end gap-2">
