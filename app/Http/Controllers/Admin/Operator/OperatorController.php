@@ -16,7 +16,6 @@ class OperatorController extends Controller
     {
         $role = $request->get('role');
 
-    
         if ($role) {
         $operators = User::where('role', 'Operator ' . ucfirst($role))->get();
         } else {
@@ -26,7 +25,6 @@ class OperatorController extends Controller
 
         return view('Admin.Operator.index', compact('operators', 'role'));
     }
-
     public function create(Request $request)
     {
 

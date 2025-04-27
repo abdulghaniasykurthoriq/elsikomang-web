@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\Operator\MemberUmkmController;
 use App\Http\Controllers\Admin\Operator\OperatorController;
 use App\Http\Controllers\OperatorController as ControllersOperatorController;
 use App\Http\Controllers\ProfileController;
@@ -17,15 +18,24 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-// Route index, create, edit
+// CRUD Operator
 Route::get('/operator', [OperatorController::class, 'index'])->name('operator.index');
 Route::get('/operator/create', [OperatorController::class, 'create'])->name('operator.create');
 Route::get('/operator/{id}/edit', [OperatorController::class, 'edit'])->name('operator.edit');
-
 // Route store, update, destroy (POST, PUT, DELETE)
 Route::post('/operator', [OperatorController::class, 'store'])->name('operator.store');
 Route::put('/operator/{id}', [OperatorController::class, 'update'])->name('operator.update');
 Route::delete('/operator/{id}', [OperatorController::class, 'destroy'])->name('operator.destroy');
+
+// Member UMKM
+Route::get('/member_umkm', [MemberUmkmController::class, 'index'])->name('member_umkm.index');
+Route::get('/member_umkm/create', [MemberUmkmController::class, 'create'])->name('member_umkm.create');
+Route::get('/member_umkm/{id}/edit', [MemberUmkmController::class, 'edit'])->name('member_umkm.edit');
+// Route store, update, destroy (POST, PUT, DELETE)
+Route::post('/member_umkm', [MemberUmkmController::class, 'store'])->name('member_umkm.store');
+Route::put('/member_umkm/{id}', [MemberUmkmController::class, 'update'])->name('member_umkm.update');
+Route::delete('/member_umkm/{id}', [MemberUmkmController::class, 'destroy'])->name('member_umkm.destroy');
 });
+
 
 require __DIR__ . '/auth.php';
