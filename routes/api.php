@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\CoverMenuController;
+use App\Http\Controllers\API\KeranjangController;
 use App\Http\Controllers\API\KritikDanSaranController;
 use App\Http\Controllers\API\PariwisataController;
 use App\Http\Controllers\API\ProdukController;
@@ -25,6 +27,8 @@ Route::middleware(['auth:api'])->group(function(){
     Route::post('me', [AuthController::class,'me']);
 
     Route::post('auth/update', [AuthController::class,'update']);
+    Route::post('auth/update-password', [AuthController::class, 'updatePassword']);
+    Route::post('auth/update-foto', [AuthController::class, 'updateFoto']);
 
 });
 
@@ -35,5 +39,12 @@ Route::get('/pariwisata', [PariwisataController::class, 'index']);
 Route::get('/pariwisata/{id}', [PariwisataController::class, 'show']);
 
 Route::post('/kritiksaran', [KritikDanSaranController::class, 'create']);
+
+
+Route::get('/cover-menu', [CoverMenuController::class, 'index']);
+
+Route::get('/keranjang-ku', [KeranjangController::class, 'index']);
+Route::get('/keranjang-ku/create', [KeranjangController::class, 'add']);
+
 
 

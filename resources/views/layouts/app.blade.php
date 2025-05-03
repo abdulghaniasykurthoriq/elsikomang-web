@@ -7,6 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title', 'Elsikomang Klak-Klik')</title>
     @include('components.head')
+    @vite('resources/css/app.css')
+    @vite('resources/js/app.js')
+
+    
 </head>
 
 <body>
@@ -28,6 +32,8 @@
             </div>
         </div>
     </main>
+    @stack('styles')
+    @stack('scripts')
     @include('components.script')
 </body>
 
