@@ -6,11 +6,10 @@
 
     <!-- Header Section -->
     <div class="-mx-6 bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
-        <h1 class="text-xl text-white">Data Operator</h1>
-        <a href="#"
-            class="btn bg-white text-gray-800 border-gray-600 hover:bg-gray-100 hover:text-gray-800 hover:border-gray-200 active:bg-gray-100 active:text-gray-800 active:border-gray-200 focus:outline-none focus:ring-4 focus:ring-indigo-300">
-            Tambah Operator
-        </a>
+        <h1 class="text-xl text-white">Data Operator {{ $role == 'box-office' ? 'Box Office' : ucfirst($role) }}
+        </h1>
+
+        <a href="{{ route('operator.create', ['role' => $role]) }}"  class="btn btn-success">+ Tambah Operator</a>
     </div>
 
     <!-- Table Section -->
@@ -27,37 +26,39 @@
                             <th class="px-6 py-3">#</th>
                             <th class="px-6 py-3">Nama</th>
                             <th class="px-6 py-3">Email</th>
-                            <th class="px-6 py-3">Jenis</th>
+                            <th class="px-6 py-3">Role</th>
                             <th class="px-6 py-3">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        {{-- Dummy data sementara --}}
-                        @php
-                            $data = [
-                                ['nama' => 'Budi', 'email' => 'budi@mail.com', 'jenis' => 'umkm'],
-                                ['nama' => 'Sari', 'email' => 'sari@mail.com', 'jenis' => 'pariwisata'],
-                            ];
-                        @endphp
-
-                        @foreach($data as $index => $item)
+                        @foreach($operators as $index => $item)
                             <tr>
                                 <td class="px-6 py-4">{{ $index + 1 }}</td>
-                                <td class="px-6 py-4">{{ $item['nama'] }}</td>
-                                <td class="px-6 py-4">{{ $item['email'] }}</td>
-                                <td class="px-6 py-4 uppercase">{{ $item['jenis'] }}</td>
+                                <td class="px-6 py-4">{{ $item->name }}</td>
+                                <td class="px-6 py-4">{{ $item->email }}</td>
+                                <td class="px-6 py-4 uppercase">{{ $item->role }}</td>
                                 <td class="px-6 py-4 flex gap-2">
-                                    <button class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
+                                    <!-- Tombol Edit -->
+                                    <a href="{{ route('operator.edit', $item->id) }}" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
                                         <i data-feather="edit" class="w-4 h-4"></i>
-                                    </button>
-                                    <button class="btn btn-sm bg-red-500 text-white hover:bg-red-600">
-                                        <i data-feather="trash-2" class="w-4 h-4"></i>
-                                    </button>
+                                    </a>
+
+                                    <!-- Tombol Hapus -->
+                                    <form action="{{ route('operator.destroy', $item->id) }}"
+                                          method="POST"
+                                          onsubmit="return confirm('Yakin ingin menghapus operator ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="btn btn-sm bg-red-500 text-white hover:bg-red-600">
+                                            <i data-feather="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach
 
-                        @if(count($data) == 0)
+                        @if($operators->isEmpty())
                             <tr>
                                 <td colspan="5" class="text-center py-4 text-gray-500">Tidak ada data operator.</td>
                             </tr>
