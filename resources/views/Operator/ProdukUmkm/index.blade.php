@@ -4,13 +4,13 @@
 
 @section('content')
 
-<div class="-mx-6 bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
+<div class=" bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
     <h1 class="text-xl text-white">Data Produk UMKM</h1>
 
     <a href="{{ route('produk_umkm.create') }}" class="btn btn-success">+ Tambah Produk UMKM</a>
 </div>
 
-<div class="-mx-6 px-6 -mt-24 relative z-10">
+<div class="mx-2 px-6 -mt-24 relative z-10">
     <div class="bg-white rounded-xl shadow-xl overflow-hidden w-full">
         <div class="p-4 border-b border-gray-100">
             <h2 class="text-lg font-semibold text-gray-800">Daftar Produk UMKM</h2>
@@ -26,7 +26,7 @@
                         <th class="px-6 py-3">Kategori</th>
                         <th class="px-6 py-3">Deskripsi</th>
                         <th class="px-6 py-3">Foto Produk</th>
-                        <th class="px-6 py-3">Aksi</th>
+                        <th colspan="2" class="px-6 py-3">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">

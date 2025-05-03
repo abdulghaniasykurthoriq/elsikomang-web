@@ -5,7 +5,7 @@
 @section('content')
 
     <!-- Header Section -->
-    <div class="-mx-6 bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
+    <div class=" bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
         <h1 class="text-xl text-white">Tambah Operator {{ $role }}</h1>
         <a href="{{ route('operator.index') }}"
             class="btn bg-white text-gray-800 border-gray-600 hover:bg-gray-100 hover:text-gray-800 hover:border-gray-200 active:bg-gray-100 active:text-gray-800 active:border-gray-200 focus:outline-none focus:ring-4 focus:ring-indigo-300">

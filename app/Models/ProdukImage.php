@@ -13,9 +13,19 @@ class ProdukImage extends Model
         'file_path',
         'type',
     ];
+    protected $hidden = [
+        'produk_umkm_id',
+    ];
+    
 
     public function produkUmkm()
     {
         return $this->belongsTo(ProdukUmkm::class, 'produk_umkm_id');
+    }
+    protected $appends = ['file_path_url',];
+
+    public function getFilePathUrlAttribute()
+    {
+        return $this->file_path ? asset('storage/' . $this->file_path) : null;
     }
 }

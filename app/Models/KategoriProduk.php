@@ -12,6 +12,10 @@ class KategoriProduk extends Model
         protected $table = 'kategori_produk';
     
         protected $fillable = ['name'];
+
+        protected $hidden = [
+        'id'
+    ];
     
         // Relasi ke produk_umkm
         // public function produkUmkm()

@@ -15,15 +15,19 @@ class ProdukUmkm extends Model
         'member_id',
         'nama_produk',
         'kategori_id',
-        // 'foto_produk',
         'deskripsi',
         'created_by',
         'updated_by',
     ];
+    protected $hidden = [
+        'created_by',
+        'kategori_id',
+        'member_id',
+    ];
     public function produk_variant()
-{
-    return $this->hasMany(ProdukVariant::class, 'produk_umkm_id');
-}
+    {
+        return $this->hasMany(ProdukVariant::class, 'produk_umkm_id');
+    }
 
 
     public function images()

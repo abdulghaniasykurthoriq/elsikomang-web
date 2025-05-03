@@ -21,4 +21,13 @@ class MemberUmkm extends Model
         {
             return $this->hasMany(ProdukUmkm::class, 'member_id');
         }
+
+        protected $appends = ['foto_toko_url',];
+
+    public function getFotoTokoUrlAttribute()
+    {
+        return $this->foto_toko ? asset('storage/' . $this->foto_toko) : null;
+    }
+
+    
 }

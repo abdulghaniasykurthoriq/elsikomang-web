@@ -17,6 +17,11 @@ class ProdukVariant extends Model
         'created_by',
         'updated_by',
     ];
+    protected $hidden = [
+        'produk_umkm_id',
+        'created_by',
+        'updated_by',
+    ];
 
     public function produk_umkm()
     {

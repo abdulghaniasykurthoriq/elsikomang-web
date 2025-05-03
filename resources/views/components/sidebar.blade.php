@@ -104,6 +104,19 @@
                     </ul>
                 </div>
             </li>
+
+
+            <!-- nav heading -->
+            <li class="nav-item">
+                <div class="navbar-heading">Administrator</div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="{{route('cover-menu.index')}}">
+                    <i data-feather="user" class="w-4 h-4 mr-2"></i>
+                    Cover Menu
+                </a>
+            </li>
+        </ul>
         </ul>
     </div>
 </nav>

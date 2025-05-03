@@ -15,12 +15,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(UserSeeder::class);  
-<<<<<<< HEAD
         $this->call(JenisOperatorSeeder::class);  
         $this->call(KategoriProdukSeeder::class);  
-=======
         $this->call(PariwisataSeeder::class);  
         $this->call(ProdukDumySeeder::class);  
->>>>>>> agat2
     }
 }

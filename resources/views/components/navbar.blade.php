@@ -7,11 +7,11 @@
     </a>
     <div class="ml-3 hidden md:hidden lg:block">
         <!-- form -->
-        <form class="flex items-center">
+        <!-- <form class="flex items-center">
             <input type="search"
                 class="border border-gray-300 text-gray-900 rounded focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2 px-3 disabled:opacity-50 disabled:pointer-events-none"
                 placeholder="Search" />
-        </form>
+        </form> -->
     </div>
     <!-- navbar nav -->
     <ul class="flex ml-auto items-center">

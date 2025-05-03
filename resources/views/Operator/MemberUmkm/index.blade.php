@@ -4,13 +4,13 @@
 
 @section('content')
 
-<div class="-mx-6 bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
+<div class=" bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
     <h1 class="text-xl text-white">Data Member UMKM</h1>
 
     <a href="{{ route('member_umkm.create') }}" class="btn btn-success">+ Tambah Member UMKM</a>
 </div>
 
-<div class="-mx-6 px-6 -mt-24 relative z-10">
+<div class="m-2 p-6 -mt-24 relative z-10">
     <div class="bg-white rounded-xl shadow-xl overflow-hidden w-full">
         <div class="p-4 border-b border-gray-100">
             <h2 class="text-lg font-semibold text-gray-800">Daftar Member UMKM</h2>
