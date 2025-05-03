@@ -1,4 +1,3 @@
-<!-- Favicon -->
 <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/favicon/favicon.ico') }}" />
 
 <!-- Libs CSS -->
@@ -9,7 +8,6 @@
 <link rel="stylesheet" href="{{ asset('assets/libs/simplebar/dist/simplebar.min.css') }}" />
 
 <!-- Theme CSS -->
-<link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}" />
 
-<!-- ApexCharts CSS -->
 <link rel="stylesheet" href="{{ asset('assets/libs/apexcharts/dist/apexcharts.css') }}" />

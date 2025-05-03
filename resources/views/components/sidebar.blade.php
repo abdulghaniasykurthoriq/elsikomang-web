@@ -2,9 +2,8 @@
     <div id="myScrollableElement" class="h-screen" data-simplebar>
         <!-- brand logo -->
         <a class="navbar-brand" href="{{ route('dashboard') }}">
-            {{-- <img src="./assets/images/brand/logo/logo.svg" alt="" /> --}}
-            <img src="{{ asset('assets/images/brand/logo/logo.svg') }}" alt="Logo">
 
+            <img src="{{ asset('assets/images/brand/logo/logo.svg') }}" alt="" />
         </a>
 
         <!-- navbar nav -->
