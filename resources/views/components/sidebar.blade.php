@@ -28,6 +28,7 @@
                 </a>
 
                 <div id="navPages" class="collapse " data-bs-parent="#sideNavbar">
+                
                     <ul class="nav flex-col">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('operator.index', ['role' => 'umkm']) }}">OP UMKM</a>

@@ -7,7 +7,7 @@
     <!-- Header Section -->
     <div class="-mx-6 bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
         <h1 class="text-xl text-white">Edit Operator</h1>
-        <a href="{{ route('member_umkm.index', $memberUmkm->id) }}"
+        <a href="{{ route('member_umkm.index') }}"
             class="btn bg-white text-gray-800 border-gray-600 hover:bg-gray-100 hover:text-gray-800 hover:border-gray-200 active:bg-gray-100 active:text-gray-800 active:border-gray-200 focus:outline-none focus:ring-4 focus:ring-indigo-300">
             Kembali
         </a>
@@ -43,7 +43,7 @@
         </div>
 
                  <div class="pt-4 flex justify-end gap-2">
-                    <a href="{{ route('member_umkm.index') }}" class="btn btn-secondary">Batal</a>
+                    {{-- <a href="{{ route('member_umkm.index') }}" class="btn btn-secondary">Batal</a> --}}
                     <button type="submit" class="btn bg-indigo-600 text-white hover:bg-indigo-700">Perbarui</button>
                 </div>
     </form>

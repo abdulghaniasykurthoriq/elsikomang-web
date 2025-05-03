@@ -1,0 +1,85 @@
+@extends('layouts.app')
+
+@section('title', 'Data Produk UMKM')
+
+@section('content')
+
+<div class="-mx-6 bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
+    <h1 class="text-xl text-white">Data Produk UMKM</h1>
+
+    <a href="{{ route('produk_umkm.create') }}" class="btn btn-success">+ Tambah Produk UMKM</a>
+</div>
+
+<div class="-mx-6 px-6 -mt-24 relative z-10">
+    <div class="bg-white rounded-xl shadow-xl overflow-hidden w-full">
+        <div class="p-4 border-b border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-800">Daftar Produk UMKM</h2>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="table-auto w-full text-sm text-left text-gray-700">
+                <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                        <th class="px-6 py-3">#</th>
+                        <th class="px-6 py-3">Nama Toko</th>
+                        <th class="px-6 py-3">Nama Produk</th>
+                        <th class="px-6 py-3">Kategori</th>
+                        <th class="px-6 py-3">Deskripsi</th>
+                        <th class="px-6 py-3">Foto Produk</th>
+                        <th class="px-6 py-3">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    @foreach($produk_umkm as $index => $item)
+                        <tr>
+                            <td class="px-6 py-4">{{ $index + 1 }}</td>
+                            <td class="px-6 py-4">{{ $item->member->nama_toko ?? 'Toko tidak ditemukan' }}</td>
+                            <td class="px-6 py-4">{{ $item->nama_produk }}</td>
+                            <td class="px-6 py-4">{{ $item->kategori_id }}</td>
+                            <td class="px-6 py-4">{{ $item->deskripsi }}</td>
+                            
+
+                            {{-- Galeri --}}
+                            <td class="px-6 py-4 flex flex-wrap gap-2">
+                                @foreach($item->images as $media)
+                                    @if($media->type == 'image')
+                                        <img src="{{ asset('storage/' . $media->file_path) }}" alt="Gambar Produk" width="60" class="rounded">
+                                    @elseif($media->type == 'video')
+                                        <video src="{{ asset('storage/' . $media->file_path) }}" width="80" controls class="rounded"></video>
+                                    @endif
+                                @endforeach
+                                @if($item->images->isEmpty())
+                                    <span class="text-gray-400">-</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4">{{ ""}}</td>
+
+
+                            {{-- Aksi --}}
+                            <td class="px-6 py-4 flex gap-2">
+                                <a href="{{ route('produk_umkm.edit', $item->id) }}" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
+                                    <i data-feather="edit" class="w-4 h-4"></i>
+                                </a>
+                                <form action="{{ route('produk_umkm.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus member ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm bg-red-500 text-white hover:bg-red-600">
+                                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+
+                    @if($produk_umkm->isEmpty())
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-gray-500">Tidak ada data produk UMKM.</td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@endsection

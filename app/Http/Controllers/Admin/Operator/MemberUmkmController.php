@@ -8,44 +8,48 @@ use Illuminate\Http\Request;
 use App\Models\MemberUmkm;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use League\Uri\UriTemplate\Operator;
+use Illuminate\Support\Facades\DB;
 
 class MemberUmkmController extends Controller
 {
     public function index(Request $request)
     {
-        $role = $request->get('role'); 
-        if ($role) {
-            $member_umkm = User::where('role', 'umkm ' . ucfirst($role))->get();
-        } else {
             $member_umkm = MemberUmkm::all();
-        }
-        return view('Operator.MemberUmkm.index', compact('member_umkm', 'role'));
+        return view('Operator.MemberUmkm.index', compact('member_umkm'));
     }
 
-        public function create()
-        {
-            return view('Operator.MemberUmkm.create');
-        }
+    public function create()
+    {
+        return view('Operator.MemberUmkm.create');
+    }
     
-        public function store(Request $request)
-        {
-        // dd($request->all());
-            $request->validate([
-                'nama_toko' => 'required',
-                'alamat' => 'required',
-                'no_hp' => 'required',
-                'foto_toko' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
-            ]);
-            $data = $request->all();
-            $data['created_by'] = Auth::user()->id ?? 'System'; 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_toko' => 'required',
+            'alamat' => 'required',
+            'no_hp' => 'required',
+            'foto_toko' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $data = $request->only('nama_toko', 'alamat', 'no_hp');
+            $data['created_by'] = Auth::id() ?? 'System';
+
             if ($request->hasFile('foto_toko')) {
-            $data['foto_toko'] = $request->file('foto_toko')->store('foto_toko', 'public');
+                $data['foto_toko'] = $request->file('foto_toko')->store('foto_toko', 'public');
             }
+
             MemberUmkm::create($data);
-                    // dd('jjj');
+
+            DB::commit();
             return redirect()->route('member_umkm.index')->with('success', 'Member UMKM berhasil ditambahkan.');
-        }    
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->withErrors('Gagal menambahkan member: ' . $th->getMessage());
+        }
+    }    
 
     public function edit($id)
     {
@@ -58,30 +62,43 @@ class MemberUmkmController extends Controller
         $memberUmkm = MemberUmkm::findOrFail($id);
 
         $request->validate([
-            'nama_toko' => 'nullable',
-            'alamat' => 'nullable',
-            'no_hp' => 'nullable',
-            'foto' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+            'nama_toko' => 'nullable|string|max:255',
+            'alamat' => 'nullable|string',
+            'no_hp' => 'nullable|string',
+            'foto_toko' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
         ]);
 
-        $data = $request->all();
-        $data['updated_by'] = Auth::user()->name ?? 'System';
+        DB::beginTransaction();
+        try {
+            $data = $request->only('nama_toko', 'alamat', 'no_hp');
+            $data['updated_by'] = Auth::id() ?? 'System';
 
-        if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('foto_umkm', 'public');
+            if ($request->hasFile('foto_toko')) {
+                $data['foto_toko'] = $request->file('foto_toko')->store('foto_toko', 'public');
+            }
+
+            $memberUmkm->update($data);
+
+            DB::commit();
+            return redirect()->route('member_umkm.index')->with('success', 'Member UMKM berhasil diperbarui.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->withErrors('Gagal memperbarui member: ' . $th->getMessage());
         }
-
-        $memberUmkm->update($data);
-
-        return redirect()->route('member_umkm.index')->with('success', 'Member UMKM berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $memberUmkm = MemberUmkm::findOrFail($id);
-        $memberUmkm->delete();
+        DB::beginTransaction();
+        try {
+            $memberUmkm = MemberUmkm::findOrFail($id);
+            $memberUmkm->delete();
 
-        return redirect()->route('member_umkm.index')->with('success', 'Member UMKM berhasil dihapus.');
+            DB::commit();
+            return redirect()->route('member_umkm.index')->with('success', 'Member UMKM berhasil dihapus.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->withErrors('Gagal menghapus member: ' . $th->getMessage());
+        }
     }
 }
-

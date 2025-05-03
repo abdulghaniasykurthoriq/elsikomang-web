@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="pt-4 flex justify-end gap-2">
-                    <a href="{{ route('member_umkm.index') }}" class="btn btn-secondary">Batal</a>
+                    {{-- <a href="{{ route('member_umkm.index') }}" class="btn btn-secondary">Batal</a> --}}
                     <button type="submit" class="btn bg-indigo-600 text-white hover:bg-indigo-700">Simpan</button>
                 </div>
             </form>

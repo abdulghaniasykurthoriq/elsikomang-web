@@ -15,4 +15,10 @@ class MemberUmkm extends Model
         'foto_toko',
         'created_by',
         'updated_by',
-    ];}
+    ];
+        // Relasi dengan ProdukUmkm
+        public function produkUmkm()
+        {
+            return $this->hasMany(ProdukUmkm::class, 'member_id');
+        }
+}
