@@ -24,11 +24,7 @@ class CoverMenuController extends Controller
                 ->addColumn('action', function ($row) {
                     return '
                             <a href="' . route('cover-menu.edit', $row->id) . '" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600 focus:ring focus:ring-yellow-300">Edit</a>
-                            <form action="' . route('cover-menu.destroy', $row->id) . '" method="POST" class="inline-block">
-                                ' . csrf_field() . '
-                                ' . method_field('DELETE') . '
-                                <button type="submit" class="btn btn-sm bg-red-500 text-white hover:bg-red-600 focus:ring focus:ring-red-300" onclick="return confirm(\'Apakah Anda yakin ingin menghapus data ini?\')">Delete</button>
-                            </form>
+
                         ';
                 })
                 ->rawColumns(['foto', 'action'])
@@ -38,21 +34,21 @@ class CoverMenuController extends Controller
         return view('Admin.CoverMenu.index');
     }
 
-    public function create()
-    {
-        return view('Admin.CoverMenu.create');
-    }
+    // public function create()
+    // {
+    //     return view('Admin.CoverMenu.create');
+    // }
 
-    public function store(CoverMenuRequest $request)
-    {
-        $validated = $request->validated();
-        $path = $request->file('foto')->store('cover-menu', 'public');
-        $coverMenu = new CoverMenu();
-        $coverMenu->nama = $validated['nama'];
-        $coverMenu->foto = $path;
-        $coverMenu->save();
-        return redirect()->route('cover-menu.index')->with('success', 'Cover Menu berhasil ditambahkan.');
-    }
+    // public function store(CoverMenuRequest $request)
+    // {
+    //     $validated = $request->validated();
+    //     $path = $request->file('foto')->store('cover-menu', 'public');
+    //     $coverMenu = new CoverMenu();
+    //     $coverMenu->nama = $validated['nama'];
+    //     $coverMenu->foto = $path;
+    //     $coverMenu->save();
+    //     return redirect()->route('cover-menu.index')->with('success', 'Cover Menu berhasil ditambahkan.');
+    // }
 
 
     public function edit($id)
@@ -83,13 +79,13 @@ class CoverMenuController extends Controller
         return redirect()->route('cover-menu.index')->with('success', 'Cover Menu berhasil diperbarui.');
     }
 
-    public function destroy($id)
-    {
-        $coverMenu = CoverMenu::findOrFail($id);
-        if ($coverMenu->foto) {
-            Storage::disk('public')->delete($coverMenu->foto);
-        }
-        $coverMenu->delete();
-        return redirect()->route('cover-menu.index')->with('success', 'Cover Menu berhasil dihapus.');
-    }       
+    // public function destroy($id)
+    // {
+    //     $coverMenu = CoverMenu::findOrFail($id);
+    //     if ($coverMenu->foto) {
+    //         Storage::disk('public')->delete($coverMenu->foto);
+    //     }
+    //     $coverMenu->delete();
+    //     return redirect()->route('cover-menu.index')->with('success', 'Cover Menu berhasil dihapus.');
+    // }       
 }

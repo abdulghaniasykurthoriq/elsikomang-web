@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->call(JenisOperatorSeeder::class);  
         $this->call(KategoriProdukSeeder::class);  
         $this->call(PariwisataSeeder::class);  
-        $this->call(ProdukDumySeeder::class);  
+        $this->call(CoverMenuSeeder::class);
+        $this->call(ProdukUmkmSeeder::class);
+        $this->call(KeranjangSeeder::class);
     }
 }

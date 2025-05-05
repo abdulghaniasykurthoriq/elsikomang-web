@@ -34,6 +34,7 @@ class ProdukUmkm extends Model
     {
         return $this->hasMany(ProdukImage::class, 'produk_umkm_id');
     }
+    
 
     public function member()
     {

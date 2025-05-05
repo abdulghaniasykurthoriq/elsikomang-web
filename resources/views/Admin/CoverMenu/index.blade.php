@@ -6,7 +6,6 @@
 
         <h2 class="text-xl font-bold ">Daftar Cover Menu</h2>
 
-        <a href="{{ route('cover-menu.create') }}" class="btn btn-sm bg-indigo-500 text-white">Tambah</a>
     </div>
 
     <table id="cover-menu-table" class="display w-full table-auto table-bordered">

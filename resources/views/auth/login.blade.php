@@ -17,6 +17,7 @@
 
     <!-- Theme CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Required meta tags -->
     <title>Sign In | Elsikomang</title>
@@ -30,9 +31,13 @@
             <!-- card body -->
             <div class="p-6 w-full sm:p-8 lg:p-8">
                 <div class="mb-4 text-center">
-                    <a href="#"><img src="{{ asset('assets/images/brand/logo/logo-primary.svg') }}"
-                            class="mb-1 mx-auto" alt="Logo" /></a>
-                    <p class="mb-6">Please enter your user information.</p>
+                    
+                    <a href="#" class="text-indigo-600 text-2xl font-bold ">
+                        
+                            Elsikomang <br/> Klak Klik
+                        
+                        </a>
+                    <!-- <p class="mb-6 mt-2">Please enter your user information.</p> -->
                 </div>
                 <!-- form -->
                 <form method="POST" action="{{ route('login') }}">
@@ -70,12 +75,34 @@
                         </div>
                     </div>
 
+
+                    
+
                     <!-- Button -->
                     <div class="grid">
                         <button type="submit"
                             class="btn bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-800 hover:border-indigo-800 active:bg-indigo-800 active:border-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300">
                             Sign in
                         </button>
+                    </div>
+
+                    <div class="grid mt-3">
+                        <a href="{{ url('auth/google') }}"
+                            class="btn bg-white text-gray-900 border-gray-300 hover:bg-gray-100 hover:border-gray-300 active:bg-gray-100 active:border-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-300">
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 me-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="feather feather-google">
+                                    <path
+                                        d="M17.657 8.657a4 4 0 1 1-5.657-5.657A4 4 0 1 1 17.657 8.657z">
+                                    </path>
+                                    <path
+                                        d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0-2a12 12 0 1 1-12 12A12 12 0 0 1 12 .001z">
+                                    </path>
+                                </svg>
+                                Sign in with Google
+                            </span>
+                        </a>
                     </div>
 
                     <!-- Links -->
@@ -104,6 +131,50 @@
 
     <!-- Theme JS -->
     <script src="{{ asset('assets/js/theme.js') }}"></script>
+    <!-- Tambahkan di <head> atau sebelum </body> -->
+<!-- Tambahkan di <head> atau sebelum </body> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    @if (session('error'))
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    text: "{{ session('error') }}",
+    confirmButtonText: 'Tutup',
+    customClass: {
+        confirmButton: 'swal2-confirm custom-ok-button'
+    },
+    buttonsStyling: false
+});
+</script>
+
+<style>
+.custom-ok-button {
+    background-color: #3b82f6; /* Tailwind blue-500 */
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    outline: none;
+    transition: background-color 0.2s ease;
+}
+
+.custom-ok-button:hover {
+    background-color: #2563eb; /* Tailwind blue-600 */
+}
+
+.custom-ok-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* Tailwind focus ring-blue */
+}
+</style>
+
+    @endif
+
 
 </body>
 

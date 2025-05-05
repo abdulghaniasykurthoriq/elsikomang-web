@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Keranjang;
 use App\Models\KeranjangKuDumy;
 use App\Models\ProdukDumy;
 use Illuminate\Http\Request;
@@ -12,34 +13,20 @@ class KeranjangController extends Controller
     public function index()
     {
         
+        
+        $keranjang = Keranjang::with([
+    'keranjangDetail.produkUmkm.images',
+    'keranjangDetail.produkVariant'
+])->where('user_id', 2)->get();
 
-        $keranjang = KeranjangKuDumy::where('user_id', 2)
-            ->with('varian.produk.member')
-            ->get()
-            ->groupBy('varian.produk.member_id')
-            ->map(function ($items, $memberId) {
-                $firstItem = $items->first();
-                return [
-                    'member_id' => $memberId,
-                    'member_nama' => $firstItem->varian->produk->member->nama ?? null, // Ambil nama member
-                    'items' => $items->map(function ($item) {
-                        return [
-                            'id' => $item->id,
-                            'user_id' => $item->user_id,
-                            'varian_id' => $item->varian_id,
-                            'member_id' => $item->member_id,
-                            'jumlah' => $item->jumlah,
-                            'created_at' => $item->created_at,
-                            'updated_at' => $item->updated_at,
-                            'varian_nama' => $item->varian_nama,
-                            'varian_harga' => $item->varian_harga,
-                            'nama_produk' => $item->nama_produk,
-                            'foto_produk' => $item->foto_produk,
-                        ];
-                    })->values()->toArray(),
-                ];
-            })->values()->toArray();
-
+// Sembunyikan relasi `produk_umkm` di setiap item keranjangDetail
+// $keranjang->each(function ($item) {
+//     $item->keranjangDetail->each(function ($detail) {
+//         // Pastikan ini model KeranjangDetail
+//         $detail->setRelation('produkUmkm', null); // Hapus relasi
+//     });
+// });
+            // dd($keranjang);
 
         return response()->json([
             'message' => 'Keranjang retrieved successfully',

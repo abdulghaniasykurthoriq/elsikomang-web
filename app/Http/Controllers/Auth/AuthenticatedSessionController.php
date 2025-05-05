@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -44,4 +46,41 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+    public function redirectToGoogle()
+{
+    return Socialite::driver('google')->redirect();
+}
+    public function handleGoogleCallback(Request $request)
+{
+    try {
+        // Ambil data user dari Google
+        $googleUser = Socialite::driver('google')->stateless()->user();
+        
+
+        // Ambil email dari Google
+        $email = $googleUser->getEmail();
+        // dd($email);
+
+        // Cek apakah user sudah ada di database
+        $user = User::where('email', $email)->first();
+        // dd($user);
+
+        if (!$user) {
+            // Jika user belum terdaftar, redirect ke halaman login dengan pesan error
+            return redirect()->route('login')->with('error', 'Akun Google ini belum terdaftar.');
+        }
+
+Auth::login($user); // ini seharusnya melakukan login
+$request->session()->regenerate();
+return redirect()->intended(route('dashboard', absolute: false));
+
+        // return redirect()->intended(route('dashboard', absolute: false));
+    } catch (\Exception $e) {
+        return redirect()->route('login')->with('error', 'Login Google gagal: ' . $e->getMessage());
+    }
+}
+
+
+
+    
 }

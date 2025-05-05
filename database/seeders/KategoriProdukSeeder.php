@@ -11,13 +11,12 @@ class KategoriProdukSeeder extends Seeder
     public function run(): void
     {
         DB::table('kategori_produk')->insert([
-            ['name' => 'Makanan'],
-            ['name' => 'Minuman'],
-            ['name' => 'Fashion'],
-            ['name' => 'Kerajinan Tangan'],
-            ['name' => 'Elektronik'],
+            ['id' => 1,'name' => 'Makanan'],
+            ['id' => 2,'name' => 'Minuman'],
+            ['id' => 3,'name' => 'Fashion'],
+            ['id' => 4,'name' => 'Kerajinan Tangan'],
+            ['id' => 5,'name' => 'Elektronik',],
         ]);
-        
-        //
+
     }
 }

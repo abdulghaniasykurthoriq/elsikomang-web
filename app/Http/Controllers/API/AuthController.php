@@ -19,8 +19,15 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $validateData['name'],
             'email' => $validateData['email'],
+            'no_telephon' => $validateData['no_telephon'],
             'password' => bcrypt($validateData['password'])
         ]);
+        if($user->role !== 'User'){
+            return response()->json([
+                'message' => 'Hnya use yg bisa mendaftar',
+                'user' => $user
+            ]);
+        }
         $token = auth('api')->login($user);
         return $this->respondWithToken($token);
 
@@ -29,7 +36,7 @@ class AuthController extends Controller
     public function update(UserProfileUpdateRequest $request)
     {
         $validateData = $request->validated();
-        $user = auth()->user();
+        $user = auth('api')->user();
         $user->update($validateData); // Update langsung dengan data tervalidasi
 
         return response()->json([
@@ -44,16 +51,12 @@ class AuthController extends Controller
             'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $user = auth()->user(); // Asumsi Anda ingin mengupdate foto profil pengguna
-
+        $user = auth()->user();
         if ($request->hasFile('foto')) {
-            // Cek apakah pengguna sudah memiliki foto profil sebelumnya
             if ($user->foto) {
-                // Hapus foto profil yang lama menggunakan Storage
                 Storage::disk('public')->delete($user->foto);
             }
 
-            // Simpan foto profil yang baru menggunakan Storage
             $path = $request->file('foto')->store('foto_profil', 'public'); // Simpan di direktori 'foto_profil' di dalam 'public' disk
             $user->foto = $path;
         }
@@ -87,8 +90,20 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        if (! $token = auth('api')->attempt($credentials)) {
+        if (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        $user = auth('api')->user();
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
+        if($user->role !== 'User'){
+
+            return response()->json([
+                'error' => 'Unauthorized',
+                'message' => 'Hanya user yang bisa login'
+            ], 401);
         }
 
         return $this->respondWithToken($token);

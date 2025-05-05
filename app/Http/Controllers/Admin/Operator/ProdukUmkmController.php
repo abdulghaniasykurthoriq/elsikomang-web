@@ -7,7 +7,6 @@ use App\Models\MemberUmkm;
 use App\Models\ProdukUmkm;
 use App\Models\KategoriProduk;
 use App\Models\ProdukImage;
-use App\Models\ProdukVariant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
