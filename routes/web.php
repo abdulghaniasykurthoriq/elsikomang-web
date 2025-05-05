@@ -20,6 +20,8 @@ Route::middleware('auth')->group(function () {
 
     // start admin route
     Route::get('/cover-menu', [CoverMenuController::class, 'index'])->name('cover-menu.index');
+    Route::get('/cover-menu/data', [CoverMenuController::class, 'data'])
+     ->name('cover-menu.data');
     // Route::get('/cover-menu/create', [CoverMenuController::class, 'create'])->name('cover-menu.create');
     // Route::post('/cover-menu', [CoverMenuController::class, 'store'])->name('cover-menu.store');
     Route::get('/cover-menu/{id}/edit', [CoverMenuController::class, 'edit'])->name('cover-menu.edit');

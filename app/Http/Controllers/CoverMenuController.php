@@ -11,28 +11,26 @@ use Yajra\DataTables\Facades\DataTables;
 
 class CoverMenuController extends Controller
 {
-    public function index(Request $request)
-    {
-        if ($request->ajax()) {
-            $data = CoverMenu::query();
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('foto', function ($row) {
-                    $url = asset('storage/' . $row->foto);
-                    return '<img src="' . $url . '" width="80">';
-                })
-                ->addColumn('action', function ($row) {
-                    return '
-                            <a href="' . route('cover-menu.edit', $row->id) . '" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600 focus:ring focus:ring-yellow-300">Edit</a>
+    public function index()
+{
+    return view('Admin.CoverMenu.index');
+}
 
-                        ';
-                })
-                ->rawColumns(['foto', 'action'])
-                ->make(true);
-        }
-
-        return view('Admin.CoverMenu.index');
-    }
+public function data(Request $request)
+{
+    $data = CoverMenu::query();
+    return DataTables::of($data)
+        ->addIndexColumn()
+        ->addColumn('foto', function ($row) {
+            $url = asset('storage/' . $row->foto);
+            return '<img src="' . $url . '" width="80">';
+        })
+        ->addColumn('action', function ($row) {
+            return '<a href="' . route('cover-menu.edit', $row->id) . '" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600 focus:ring focus:ring-yellow-300">Edit</a>';
+        })
+        ->rawColumns(['foto', 'action'])
+        ->make(true);
+}
 
     // public function create()
     // {
