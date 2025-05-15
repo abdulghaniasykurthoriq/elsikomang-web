@@ -26,8 +26,15 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        
 
+        $request->authenticate();
+        if($request->user()->role == 'User'){
+            return redirect()->route('login')->with('error', 'Akun  ini belum terdaftar.');
+
+        };
+        // dd($request->user());
+        
         $request->session()->regenerate();
 
         return redirect()->intended(route('dashboard', absolute: false));

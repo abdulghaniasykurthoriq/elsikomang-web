@@ -82,7 +82,8 @@
                 <div id="navComponents" class="collapse " data-bs-parent="#sideNavbar">
                     <ul class="nav flex-col">
                         <li class="nav-item">
-                            <a class="nav-link " href="#">Laporan UMKM</a>
+                            <a class="nav-link" href="{{ route('transaksi-produk-umkm.index') }}">Laporan UMKM</a>
+
                         </li>
 
                         <li class="nav-item">
