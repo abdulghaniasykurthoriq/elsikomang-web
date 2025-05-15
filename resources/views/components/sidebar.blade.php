@@ -1,10 +1,10 @@
 <nav class="navbar-vertical navbar">
     <div id="myScrollableElement" class="h-screen" data-simplebar>
         <!-- brand logo -->
-        <a class="navbar-brand" href="{{ route('dashboard') }}">
-
-            <img src="{{ asset('assets/images/brand/logo/logo.svg') }}" alt="" />
+        <a href="{{ route('dashboard') }}" class="navbar-brand text-white text-xl font-bold">     
+            Elsikomang <br/>    
         </a>
+
 
         <!-- navbar nav -->
         <ul class="navbar-nav flex-col" id="sideNavbar">

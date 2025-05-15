@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\Operator\LaporanTransaksiProdukController;
 use App\Http\Controllers\Admin\Operator\MemberUmkmController;
 use App\Http\Controllers\Admin\Operator\OperatorController;
 use App\Http\Controllers\Admin\Operator\ProdukUmkmController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CoverMenuController;
 use App\Http\Controllers\ProfileController;
@@ -29,6 +30,10 @@ Route::middleware('auth')->group(function () {
     // end admin route
 
     Route::get('/laporan-transaksi-produk-umkm', [LaporanTransaksiProdukController::class, 'index'])->name('transaksi-produk-umkm.index');
+
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/data', [UserController::class, 'data'])->name('users.data');;
+
 
 
 

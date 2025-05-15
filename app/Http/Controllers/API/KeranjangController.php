@@ -3,30 +3,20 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreKeranjangRequest;
 use App\Models\Keranjang;
-use App\Models\KeranjangKuDumy;
-use App\Models\ProdukDumy;
-use Illuminate\Http\Request;
+use App\Models\KeranjangDetail;
 
 class KeranjangController extends Controller
 {
     public function index()
     {
-        
-        
-        $keranjang = Keranjang::with([
-    'keranjangDetail.produkUmkm.images',
-    'keranjangDetail.produkVariant'
-])->where('user_id', 2)->get();
+        $user = auth()->user();
 
-// Sembunyikan relasi `produk_umkm` di setiap item keranjangDetail
-// $keranjang->each(function ($item) {
-//     $item->keranjangDetail->each(function ($detail) {
-//         // Pastikan ini model KeranjangDetail
-//         $detail->setRelation('produkUmkm', null); // Hapus relasi
-//     });
-// });
-            // dd($keranjang);
+        $keranjang = Keranjang::with([
+            'keranjangDetail.produkUmkm.images',
+            'keranjangDetail.produkVariant'
+        ])->where('user_id', $user->id)->get();
 
         return response()->json([
             'message' => 'Keranjang retrieved successfully',
@@ -34,23 +24,79 @@ class KeranjangController extends Controller
         ]);
     }
 
-    public function add(Request $request)
+    public function add(StoreKeranjangRequest $request)
     {
-        $userId = 2; // Atau ambil dari autentikasi user: auth()->id()
-        $varianId = 9; // Pastikan Anda mengirimkan varian_id dari form
-
-        KeranjangKuDumy::updateOrCreate(
+        $validated = $request->validated();
+        $user = auth()->user();
+        $keranjang = Keranjang::firstOrCreate(
             [
-                'user_id' => $userId,
-                'varian_id' => $varianId,
-            ],
-            [
-                'jumlah' => $request->jumlah, // Nilai yang akan dibuat atau diperbarui
-                'member_id' => $request->member_id ?? null, // Contoh kolom lain yang mungkin perlu diisi
-                // Kolom lain yang ingin Anda atur saat membuat atau memperbarui
+                'user_id' => $user->id,
+                'member_id' => $validated['member_id'],
             ]
         );
+        $keranjangDetail = KeranjangDetail::where('keranjang_id', $keranjang->id)
+            ->where('produk_umkm_id', $validated['produk_umkm_id'])
+            ->where('produk_variant_id', $validated['produk_variant_id'])
+            ->first();
 
-    return response()->json(['message' => 'Keranjang berhasil ditambahkan/diperbarui']);
-}
+        if ($keranjangDetail) {
+            $keranjangDetail->jumlah += 1;
+            $keranjangDetail->save();
+        } else {
+            KeranjangDetail::create([
+                'keranjang_id' => $keranjang->id,
+                'produk_umkm_id' => $validated['produk_umkm_id'],
+                'produk_variant_id' => $validated['produk_variant_id'],
+                'jumlah' => 1,
+            ]);
+        }
+
+        return response()->json(['message' => 'Keranjang berhasil ditambahkan/diperbarui']);
+    }
+
+    public function minus(StoreKeranjangRequest $request)
+    {
+        $validated = $request->validated();
+        $user = auth()->user();
+
+        // Cari keranjang berdasarkan user dan member
+        $keranjang = Keranjang::where('user_id', $user->id)
+            ->where('member_id', $validated['member_id'])
+            ->first();
+
+        if (!$keranjang) {
+            return response()->json(['message' => 'Keranjang tidak ditemukan'], 404);
+        }
+
+        // Cari item di dalam keranjang
+        $keranjangDetail = KeranjangDetail::where('keranjang_id', $keranjang->id)
+            ->where('produk_umkm_id', $validated['produk_umkm_id'])
+            ->where('produk_variant_id', $validated['produk_variant_id'])
+            ->first();
+
+        if (!$keranjangDetail) {
+            return response()->json(['message' => 'Produk tidak ditemukan dalam keranjang'], 404);
+        }
+
+        // Kurangi jumlah atau hapus jika tinggal 1
+        if ($keranjangDetail->jumlah > 1) {
+            $keranjangDetail->jumlah -= 1;
+            $keranjangDetail->save();
+        } else {
+            $keranjangDetail->delete();
+        }
+
+        // Cek apakah keranjang masih punya detail
+        $sisaDetail = KeranjangDetail::where('keranjang_id', $keranjang->id)->count();
+
+        // Jika tidak ada detail tersisa, hapus keranjang juga
+        if ($sisaDetail === 0) {
+            $keranjang->delete();
+        }
+
+        return response()->json(['message' => 'Jumlah produk berhasil dikurangi / dihapus']);
+    }
+
+
+
 }

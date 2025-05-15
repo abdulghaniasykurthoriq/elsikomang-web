@@ -22,14 +22,12 @@ class AuthController extends Controller
             'no_telephon' => $validateData['no_telephon'],
             'password' => bcrypt($validateData['password'])
         ]);
-        if($user->role !== 'User'){
-            return response()->json([
-                'message' => 'Hnya use yg bisa mendaftar',
-                'user' => $user
-            ]);
-        }
-        $token = auth('api')->login($user);
-        return $this->respondWithToken($token);
+        return response()->json([
+            'message' => 'Berhasil Mendaftar, Silahkan Login',
+            'user' => $user
+        ]);
+        // $token = auth('api')->login($user);
+        // return $this->respondWithToken($token);
 
     }
 

@@ -16,6 +16,10 @@ class MemberUmkm extends Model
         'created_by',
         'updated_by',
     ];
+    protected $hidden = [
+        'created_by',
+        'updated_by',
+    ];
         // Relasi dengan ProdukUmkm
         public function produkUmkm()
         {

@@ -6,6 +6,7 @@ use App\Http\Controllers\API\KeranjangController;
 use App\Http\Controllers\API\KritikDanSaranController;
 use App\Http\Controllers\API\PariwisataController;
 use App\Http\Controllers\API\ProdukController;
+use App\Http\Controllers\API\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\SocialAuthController;
@@ -29,6 +30,14 @@ Route::middleware(['auth:api'])->group(function(){
     Route::post('auth/update-password', [AuthController::class, 'updatePassword']);
     Route::post('auth/update-foto', [AuthController::class, 'updateFoto']);
 
+    Route::get('/keranjang-ku', [KeranjangController::class, 'index']);
+    Route::post('/keranjang-ku/add', [KeranjangController::class, 'add']);
+    Route::post('/keranjang-ku/minus', [KeranjangController::class, 'minus']);
+
+
+    Route::get('/wishlist', [WishlistController::class, 'index']);
+    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle']);
+
 });
 
 Route::get('/produk', [ProdukController::class, 'index']);
@@ -42,8 +51,7 @@ Route::post('/kritiksaran', [KritikDanSaranController::class, 'create']);
 
 Route::get('/cover-menu', [CoverMenuController::class, 'index']);
 
-Route::get('/keranjang-ku', [KeranjangController::class, 'index']);
-Route::get('/keranjang-ku/create', [KeranjangController::class, 'add']);
+
 
 
 
