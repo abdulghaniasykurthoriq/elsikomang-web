@@ -23,7 +23,7 @@
                 </a>
             </li>
 
-            // sidebar umkm
+            {{-- // sidebar umkm --}}
             @if (Auth::user()->jenis_operator_id == 1)
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('umkm/produk') }}">
@@ -33,7 +33,7 @@
                 </li>
 
 
-            // sidebar parawisata
+            {{-- // sidebar parawisata --}}
             @elseif (Auth::user()->jenis_operator_id == 2)
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('operator.pariwisata.data.index', ['jenis' => 'pariwisata']) }}">
@@ -50,7 +50,7 @@
                 </li>
 
 
-            // sidebar investasi
+            {{-- // sidebar investasi --}}
             @elseif (Auth::user()->jenis_operator_id == 3)
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('umkm/produk') }}">
@@ -60,7 +60,7 @@
                 </li>
 
 
-            // sidebar event
+            {{-- // sidebar event --}}
             @elseif (Auth::user()->jenis_operator_id == 4)
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('umkm/produk') }}">
@@ -70,7 +70,7 @@
                 </li>
 
 
-            // sidebar entertainment
+            {{-- sidebar entertainment --}}
             @elseif (Auth::user()->jenis_operator_id == 5)
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('umkm/produk') }}">
@@ -80,7 +80,7 @@
                 </li>
 
 
-            // sidebar box office
+            {{-- //sidebar box office --}}
             @elseif (Auth::user()->jenis_operator_id == 6)
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('umkm/produk') }}">
