@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\DashboardController;
+
 use App\Http\Controllers\Admin\Operator\LaporanTransaksiProdukController;
 use App\Http\Controllers\Admin\Operator\MemberUmkmController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -45,36 +45,10 @@ Route::middleware(['auth',AdminMiddleware::class])->group(function () {
 
     // CRUD Operator (dibuat oleh Admin)
     Route::resource('/operator', OperatorController::class)->except(['show']);
-//     Route::get('/operator', [OperatorController::class, 'index'])->name('operator.index');
-// Route::get('/operator/create', [OperatorController::class, 'create'])->name('operator.create');
-// Route::get('/operator/{id}/edit', [OperatorController::class, 'edit'])->name('operator.edit');
-// // Route store, update, destroy (POST, PUT, DELETE)
-// Route::post('/operator', [OperatorController::class, 'store'])->name('operator.store');
-// Route::put('/operator/{id}', [OperatorController::class, 'update'])->name('operator.update');
-// Route::delete('/operator/{id}', [OperatorController::class, 'destroy'])->name('operator.destroy');
-
 
     // Member & Produk UMKM
     Route::resource('/member_umkm', MemberUmkmController::class)->except(['show']);
     Route::resource('/produk_umkm', ProdukUmkmController::class)->except(['show']);
-
-//     // Member UMKM
-// Route::get('/member_umkm', [MemberUmkmController::class, 'index'])->name('member_umkm.index');
-// Route::get('/member_umkm/create', [MemberUmkmController::class, 'create'])->name('member_umkm.create');
-// Route::get('/member_umkm/{id}/edit', [MemberUmkmController::class, 'edit'])->name('member_umkm.edit');
-// // Route store, update, destroy (POST, PUT, DELETE)
-// Route::post('/member_umkm', [MemberUmkmController::class, 'store'])->name('member_umkm.store');
-// Route::put('/member_umkm/{id}', [MemberUmkmController::class, 'update'])->name('member_umkm.update');
-// Route::delete('/member_umkm/{id}', [MemberUmkmController::class, 'destroy'])->name('member_umkm.destroy');
-
-// // Produk UMKM
-// Route::get('/produk_umkm', [ProdukUmkmController::class, 'index'])->name('produk_umkm.index');
-// Route::get('/produk_umkm/create', [ProdukUmkmController::class, 'create'])->name('produk_umkm.create');
-// Route::get('/produk_umkm/{id}/edit', [ProdukUmkmController::class, 'edit'])->name('produk_umkm.edit');
-// // Route store, update, destroy (POST, PUT, DELETE)
-// Route::post('/produk_umkm', [ProdukUmkmController::class, 'store'])->name('produk_umkm.store');
-// Route::put('/produk_umkm/{id}', [ProdukUmkmController::class, 'update'])->name('produk_umkm.update');
-// Route::delete('/produk_umkm/{id}', [ProdukUmkmController::class, 'destroy'])->name('produk_umkm.destroy');
 
 });
 
