@@ -11,3 +11,5 @@
 <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}" />
 
 <link rel="stylesheet" href="{{ asset('assets/libs/apexcharts/dist/apexcharts.css') }}" />
+{{-- <link href="{{ asset('assets/libs/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet"> --}}
+

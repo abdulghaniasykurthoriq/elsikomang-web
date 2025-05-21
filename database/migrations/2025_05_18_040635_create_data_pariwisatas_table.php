@@ -11,19 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jenis_operators', function (Blueprint $table) {
+        Schema::create('data_pariwisata', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('url');
+            $table->string('nama');
+            $table->string('lokasi');
+            $table->text('deskripsi')->nullable();
+            $table->string('galeri')->nullable(); // bisa simpan nama file/gambar
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('jenis_operators');
+        Schema::dropIfExists('data_pariwisatas');
     }
 };
