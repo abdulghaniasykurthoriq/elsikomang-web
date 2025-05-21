@@ -17,12 +17,17 @@ return new class extends Migration
             $table->string('foto')->nullable();
             $table->string('email')->unique();
             $table->string('username')->nullable();
-            $table->char('jenis_kelamin', 1)->default('l'); 
-            $table->date('tanggal_lahir')->nullable(); 
+            $table->char('jenis_kelamin', 1)->default('l');
+            $table->date('tanggal_lahir')->nullable();
             $table->string('no_telephon')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('role')->default ('User');
+            $table->string('role')->default('User');
+
+            // Foreign key ke tabel jenis_operators (nullable, hanya untuk operator)
+            $table->unsignedBigInteger('jenis_operator_id')->nullable();
+            $table->foreign('jenis_operator_id')->references('id')->on('jenis_operators')->onDelete('set null');
+
             $table->rememberToken();
             $table->timestamps();
         });
@@ -48,8 +53,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };

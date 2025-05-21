@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements JWTSubject
 {
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'name',
@@ -21,41 +21,49 @@ class User extends Authenticatable implements JWTSubject
         'jenis_kelamin',
         'no_telephon',
         'foto',
+        'jenis_operator_id',
     ];
-
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    protected $appends = ['foto_url',];
+    protected $appends = [
+        'foto_url',
+    ];
 
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
+    /**
+     * Relasi ke tabel jenis_operators
+     */
+    public function jenisOperator()
+    {
+        return $this->belongsTo(JenisOperator::class, 'jenis_operator_id');
+    }
 
+    /**
+     * Getter untuk URL foto
+     */
     public function getFotoUrlAttribute()
     {
         return $this->foto ? asset('storage/' . $this->foto) : null;
-
     }
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-
+    /**
+     * JWT Identifier
+     */
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
     /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
+     * Custom claims untuk JWT
      */
     public function getJWTCustomClaims()
     {
