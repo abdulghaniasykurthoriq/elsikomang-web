@@ -4,8 +4,11 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Operator\MemberUmkmController;
 use App\Http\Controllers\Admin\Operator\OperatorController;
 use App\Http\Controllers\Admin\Operator\ProdukUmkmController;
+use App\Http\Controllers\API\KMeansController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CoverMenuController;
+use App\Http\Controllers\Operator\OperatorEventController;
+// use App\Http\Controllers\OperatorEventController as ControllersOperatorEventController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -61,6 +64,18 @@ Route::get('/produk_umkm/{id}/edit', [ProdukUmkmController::class, 'edit'])->nam
 Route::post('/produk_umkm', [ProdukUmkmController::class, 'store'])->name('produk_umkm.store');
 Route::put('/produk_umkm/{id}', [ProdukUmkmController::class, 'update'])->name('produk_umkm.update');
 Route::delete('/produk_umkm/{id}', [ProdukUmkmController::class, 'destroy'])->name('produk_umkm.destroy');
+
+// Produk UMKM
+Route::get('/operator_event', [OperatorEventController::class, 'index'])->name('operator_event.index');
+Route::get('/operator_event/create', [OperatorEventController::class, 'create'])->name('operator_event.create');
+Route::get('/operator_event/{id}/edit', [OperatorEventController::class, 'edit'])->name('operator_event.edit');
+// Route store, update, destroy (POST, PUT, DELETE)
+Route::post('/operator_event', [OperatorEventController::class, 'store'])->name('operator_event.store');
+Route::put('/operator_event/{id}', [OperatorEventController::class, 'update'])->name('operator_event.update');
+Route::delete('/operator_event/{id}', [OperatorEventController::class, 'destroy'])->name('operator_event.destroy');
+
+Route::get('produk_umkm/klasterisasi', [ProdukUmkmController::class, 'klasterisasiProduk'])->name('produk_umkm.klaster');
+
 
 
 });
