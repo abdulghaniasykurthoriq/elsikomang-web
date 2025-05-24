@@ -16,6 +16,8 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\OperatorMiddleware;
+use App\Http\Controllers\Admin\IklanController;
+
 
 
 // Halaman login
@@ -49,6 +51,10 @@ Route::middleware(['auth',AdminMiddleware::class])->group(function () {
     // Member & Produk UMKM
     Route::resource('/member_umkm', MemberUmkmController::class)->except(['show']);
     Route::resource('/produk_umkm', ProdukUmkmController::class)->except(['show']);
+
+    Route::get('/iklan/{slug}', [IklanController::class, 'index'])->name('iklan.index');
+    Route::get('/iklan/{slug}/create', [IklanController::class, 'create'])->name('iklan.create');
+    Route::post('/iklan/{slug}/store', [IklanController::class, 'store'])->name('iklan.store');
 
 });
 

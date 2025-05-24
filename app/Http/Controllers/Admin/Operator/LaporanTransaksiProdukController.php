@@ -11,6 +11,10 @@ use Phpml\Regression\LeastSquares;
 
 class LaporanTransaksiProdukController extends Controller
 {
+
+
+
+
     public function index(Request $request)
     {
         $year = $request->get('tahun', now()->year);
@@ -35,8 +39,9 @@ class LaporanTransaksiProdukController extends Controller
                 $targets[] = $row->pendapatan;
 
                 $bulanData[$row->bulan] = [
-                    'pendapatan' => $row->pendapatan,
-                    'status' => 'Realisasi',
+                    'actual' => $row->pendapatan,
+                    'prediksi' => null,
+                    'error' => null,
                 ];
             }
 
@@ -44,24 +49,41 @@ class LaporanTransaksiProdukController extends Controller
                 $model = new LeastSquares();
                 $model->train($samples, $targets);
 
-                $lastMonth = max(array_column($samples, 0));
-                if ($lastMonth < 12) {
-                    $nextMonth = $lastMonth + 1;
-                    $predicted = $model->predict([$nextMonth]);
+                for ($i = 1; $i <= 12; $i++) {
+                    $prediksi = $model->predict([$i]);
+                    $aktual = $bulanData[$i]['actual'] ?? null;
+                    $error = null;
 
-                    $bulanData[$nextMonth] = [
-                        'pendapatan' => $predicted,
-                        'status' => 'Prediksi',
+                    if (!is_null($aktual)) {
+                        $error = $prediksi - $aktual;
+                    }
+
+                    // Isi prediksi dan error ke bulanData (meskipun tidak ada realisasi)
+                    $bulanData[$i] = [
+                        'actual' => $aktual,
+                        'prediksi' => $prediksi,
+                        'error' => $error,
                     ];
                 }
             }
 
             $dataView[$produk->nama_produk] = $bulanData;
         }
-        // dd($dataView);
-        // return view('Operator.Laporan.LaporanTransaksiProdukUmkm.index');     
-        return view('Operator.Laporan.LaporanTransaksiProdukUmkm.index', 
-        compact('year', 'months', 'dataView'));
 
+        $labels = array_values($months);
+        $actual = []; $prediction = [];
+
+        // Contoh produk pertama untuk chart
+        if (!empty($dataView)) {
+            $firstProduk = array_key_first($dataView);
+            for ($i = 1; $i <= 12; $i++) {
+                $actual[] = $dataView[$firstProduk][$i]['actual'] ?? null;
+                $prediction[] = $dataView[$firstProduk][$i]['prediksi'] ?? null;
+            }
+        }
+
+        return view('Operator.Laporan.LaporanTransaksiProdukUmkm.index', 
+            compact('year', 'months', 'dataView', 'labels', 'actual', 'prediction'));
     }
+
 }
