@@ -23,5 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ProdukUmkmSeeder::class);
         $this->call(KeranjangSeeder::class);
         $this->call(TransaksiDumySeeder::class);
+        $this->call(IklanSeeder::class);
+
     }
 }
