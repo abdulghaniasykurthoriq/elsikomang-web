@@ -25,7 +25,7 @@ Route::get('auth/google/callback', [AuthenticatedSessionController::class, 'hand
 // ===========================
 // ADMIN ROUTE
 // ===========================
-Route::middleware(['auth',AdminMiddleware::class])->group(function () {
+Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Cover Menu
@@ -45,12 +45,11 @@ Route::middleware(['auth',AdminMiddleware::class])->group(function () {
 // ===========================
 // OPERATOR ROUTE
 // ===========================
-Route::middleware(['auth',OperatorMiddleware::class])->group(function () {
+Route::middleware(['auth', OperatorMiddleware::class])->group(function () {
     Route::get('/{jenis}/dashboard', [OperatorDashboardController::class, 'index'])->name('operator.dashboard');
     Route::prefix('{jenis}')->group(function () {
         Route::resource('/data', DataPariwisataController::class)->names('operator.pariwisata.data');
         Route::resource('/laporan', LaporanPariwisataController::class)->names('operator.pariwisata.laporan');
-        
     });
 });
 
