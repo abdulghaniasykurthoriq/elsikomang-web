@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\Operator\OperatorController;
 use App\Http\Controllers\Admin\Operator\ProdukUmkmController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CoverMenuController;
+use App\Http\Controllers\Operator\OperatorEventController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\operator\DataPariwisataController;
 use App\Http\Controllers\operator\LaporanPariwisataController;
@@ -49,6 +50,16 @@ Route::middleware(['auth',AdminMiddleware::class])->group(function () {
     // Member & Produk UMKM
     Route::resource('/member_umkm', MemberUmkmController::class)->except(['show']);
     Route::resource('/produk_umkm', ProdukUmkmController::class)->except(['show']);
+    Route::resource('/operator_event', OperatorEventController::class)->except(['show']);
+
+
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+Route::get('produk_umkm/klasterisasi', [ProdukUmkmController::class, 'klasterisasiProduk'])->name('produk_umkm.klaster');
+
+
 
 });
 

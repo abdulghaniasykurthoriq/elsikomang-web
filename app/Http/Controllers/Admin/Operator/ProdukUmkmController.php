@@ -16,7 +16,7 @@ class ProdukUmkmController extends Controller
 {
     public function index()
     {
-        $produk_umkm = ProdukUmkm::with('member', 'images')->get();
+        $produk_umkm = ProdukUmkm::with('member', 'images','produk_variant')->get();
         return view('Operator.ProdukUmkm.index', compact('produk_umkm'));
     }
 
