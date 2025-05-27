@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\JenisOperator;
+use App\Models\SplashScreen;
 use App\Models\TransaksiDetail;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -24,6 +25,6 @@ class DatabaseSeeder extends Seeder
         $this->call(KeranjangSeeder::class);
         $this->call(TransaksiDumySeeder::class);
         $this->call(IklanSeeder::class);
-
+        $this->call(SplashScreenSeeder::class);
     }
 }

@@ -60,39 +60,39 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-    @foreach($dataView as $produk => $bulanData)
-        <tr>
-            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">{{ $produk }}</td>
-            @for ($i = 1; $i <= 12; $i++)
-                @php
-                    $data = $bulanData[$i] ?? ['actual' => null, 'prediksi' => null, 'error' => null];
-                @endphp
-                <td class="px-4 py-3 text-xs text-center leading-tight">
-                    {{-- Actual --}}
-                    @if (!is_null($data['actual']))
-                        <span class="text-blue-600 font-semibold block">
-                            A: {{ number_format($data['actual'], 0, ',', '.') }}
-                        </span>
-                    @endif
+                    @foreach($dataView as $produk => $bulanData)
+                        <tr>
+                            <td class="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">{{ $produk }}</td>
+                            @for ($i = 1; $i <= 12; $i++)
+                                @php
+                                    $data = $bulanData[$i] ?? ['actual' => null, 'prediksi' => null, 'error' => null];
+                                @endphp
+                                <td class="px-4 py-3 text-xs text-center leading-tight">
+                                    {{-- Actual --}}
+                                    @if (!is_null($data['actual']))
+                                        <span class="text-blue-600 font-semibold block">
+                                            A: {{ number_format($data['actual'], 0, ',', '.') }}
+                                        </span>
+                                    @endif
 
-                    {{-- Prediksi --}}
-                    @if (!is_null($data['prediksi']))
-                        <span class="text-red-600 font-semibold block">
-                            P: {{ number_format($data['prediksi'], 0, ',', '.') }}
-                        </span>
-                    @endif
+                                    {{-- Prediksi --}}
+                                    @if (!is_null($data['prediksi']))
+                                        <span class="text-red-600 font-semibold block">
+                                            P: {{ number_format($data['prediksi'], 0, ',', '.') }}
+                                        </span>
+                                    @endif
 
-                    {{-- Error --}}
-                    @if (!is_null($data['error']))
-                        <span class="text-yellow-600 font-semibold block">
-                            E: {{ number_format($data['error'], 0, ',', '.') }}
-                        </span>
-                    @endif
-                </td>
-            @endfor
-        </tr>
-    @endforeach
-</tbody>
+                                    {{-- Error --}}
+                                    @if (!is_null($data['error']))
+                                        <span class="text-yellow-600 font-semibold block">
+                                            E: {{ number_format($data['error'], 4) }}
+                                        </span>
+                                    @endif
+                                </td>
+                            @endfor
+                        </tr>
+                    @endforeach
+                </tbody>
             </table>
         </div>
     </div>

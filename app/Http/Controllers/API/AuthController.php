@@ -126,6 +126,7 @@ class AuthController extends Controller
 
     protected function respondWithToken($token)
     {
+        $hari = 24;
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',

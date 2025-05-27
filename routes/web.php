@@ -1,7 +1,6 @@
 <?php
 
 
-use App\Http\Controllers\Admin\Operator\LaporanTransaksiProdukController;
 use App\Http\Controllers\Admin\Operator\MemberUmkmController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Operator\DashboardController as OperatorDashboardController;
@@ -18,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\OperatorMiddleware;
 use App\Http\Controllers\Admin\IklanController;
-
-
+use App\Http\Controllers\Admin\LaporanTransaksiUmkmController;
+use App\Http\Controllers\Admin\SplashScreenController;
 
 // Halaman login
 Route::get('/', function () {
@@ -40,10 +39,14 @@ Route::middleware(['auth',AdminMiddleware::class])->group(function () {
     Route::get('/cover-menu/{id}/edit', [CoverMenuController::class, 'edit'])->name('cover-menu.edit');
     Route::patch('/cover-menu/{coverMenu}', [CoverMenuController::class, 'update'])->name('cover-menu.update');
 
-    Route::get('/laporan-transaksi-produk-umkm', [LaporanTransaksiProdukController::class, 'index'])->name('transaksi-produk-umkm.index');
+    Route::get('/laporan-transaksi-produk-umkm', [LaporanTransaksiUmkmController::class, 'index'])->name('transaksi-produk-umkm.index');
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/data', [UserController::class, 'data'])->name('users.data');;
+
+    Route::resource('/splashscreen', SplashScreenController::class)->except(['show','create','store','destroy']);
+
+
 
 
     // CRUD Operator (dibuat oleh Admin)

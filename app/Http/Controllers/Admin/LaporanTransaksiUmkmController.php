@@ -1,20 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Operator;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProdukUmkm;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Phpml\Regression\LeastSquares;
 
-class LaporanTransaksiProdukController extends Controller
+class LaporanTransaksiUmkmController extends Controller
 {
-
-
-
-
     public function index(Request $request)
     {
         $year = $request->get('tahun', now()->year);
@@ -53,9 +48,16 @@ class LaporanTransaksiProdukController extends Controller
                     $prediksi = $model->predict([$i]);
                     $aktual = $bulanData[$i]['actual'] ?? null;
                     $error = null;
+                    
+
+                    
 
                     if (!is_null($aktual)) {
-                        $error = $prediksi - $aktual;
+                        $aktual = floatval($aktual);
+                        $prediksi = floatval($prediksi);
+
+                        $error = ($aktual - $prediksi) / $aktual;
+                        $error = round($error, 6);
                     }
 
                     // Isi prediksi dan error ke bulanData (meskipun tidak ada realisasi)
@@ -82,8 +84,7 @@ class LaporanTransaksiProdukController extends Controller
             }
         }
 
-        return view('Operator.Laporan.LaporanTransaksiProdukUmkm.index', 
+        return view('Admin.Laporan.transaksi_umkm', 
             compact('year', 'months', 'dataView', 'labels', 'actual', 'prediction'));
     }
-
 }
