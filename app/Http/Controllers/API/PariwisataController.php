@@ -29,10 +29,7 @@ class PariwisataController extends Controller
         $inputFasilitas = $request->input('fasilitas', []);
         $inputKategori = $request->input('kategori');
 
-        $inputHarga = 12000;
-        $inputRating = 5.0;
-        $inputFasilitas = $request->input('fasilitas', []);
-        $inputKategori = $request->input('kategori');
+
 
         $wisatas = Pariwisata::with('fasilitas')->get();
 
