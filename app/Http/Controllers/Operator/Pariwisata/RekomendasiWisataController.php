@@ -68,7 +68,7 @@ class RekomendasiWisataController extends Controller
 
         $sorted = $dataSaw->sortByDesc('skor')->values();
 
-        return view('operator.pariwisata.rekomendasi.index', [
+        return view('Operator.pariwisata.rekomendasi.index', [
             'data' => $sorted,
         ]);
     }

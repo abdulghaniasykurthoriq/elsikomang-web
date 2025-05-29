@@ -11,12 +11,12 @@ class LaporanPariwisataController extends Controller
     public function index($jenis)
     {
         $laporanPariwisatas = LaporanPariwisata::all();
-        return view('operator.pariwisata.laporan.index', compact('laporanPariwisatas', 'jenis'));
+        return view('Operator.pariwisata.laporan.index', compact('laporanPariwisatas', 'jenis'));
     }
 
     public function create($jenis)
     {
-        return view('operator.pariwisata.laporan.create', compact('jenis'));
+        return view('Operator.pariwisata.laporan.create', compact('jenis'));
     }
 
     public function store(Request $request, $jenis)
@@ -37,7 +37,7 @@ class LaporanPariwisataController extends Controller
     public function edit($jenis, $id)
     {
         $laporan = LaporanPariwisata::findOrFail($id);
-        return view('operator.pariwisata.laporan.edit', compact('laporan', 'jenis'));
+        return view('Operator.pariwisata.laporan.edit', compact('laporan', 'jenis'));
     }
 
     public function update(Request $request, $jenis, $id)

@@ -38,13 +38,16 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle']);
 
     Route::post('/transaksi', [TransaksiController::class, 'store']);
+
+
+    Route::post('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
+
 });
 
 Route::get('/produk', [ProdukController::class, 'index']);
 Route::get('/produk/{id}', [ProdukController::class, 'show']);
 
 Route::get('/pariwisata', [PariwisataController::class, 'index']);
-Route::post('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
 Route::get('/pariwisata/{id}', [PariwisataController::class, 'show']);
 
 Route::post('/kritiksaran', [KritikDanSaranController::class, 'create']);
