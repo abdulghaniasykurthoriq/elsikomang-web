@@ -32,22 +32,6 @@ public function data(Request $request)
         ->make(true);
 }
 
-    // public function create()
-    // {
-    //     return view('Admin.CoverMenu.create');
-    // }
-
-    // public function store(CoverMenuRequest $request)
-    // {
-    //     $validated = $request->validated();
-    //     $path = $request->file('foto')->store('cover-menu', 'public');
-    //     $coverMenu = new CoverMenu();
-    //     $coverMenu->nama = $validated['nama'];
-    //     $coverMenu->foto = $path;
-    //     $coverMenu->save();
-    //     return redirect()->route('cover-menu.index')->with('success', 'Cover Menu berhasil ditambahkan.');
-    // }
-
 
     public function edit($id)
     {

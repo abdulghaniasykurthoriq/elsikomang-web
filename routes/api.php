@@ -6,6 +6,7 @@ use App\Http\Controllers\API\KeranjangController;
 use App\Http\Controllers\API\KritikDanSaranController;
 use App\Http\Controllers\API\PariwisataController;
 use App\Http\Controllers\API\ProdukController;
+use App\Http\Controllers\API\SplashScreenController;
 use App\Http\Controllers\API\WishlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,3 +46,11 @@ Route::get('/pariwisata/{id}', [PariwisataController::class, 'show']);
 Route::post('/kritiksaran', [KritikDanSaranController::class, 'create']);
 
 Route::get('/cover-menu', [CoverMenuController::class, 'index']);
+
+Route::get('/splashscreen', [SplashScreenController::class, 'index']);
+
+
+
+
+
+

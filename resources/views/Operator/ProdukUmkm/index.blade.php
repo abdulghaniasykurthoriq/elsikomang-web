@@ -25,6 +25,7 @@
                         <th class="px-6 py-3">Nama Produk</th>
                         <th class="px-6 py-3">Kategori</th>
                         <th class="px-6 py-3">Deskripsi</th>
+                        <th class="px-6 py-3">Varian, Harga & Stok</th>
                         <th class="px-6 py-3">Foto Produk</th>
                         <th colspan="2" class="px-6 py-3">Aksi</th>
                     </tr>
@@ -35,8 +36,18 @@
                             <td class="px-6 py-4">{{ $index + 1 }}</td>
                             <td class="px-6 py-4">{{ $item->member->nama_toko ?? 'Toko tidak ditemukan' }}</td>
                             <td class="px-6 py-4">{{ $item->nama_produk }}</td>
-                            <td class="px-6 py-4">{{ $item->kategori_id }}</td>
+                            <td class="px-6 py-4">{{ $item->kategori->name??'' }}</td>
                             <td class="px-6 py-4">{{ $item->deskripsi }}</td>
+                            <td class="px-6 py-4">
+                                @forelse($item->produk_variant as $variant)
+                                    <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mb-1 mr-1">
+                                        {{ $variant->varian }} - Rp{{ number_format($variant->harga, 0, ',', '.') }} - {{ number_format($variant->stok) }}
+                                    </span>
+                                @empty
+                                    <span class="text-gray-400">-</span>
+                                @endforelse
+                            </td>
+                            
                             
 
                             {{-- Galeri --}}

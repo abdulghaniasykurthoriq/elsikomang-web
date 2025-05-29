@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Http\Controllers\Admin\Operator\LaporanTransaksiProdukController;
 use App\Http\Controllers\Admin\Operator\MemberUmkmController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Admin\Operator\ProdukUmkmController;
 use App\Http\Controllers\Operator\Pariwisata\PariwisataController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CoverMenuController;
+use App\Http\Controllers\Operator\OperatorEventController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\operator\DataPariwisataController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -17,6 +19,11 @@ use App\Http\Controllers\Operator\Pariwisata\RekomendasiWisataController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\OperatorMiddleware;
+
+
+use App\Http\Controllers\Admin\IklanController;
+use App\Http\Controllers\Admin\LaporanTransaksiUmkmController;
+use App\Http\Controllers\Admin\SplashScreenController;
 
 // Halaman login
 Route::get('/', function () {
@@ -37,10 +44,17 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/cover-menu/{id}/edit', [CoverMenuController::class, 'edit'])->name('cover-menu.edit');
     Route::patch('/cover-menu/{coverMenu}', [CoverMenuController::class, 'update'])->name('cover-menu.update');
 
-    Route::get('/laporan-transaksi-produk-umkm', [LaporanTransaksiProdukController::class, 'index'])->name('transaksi-produk-umkm.index');
+    Route::get('/laporan-transaksi-produk-umkm', [LaporanTransaksiUmkmController::class, 'index'])->name('transaksi-produk-umkm.index');
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/data', [UserController::class, 'data'])->name('users.data');
+
+    Route::get('/users/data', [UserController::class, 'data'])->name('users.data');;
+
+    Route::resource('/splashscreen', SplashScreenController::class)->except(['show','create','store','destroy']);
+
+
+
+
 
     // CRUD Operator (dibuat oleh Admin)
     Route::resource('/operator', OperatorController::class)->except(['show']);
@@ -48,6 +62,19 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     // Member & Produk UMKM
     Route::resource('/member_umkm', MemberUmkmController::class)->except(['show']);
     Route::resource('/produk_umkm', ProdukUmkmController::class)->except(['show']);
+
+
+    Route::resource('/operator_event', OperatorEventController::class)->except(['show']);
+
+Route::get('produk_umkm/klasterisasi', [ProdukUmkmController::class, 'klasterisasiProduk'])->name('produk_umkm.klaster');
+
+
+
+    Route::get('/iklan/{slug}', [IklanController::class, 'index'])->name('iklan.index');
+    Route::get('/iklan/{slug}/create', [IklanController::class, 'create'])->name('iklan.create');
+    Route::post('/iklan/{slug}/store', [IklanController::class, 'store'])->name('iklan.store');
+
+
 });
 
 // ===========================

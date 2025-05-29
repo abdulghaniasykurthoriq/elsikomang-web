@@ -117,6 +117,12 @@
                     Cover Menu
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link " href="{{route('splashscreen.index')}}">
+                    <i data-feather="user" class="w-4 h-4 mr-2"></i>
+                    Splash Screen
+                </a>
+            </li>
         </ul>
         </ul>
     </div>
