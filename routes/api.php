@@ -38,14 +38,13 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle']);
 
     Route::post('/transaksi', [TransaksiController::class, 'store']);
-    Route::post('/transaksi/callback', [TransaksiController::class, 'update']);
 });
 
 Route::get('/produk', [ProdukController::class, 'index']);
 Route::get('/produk/{id}', [ProdukController::class, 'show']);
 
 Route::get('/pariwisata', [PariwisataController::class, 'index']);
-Route::get('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
+Route::post('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
 Route::get('/pariwisata/{id}', [PariwisataController::class, 'show']);
 
 Route::post('/kritiksaran', [KritikDanSaranController::class, 'create']);
@@ -53,7 +52,10 @@ Route::post('/kritiksaran', [KritikDanSaranController::class, 'create']);
 Route::get('/cover-menu', [CoverMenuController::class, 'index']);
 
 Route::get('/splashscreen', [SplashScreenController::class, 'index']);
+
 Route::get('/transaksi/success', [TransaksiController::class, 'success']);
+Route::post('/transaksi/callback', [TransaksiController::class, 'update']);
+
 
 
 

@@ -145,22 +145,15 @@ class TransaksiController extends Controller
                 default => 'unknown',
             };
 
-            $transaction = Transaksi::where('transaction_code', $transactionCode)->first();
+            $transaction = Transaksi::where('order_id', $transactionCode)->first();
 
             if (!$transaction) {
                 return response()->json(['message' => 'Transaction not found'], 404);
             }
 
-            if ($transaction->status !== 'success') {
-                $transaction->status = $status;
-                $transaction->save();
-
-                if ($status === 'success') {
-                    $user = $transaction->user;
-                    $user->balance += $transaction->amount;
-                    $user->save();
-                }
-            }
+            $transaction->update([
+                'status' => $status,
+            ]);
 
             DB::commit();
             return response()->json(['message' => 'Callback processed'], 200);
