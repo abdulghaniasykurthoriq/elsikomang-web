@@ -26,9 +26,6 @@ class AuthController extends Controller
             'message' => 'Berhasil Mendaftar, Silahkan Login',
             'user' => $user
         ]);
-        // $token = auth('api')->login($user);
-        // return $this->respondWithToken($token);
-
     }
 
     public function update(UserProfileUpdateRequest $request)
@@ -126,11 +123,10 @@ class AuthController extends Controller
 
     protected function respondWithToken($token)
     {
-        $hari = 24;
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60
+            'expires_in' => auth('api')->factory()->getTTL()
         ]);
     }
 }

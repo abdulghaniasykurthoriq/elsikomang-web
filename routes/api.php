@@ -7,6 +7,7 @@ use App\Http\Controllers\API\KritikDanSaranController;
 use App\Http\Controllers\API\PariwisataController;
 use App\Http\Controllers\API\ProdukController;
 use App\Http\Controllers\API\SplashScreenController;
+use App\Http\Controllers\API\TransaksiController;
 use App\Http\Controllers\API\WishlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,9 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle']);
+
+    Route::post('/transaksi', [TransaksiController::class, 'store']);
+    Route::post('/transaksi/callback', [TransaksiController::class, 'update']);
 });
 
 Route::get('/produk', [ProdukController::class, 'index']);
@@ -49,6 +53,9 @@ Route::post('/kritiksaran', [KritikDanSaranController::class, 'create']);
 Route::get('/cover-menu', [CoverMenuController::class, 'index']);
 
 Route::get('/splashscreen', [SplashScreenController::class, 'index']);
+Route::get('/transaksi/success', [TransaksiController::class, 'success']);
+
+
 
 
 
