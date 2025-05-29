@@ -1,13 +1,15 @@
-@extends('layouts.app')
-
-@section('title', 'Data Operator Event')
-
+@extends('layouts.app2')
+@section('title', 'Data Event')
 @section('content')
+
+@php
+    $jenis = request()->route('jenis');
+@endphp
 
 <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
     <h1 class="text-xl text-white">Data Operator Event</h1>
 
-    <a href="{{ route('operator_event.create') }}" class="btn btn-success">+ Tambah Event</a>
+    <a href="{{ route('event.create', ['jenis' => $jenis]) }}" class="btn btn-success">+ Tambah Event</a>
 </div>
 
 <div class="m-2 p-6 -mt-24 relative z-10">
@@ -33,7 +35,7 @@
                             <td class="px-6 py-4">{{ $index + 1 }}</td>
                             <td class="px-6 py-4">{{ $event->nama_event }}</td>
                             <td class="px-6 py-4">{!! Str::limit(strip_tags($event->deskripsi), 100) !!}</td>
-                            <td>
+                            <td class="px-6 py-4">
                                 @if($event->foto_event)
                                     <img src="{{ asset('storage/' . $event->foto_event) }}" alt="Foto event" width="100">
                                 @else
@@ -41,10 +43,10 @@
                                 @endif
                             </td>          
                             <td class="px-6 py-4 flex gap-2">
-                                <a href="{{ route('operator_event.edit', $event->id) }}" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
+                                <a href="{{ route('event.edit', ['jenis' => $jenis, 'event' => $event->id]) }}" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
                                     <i data-feather="edit" class="w-4 h-4"></i>
                                 </a>
-                                <form action="{{ route('operator_event.destroy', $event->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus event ini?')">
+                                <form action="{{ route('event.destroy', ['jenis' => $jenis, 'event' => $event->id]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus event ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm bg-red-500 text-white hover:bg-red-600">

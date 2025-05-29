@@ -1,11 +1,15 @@
-@extends('layouts.app')
+@extends('layouts.app2')
 
 @section('title', 'Edit Event Operator')
 
 @section('content')
+@php
+    $jenis = request()->route('jenis');
+@endphp
+
 <div class="bg-indigo-600 px-8 pt-10 pb-28 flex justify-between items-center">
     <h1 class="text-xl text-white">Edit Event Operator</h1>
-    <a href="{{ route('operator_event.index') }}" class="btn bg-white text-gray-800">Kembali</a>
+    <a href="{{ route('event.index', ['jenis' => $jenis]) }}" class="btn bg-white text-gray-800">Kembali</a>
 </div>
 
 <div class="m-2 px-6 -mt-24">
@@ -23,7 +27,7 @@
         @endif
 
         {{-- Form Edit --}}
-        <form action="{{ route('operator_event.update', $event->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('event.update', ['jenis' => $jenis, 'event' => $event->id]) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 

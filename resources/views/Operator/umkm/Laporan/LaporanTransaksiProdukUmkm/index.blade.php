@@ -136,21 +136,22 @@ new Chart(ctx, {
     options: {
         responsive: true,
         scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    callback: v => v.toLocaleString('id-ID')
-                }
+    y: {
+        beginAtZero: true,
+        title: {
+            display: true,
+            text: 'Jumlah Transaksi',
+            color: '#374151',
+            font: {
+                size: 14,
+                weight: 'bold'
             }
         },
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    label: ctx => ctx.parsed.y.toLocaleString('id-ID')
-                }
-            },
-            legend: { position: 'top' }
-        }
+        ticks: {
+            stepSize: 10, // bisa kamu ubah sesuai data
+            callback: function(value) {
+                return value.toLocaleString('id-ID') + ' transaksi';
+            }
     }
 });
 </script>

@@ -18,8 +18,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\OperatorMiddleware;
 use App\Http\Controllers\Admin\IklanController;
-
-
+use App\Http\Controllers\Admin\Operator\LaporanKlasterProdukController;
 
 // Halaman login
 Route::get('/', function () {
@@ -49,17 +48,13 @@ Route::middleware(['auth',AdminMiddleware::class])->group(function () {
     // CRUD Operator (dibuat oleh Admin)
     Route::resource('/operator', OperatorController::class)->except(['show']);
 
-    // Member & Produk UMKM
-    Route::resource('/member_umkm', MemberUmkmController::class)->except(['show']);
-    Route::resource('/produk_umkm', ProdukUmkmController::class)->except(['show']);
-    Route::resource('/operator_event', OperatorEventController::class)->except(['show']);
+
 
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-Route::get('produk_umkm/klasterisasi', [ProdukUmkmController::class, 'klasterisasiProduk'])->name('produk_umkm.klaster');
 
 
 
@@ -77,7 +72,12 @@ Route::middleware(['auth',OperatorMiddleware::class])->group(function () {
     Route::prefix('{jenis}')->group(function () {
         Route::resource('/data', DataPariwisataController::class)->names('operator.pariwisata.data');
         Route::resource('/laporan', LaporanPariwisataController::class)->names('operator.pariwisata.laporan');
+        Route::resource('/produk_umkm', ProdukUmkmController::class)->except(['show']);
+        Route::resource('/member_umkm', MemberUmkmController::class)->except(['show']);
+        Route::resource('/event', OperatorEventController::class)->except(['show']);
         
+        Route::get('/klasterisasi_umkm', [LaporanKlasterProdukController::class, 'index'])->name('klasterisasi-produk.index');
+
     });
 });
 

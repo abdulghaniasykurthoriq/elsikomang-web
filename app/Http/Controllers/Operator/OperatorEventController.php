@@ -12,25 +12,25 @@ use Illuminate\Support\Facades\Storage;
 class OperatorEventController extends Controller
 {
     // Menampilkan daftar event
-    public function index()
+    public function index($jenis)
     {
         $operator_events = OperatorEvent::latest()->get();
-        return view('Operator.OperatorEvent.index', compact('operator_events'));
+        return view('Operator.event.index', compact('operator_events', 'jenis'));
     }
 
     // Form tambah event
-    public function create()
+    public function create($jenis)
     {
-        return view('Operator.OperatorEvent.create');
+        return view('Operator.event.create', compact('jenis'));
     }
 
     // Simpan event baru
-    public function store(Request $request)
+    public function store(Request $request, $jenis)
     {
         $request->validate([
-            'nama_event' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
-            'foto_event' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'nama_event'   => 'required|string|max:255',
+            'deskripsi'    => 'nullable|string',
+            'foto_event'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         DB::beginTransaction();
@@ -46,7 +46,7 @@ class OperatorEventController extends Controller
             OperatorEvent::create($data);
             DB::commit();
 
-            return redirect()->route('operator_event.index')->with('success', 'Event berhasil ditambahkan.');
+            return redirect()->route('event.index', ['jenis' => $jenis])->with('success', 'Event berhasil ditambahkan.');
         } catch (\Throwable $e) {
             DB::rollBack();
             return back()->withErrors('Gagal menyimpan event: ' . $e->getMessage())->withInput();
@@ -54,19 +54,19 @@ class OperatorEventController extends Controller
     }
 
     // Form edit event
-    public function edit($id)
+    public function edit($jenis, $id)
     {
         $event = OperatorEvent::findOrFail($id);
-        return view('Operator.OperatorEvent.edit', compact('event'));
+        return view('Operator.event.edit', compact('event', 'jenis'));
     }
 
     // Update event
-    public function update(Request $request, $id)
+    public function update(Request $request, $jenis, $id)
     {
         $request->validate([
-            'nama_event' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
-            'foto_event' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'nama_event'   => 'required|string|max:255',
+            'deskripsi'    => 'nullable|string',
+            'foto_event'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         DB::beginTransaction();
@@ -77,18 +77,16 @@ class OperatorEventController extends Controller
             $data['updated_by'] = Auth::check() ? Auth::user()->name : 'System';
 
             if ($request->hasFile('foto_event')) {
-                // Hapus foto lama jika ada
                 if ($event->foto_event && Storage::disk('public')->exists($event->foto_event)) {
                     Storage::disk('public')->delete($event->foto_event);
                 }
-
                 $data['foto_event'] = $request->file('foto_event')->store('foto_event', 'public');
             }
 
             $event->update($data);
             DB::commit();
 
-            return redirect()->route('operator_event.index')->with('success', 'Event berhasil diperbarui.');
+            return redirect()->route('event.index', ['jenis' => $jenis])->with('success', 'Event berhasil diperbarui.');
         } catch (\Throwable $e) {
             DB::rollBack();
             return back()->withErrors('Gagal memperbarui event: ' . $e->getMessage())->withInput();
@@ -96,16 +94,17 @@ class OperatorEventController extends Controller
     }
 
     // Hapus event
-    public function destroy($id)
+    public function destroy($jenis, $id)
     {
         $event = OperatorEvent::findOrFail($id);
 
-        // Hapus file foto jika ada
         if ($event->foto_event && Storage::disk('public')->exists($event->foto_event)) {
             Storage::disk('public')->delete($event->foto_event);
         }
 
         $event->delete();
-        return redirect()->route('operator_event.index')->with('success', 'Event berhasil dihapus.');
+
+        // return redirect()->route($jenis . 'event.index')
+        return redirect()->route('event.index', ['jenis' => $jenis])->with('success', 'Event berhasil dihapus.');
     }
 }
