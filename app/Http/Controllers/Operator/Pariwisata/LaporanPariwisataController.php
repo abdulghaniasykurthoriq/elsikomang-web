@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Operator;
+namespace App\Http\Controllers\Operator\Pariwisata;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,7 +8,6 @@ use App\Models\LaporanPariwisata;
 
 class LaporanPariwisataController extends Controller
 {
-
     public function index($jenis)
     {
         $laporanPariwisatas = LaporanPariwisata::all();
@@ -30,7 +29,8 @@ class LaporanPariwisataController extends Controller
         ]);
 
         LaporanPariwisata::create($request->all());
-        return redirect()->route('operator.pariwisata.laporan.index', ['jenis' => $jenis])
+        return redirect()
+            ->route('operator.pariwisata.laporan.index', ['jenis' => $jenis])
             ->with('success', 'Laporan berhasil ditambahkan.');
     }
 
@@ -52,14 +52,16 @@ class LaporanPariwisataController extends Controller
         $laporan = LaporanPariwisata::findOrFail($id);
         $laporan->update($request->all());
 
-        return redirect()->route('operator.pariwisata.laporan.index', ['jenis' => $jenis])
+        return redirect()
+            ->route('operator.pariwisata.laporan.index', ['jenis' => $jenis])
             ->with('success', 'Laporan berhasil diperbarui.');
     }
 
     public function destroy($jenis, $id)
     {
         LaporanPariwisata::destroy($id);
-        return redirect()->route('operator.pariwisata.laporan.index', ['jenis' => $jenis])
+        return redirect()
+            ->route('operator.pariwisata.laporan.index', ['jenis' => $jenis])
             ->with('success', 'Laporan berhasil dihapus.');
     }
 }

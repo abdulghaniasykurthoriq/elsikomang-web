@@ -1,21 +1,26 @@
 <?php
 
 
+use App\Http\Controllers\Admin\Operator\LaporanTransaksiProdukController;
 use App\Http\Controllers\Admin\Operator\MemberUmkmController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Operator\DashboardController as OperatorDashboardController;
 use App\Http\Controllers\Admin\Operator\OperatorController;
 use App\Http\Controllers\Admin\Operator\ProdukUmkmController;
+use App\Http\Controllers\Operator\Pariwisata\PariwisataController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CoverMenuController;
 use App\Http\Controllers\Operator\OperatorEventController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\operator\DataPariwisataController;
-use App\Http\Controllers\operator\LaporanPariwisataController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Operator\Pariwisata\LaporanPariwisataController;
+use App\Http\Controllers\Operator\Pariwisata\RekomendasiWisataController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\OperatorMiddleware;
+
+
 use App\Http\Controllers\Admin\IklanController;
 use App\Http\Controllers\Admin\LaporanTransaksiUmkmController;
 use App\Http\Controllers\Admin\SplashScreenController;
@@ -30,7 +35,7 @@ Route::get('auth/google/callback', [AuthenticatedSessionController::class, 'hand
 // ===========================
 // ADMIN ROUTE
 // ===========================
-Route::middleware(['auth',AdminMiddleware::class])->group(function () {
+Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Cover Menu
@@ -42,9 +47,11 @@ Route::middleware(['auth',AdminMiddleware::class])->group(function () {
     Route::get('/laporan-transaksi-produk-umkm', [LaporanTransaksiUmkmController::class, 'index'])->name('transaksi-produk-umkm.index');
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+
     Route::get('/users/data', [UserController::class, 'data'])->name('users.data');;
 
     Route::resource('/splashscreen', SplashScreenController::class)->except(['show','create','store','destroy']);
+
 
 
 
@@ -55,12 +62,9 @@ Route::middleware(['auth',AdminMiddleware::class])->group(function () {
     // Member & Produk UMKM
     Route::resource('/member_umkm', MemberUmkmController::class)->except(['show']);
     Route::resource('/produk_umkm', ProdukUmkmController::class)->except(['show']);
+
+
     Route::resource('/operator_event', OperatorEventController::class)->except(['show']);
-
-
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 Route::get('produk_umkm/klasterisasi', [ProdukUmkmController::class, 'klasterisasiProduk'])->name('produk_umkm.klaster');
 
@@ -70,17 +74,24 @@ Route::get('produk_umkm/klasterisasi', [ProdukUmkmController::class, 'klasterisa
     Route::get('/iklan/{slug}/create', [IklanController::class, 'create'])->name('iklan.create');
     Route::post('/iklan/{slug}/store', [IklanController::class, 'store'])->name('iklan.store');
 
+
 });
 
 // ===========================
 // OPERATOR ROUTE
 // ===========================
-Route::middleware(['auth',OperatorMiddleware::class])->group(function () {
+Route::middleware(['auth', OperatorMiddleware::class])->group(function () {
     Route::get('/{jenis}/dashboard', [OperatorDashboardController::class, 'index'])->name('operator.dashboard');
+
     Route::prefix('{jenis}')->group(function () {
-        Route::resource('/data', DataPariwisataController::class)->names('operator.pariwisata.data');
-        Route::resource('/laporan', LaporanPariwisataController::class)->names('operator.pariwisata.laporan');
-        
+        Route::resource('/pariwisata', PariwisataController::class)
+            ->names('operator.pariwisata.data')
+            ->parameters(['pariwisata' => 'id']);
+
+        Route::resource('/laporan', LaporanPariwisataController::class)
+            ->names('operator.pariwisata.laporan');
+
+        Route::get('/rekomendasi', [RekomendasiWisataController::class, 'index'])->name('operator.pariwisata.rekomendasi');
     });
 });
 
