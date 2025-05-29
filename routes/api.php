@@ -41,6 +41,7 @@ Route::get('/produk', [ProdukController::class, 'index']);
 Route::get('/produk/{id}', [ProdukController::class, 'show']);
 
 Route::get('/pariwisata', [PariwisataController::class, 'index']);
+Route::get('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
 Route::get('/pariwisata/{id}', [PariwisataController::class, 'show']);
 
 Route::post('/kritiksaran', [KritikDanSaranController::class, 'create']);
