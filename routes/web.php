@@ -60,9 +60,12 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
 
 
 
-    Route::get('/iklan/{slug}', [IklanController::class, 'index'])->name('iklan.index');
-    Route::get('/iklan/{slug}/create', [IklanController::class, 'create'])->name('iklan.create');
-    Route::post('/iklan/{slug}/store', [IklanController::class, 'store'])->name('iklan.store');
+    Route::prefix('iklan/{slug}')->name('iklan.')->group(function () {
+        Route::get('/', [IklanController::class, 'index'])->name('index');
+        Route::get('/create', [IklanController::class, 'create'])->name('create');
+        Route::post('/store', [IklanController::class, 'store'])->name('store');
+    });
+    
 
 
 });
