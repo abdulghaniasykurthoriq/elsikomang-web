@@ -58,11 +58,6 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::resource('/operator', OperatorController::class)->except(['show']);
 
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-
 
 
     Route::get('/iklan/{slug}', [IklanController::class, 'index'])->name('iklan.index');
