@@ -57,16 +57,6 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     // CRUD Operator (dibuat oleh Admin)
     Route::resource('/operator', OperatorController::class)->except(['show']);
 
-    // Member & Produk UMKM
-    Route::resource('/member_umkm', MemberUmkmController::class)->except(['show']);
-    Route::resource('/produk_umkm', ProdukUmkmController::class)->except(['show']);
-
-
-    Route::resource('/operator_event', OperatorEventController::class)->except(['show']);
-
-    Route::get('produk_umkm/klasterisasi', [ProdukUmkmController::class, 'klasterisasiProduk'])->name('produk_umkm.klaster');
-
-
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
