@@ -15,12 +15,12 @@ class MemberUmkmController extends Controller
     public function index(Request $request)
     {
             $member_umkm = MemberUmkm::all();
-        return view('Operator.MemberUmkm.index', compact('member_umkm'));
+        return view('Operator.umkm.MemberUmkm.index', compact('member_umkm'));
     }
 
     public function create()
     {
-        return view('Operator.MemberUmkm.create');
+        return view('Operator.umkm.MemberUmkm.create');
     }
     
     public function store(Request $request)
@@ -54,7 +54,7 @@ class MemberUmkmController extends Controller
     public function edit($id)
     {
         $memberUmkm = MemberUmkm::findOrFail($id);
-        return view('Operator.MemberUmkm.edit', compact('memberUmkm'));
+        return view('Operator.umkm.MemberUmkm.edit', compact('memberUmkm'));
     }
 
     public function update(Request $request, $id)

@@ -64,7 +64,7 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
 
     Route::resource('/operator_event', OperatorEventController::class)->except(['show']);
 
-Route::get('produk_umkm/klasterisasi', [ProdukUmkmController::class, 'klasterisasiProduk'])->name('produk_umkm.klaster');
+    Route::get('produk_umkm/klasterisasi', [ProdukUmkmController::class, 'klasterisasiProduk'])->name('produk_umkm.klaster');
 
 
 
