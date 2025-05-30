@@ -7,6 +7,7 @@ use App\Models\TransaksiDetail;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Arr;
 
 class TransaksiDumySeeder extends Seeder
 {
@@ -23,7 +24,9 @@ class TransaksiDumySeeder extends Seeder
                 'transaksi_id' => 1,
                 'produk_variant_id' => 1,
                 'qty' => rand(1, 10),
-                'harga' => rand(1000, 5000),
+                // 'harga' => rand(1000,50000,60000,500000,600000, 20000000),
+                'harga' => Arr::random([1000, 50000, 60000, 500000, 600000, 20000000]),
+
                 'created_at' => Carbon::create(2025, $m, rand(1, 28)),
             ]);
         }

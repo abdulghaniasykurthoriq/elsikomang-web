@@ -16,15 +16,15 @@ class ProdukUmkmController extends Controller
 {
     public function index()
     {
-        $produk_umkm = ProdukUmkm::with('member', 'images','produk_variant')->get();
-        return view('Operator.ProdukUmkm.index', compact('produk_umkm'));
+        $produk_umkm = ProdukUmkm::with('member', 'images', 'produk_variant')->get();
+        return view('Operator.umkm.ProdukUmkm.index', compact('produk_umkm'));
     }
 
     public function create()
     {
         $member_umkms = MemberUmkm::all();
         $kategori_produk = KategoriProduk::all();
-        return view('Operator.ProdukUmkm.create', compact('member_umkms', 'kategori_produk'));
+        return view('Operator.umkm.ProdukUmkm.create', compact('member_umkms', 'kategori_produk'));
     }
 
     public function store(Request $request)
@@ -71,22 +71,24 @@ class ProdukUmkmController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('produk_umkm.index')->with('success', 'Produk UMKM berhasil ditambahkan.');
+            $jenis = $request->route('jenis');
+            return redirect()->route('produk_umkm.index', ['jenis' => $jenis])
+                ->with('success', 'Produk UMKM berhasil ditambahkan.');
         } catch (\Throwable $th) {
             DB::rollBack();
             return back()->withErrors('Gagal menambahkan produk: ' . $th->getMessage())->withInput();
         }
     }
 
-    public function edit($id)
+    public function edit($jenis, $id)
     {
         $produk_umkm = ProdukUmkm::with('images', 'produk_variant')->findOrFail($id);
         $member_umkms = MemberUmkm::all();
         $kategori_produk = KategoriProduk::all();
-        return view('Operator.ProdukUmkm.edit', compact('produk_umkm', 'member_umkms', 'kategori_produk'));
+        return view('Operator.umkm.ProdukUmkm.edit', compact('produk_umkm', 'member_umkms', 'kategori_produk'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $jenis, $id)
     {
         $produk_umkm = ProdukUmkm::findOrFail($id);
 
@@ -105,23 +107,17 @@ class ProdukUmkmController extends Controller
             $data['updated_by'] = Auth::id() ?? 'System';
 
             $produk_umkm->update($data);
+
             if ($request->filled('hapus_galeri')) {
                 $galeriIds = $request->input('hapus_galeri');
-                
-                // Ambil data galeri yang dipilih hapus
                 $galeriUntukHapus = $produk_umkm->images()->whereIn('id', $galeriIds)->get();
-            
+
                 foreach ($galeriUntukHapus as $item) {
-                    // Hapus file dari storage
                     Storage::disk('public')->delete($item->file_path);
-            
-                    // Hapus data dari database
                     $item->delete();
                 }
             }
-            
 
-            // Upload file galeri baru
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
                     $path = $file->store('produk_image', 'public');
@@ -135,7 +131,6 @@ class ProdukUmkmController extends Controller
                 }
             }
 
-            // Update varian
             if ($request->has('produk_variant')) {
                 $produk_umkm->produk_variant()->delete();
                 foreach ($request->produk_variant as $dataVarian) {
@@ -148,22 +143,21 @@ class ProdukUmkmController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('produk_umkm.index')->with('success', 'Produk UMKM berhasil diperbarui.');
+            return redirect()->route('produk_umkm.index', ['jenis' => $jenis])
+                ->with('success', 'Produk UMKM berhasil diperbarui.');
         } catch (\Throwable $th) {
             DB::rollBack();
             return back()->withErrors('Gagal memperbarui produk: ' . $th->getMessage())->withInput();
         }
     }
 
-    public function destroy($id)
+    public function destroy($jenis, $id)
     {
         DB::beginTransaction();
 
         try {
             $produk_umkm = ProdukUmkm::findOrFail($id);
 
-
-            // Hapus galeri
             foreach ($produk_umkm->images as $image) {
                 if (Storage::disk('public')->exists($image->file_path)) {
                     Storage::disk('public')->delete($image->file_path);
@@ -171,13 +165,12 @@ class ProdukUmkmController extends Controller
                 $image->delete();
             }
 
-            // Hapus varian
             $produk_umkm->produk_variant()->delete();
-
             $produk_umkm->delete();
 
             DB::commit();
-            return redirect()->route('produk_umkm.index')->with('success', 'Produk UMKM berhasil dihapus.');
+            return redirect()->route('produk_umkm.index', ['jenis' => $jenis])
+                ->with('success', 'Produk UMKM berhasil dihapus.');
         } catch (\Throwable $th) {
             DB::rollBack();
             return back()->withErrors('Gagal menghapus produk: ' . $th->getMessage());

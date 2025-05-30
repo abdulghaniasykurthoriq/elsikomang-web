@@ -1,7 +1,5 @@
 <?php
 
-
-use App\Http\Controllers\Admin\Operator\LaporanTransaksiProdukController;
 use App\Http\Controllers\Admin\Operator\MemberUmkmController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Operator\DashboardController as OperatorDashboardController;
@@ -12,7 +10,6 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CoverMenuController;
 use App\Http\Controllers\Operator\OperatorEventController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\operator\DataPariwisataController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Operator\Pariwisata\LaporanPariwisataController;
 use App\Http\Controllers\Operator\Pariwisata\RekomendasiWisataController;
@@ -24,6 +21,7 @@ use App\Http\Middleware\OperatorMiddleware;
 use App\Http\Controllers\Admin\IklanController;
 use App\Http\Controllers\Admin\LaporanTransaksiUmkmController;
 use App\Http\Controllers\Admin\SplashScreenController;
+use App\Http\Controllers\Admin\Operator\LaporanKlasterProdukController;
 
 // Halaman login
 Route::get('/', function () {
@@ -70,6 +68,13 @@ Route::get('produk_umkm/klasterisasi', [ProdukUmkmController::class, 'klasterisa
 
 
 
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+
+
     Route::get('/iklan/{slug}', [IklanController::class, 'index'])->name('iklan.index');
     Route::get('/iklan/{slug}/create', [IklanController::class, 'create'])->name('iklan.create');
     Route::post('/iklan/{slug}/store', [IklanController::class, 'store'])->name('iklan.store');
@@ -92,6 +97,14 @@ Route::middleware(['auth', OperatorMiddleware::class])->group(function () {
             ->names('operator.pariwisata.laporan');
 
         Route::get('/rekomendasi', [RekomendasiWisataController::class, 'index'])->name('operator.pariwisata.rekomendasi');
+        
+
+        Route::resource('/produk_umkm', ProdukUmkmController::class)->except(['show']);
+        Route::resource('/member_umkm', MemberUmkmController::class)->except(['show']);
+        Route::resource('/event', OperatorEventController::class)->except(['show']);
+        
+        Route::get('/klasterisasi_umkm', [LaporanKlasterProdukController::class, 'index'])->name('klasterisasi-produk.index');
+
     });
 });
 

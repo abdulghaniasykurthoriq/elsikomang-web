@@ -1,11 +1,15 @@
-@extends('layouts.app')
+@extends('layouts.app2')
 
 @section('title', 'Tambah Event Operator')
 
 @section('content')
+@php
+    $jenis = request()->route('jenis');
+@endphp
+
 <div class="bg-indigo-600 px-8 pt-10 pb-28 flex justify-between items-center">
     <h1 class="text-xl text-white">Tambah Event Operator</h1>
-    <a href="{{ route('operator_event.index') }}" class="btn bg-white text-gray-800">Kembali</a>
+    <a href="{{ route('event.index', ['jenis' => $jenis]) }}" class="btn bg-white text-gray-800">Kembali</a>
 </div>
 
 <div class="m-2 px-6 -mt-24">
@@ -23,7 +27,7 @@
         @endif
 
         {{-- Form tambah event --}}
-        <form action="{{ route('operator_event.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('event.store', ['jenis' => $jenis]) }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="mb-4">
@@ -38,7 +42,7 @@
 
             <div class="mb-6">
                 <label class="block mb-1 text-sm font-medium text-gray-700">Foto Event</label>
-                <input type="file" name="foto_event" class="w-full input input-bordered">
+                <input type="file" name="foto_event" class="w-full input input-bordered" accept=".jpg,.jpeg,.png">
                 <p class="text-xs text-gray-500 mt-1">Format: JPG, JPEG, PNG. Max 2MB.</p>
             </div>
 

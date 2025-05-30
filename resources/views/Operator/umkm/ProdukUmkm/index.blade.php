@@ -1,13 +1,12 @@
-@extends('layouts.app')
-
+@extends('layouts.app2')
 @section('title', 'Data Produk UMKM')
-
 @section('content')
 
 <div class=" bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
     <h1 class="text-xl text-white">Data Produk UMKM</h1>
 
-    <a href="{{ route('produk_umkm.create') }}" class="btn btn-success">+ Tambah Produk UMKM</a>
+    {{-- ✅ Tambahkan parameter "jenis" agar route tidak error --}}
+    <a href="{{ route('produk_umkm.create', ['jenis' => request()->route('jenis')]) }}" class="btn btn-success">+ Tambah Produk UMKM</a>
 </div>
 
 <div class="mx-2 px-6 -mt-24 relative z-10">
@@ -36,7 +35,7 @@
                             <td class="px-6 py-4">{{ $index + 1 }}</td>
                             <td class="px-6 py-4">{{ $item->member->nama_toko ?? 'Toko tidak ditemukan' }}</td>
                             <td class="px-6 py-4">{{ $item->nama_produk }}</td>
-                            <td class="px-6 py-4">{{ $item->kategori->name??'' }}</td>
+                            <td class="px-6 py-4">{{ $item->kategori->name ?? '' }}</td>
                             <td class="px-6 py-4">{{ $item->deskripsi }}</td>
                             <td class="px-6 py-4">
                                 @forelse($item->produk_variant as $variant)
@@ -47,8 +46,6 @@
                                     <span class="text-gray-400">-</span>
                                 @endforelse
                             </td>
-                            
-                            
 
                             {{-- Galeri --}}
                             <td class="px-6 py-4 flex flex-wrap gap-2">
@@ -63,15 +60,14 @@
                                     <span class="text-gray-400">-</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4">{{ ""}}</td>
-
+                            <td class="px-6 py-4">{{ "" }}</td>
 
                             {{-- Aksi --}}
                             <td class="px-6 py-4 flex gap-2">
-                                <a href="{{ route('produk_umkm.edit', $item->id) }}" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
+                                <a href="{{ route('produk_umkm.edit', ['jenis' => request()->route('jenis'), 'produk_umkm' => $item->id]) }}" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
                                     <i data-feather="edit" class="w-4 h-4"></i>
                                 </a>
-                                <form action="{{ route('produk_umkm.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus member ini?')">
+                                <form action="{{ route('produk_umkm.destroy', ['jenis' => request()->route('jenis'), 'produk_umkm' => $item->id]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm bg-red-500 text-white hover:bg-red-600">
