@@ -29,6 +29,8 @@ return new class extends Migration
             $table->foreign('jenis_operator_id')->references('id')->on('jenis_operators')->onDelete('set null');
 
             $table->rememberToken();
+            $table->string('refresh_token')->nullable();
+            $table->timestamp('refresh_token_expires_at')->nullable();
             $table->timestamps();
         });
 

@@ -92,7 +92,7 @@ Route::middleware(['auth', OperatorMiddleware::class])->group(function () {
         Route::resource('/event', OperatorEventController::class)->except(['show']);
         
         Route::get('/klasterisasi_umkm', [LaporanKlasterProdukController::class, 'index'])->name('klasterisasi-produk.index');
-
+    
     });
 });
 

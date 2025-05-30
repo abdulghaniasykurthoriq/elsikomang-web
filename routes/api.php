@@ -20,10 +20,11 @@ Route::group(['prefix' => 'auth'], function ($router) {
     Route::get('google', [SocialAuthController::class, 'redirectToGoogle']);
     Route::get('google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
 });
+Route::post('refresh', [AuthController::class, 'refresh']);
 
 Route::middleware(['auth:api'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
+    // Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
 
     Route::post('auth/update', [AuthController::class, 'update']);

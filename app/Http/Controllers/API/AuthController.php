@@ -9,6 +9,7 @@ use App\Http\Requests\UserRegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -81,27 +82,58 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Password updated successfully.']);
     }
-    public function login()
+    // public function login()
+    // {
+    //     $credentials = request(['email', 'password']);
+
+    //     if (!$token = auth('api')->attempt($credentials)) {
+    //         return response()->json(['error' => 'Unauthorized'], 401);
+    //     }
+    //     $user = auth('api')->user();
+    //     if (!$user) {
+    //         return response()->json(['message' => 'User not authenticated'], 401);
+    //     }
+
+    //     if($user->role !== 'User'){
+
+    //         return response()->json([
+    //             'error' => 'Unauthorized',
+    //             'message' => 'Hanya user yang bisa login'
+    //         ], 401);
+    //     }
+
+    //     return $this->respondWithToken($token);
+    // }
+
+    public function login(Request $request)
     {
-        $credentials = request(['email', 'password']);
+        $credentials = $request->only(['email', 'password']);
 
         if (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
         $user = auth('api')->user();
-        if (!$user) {
-            return response()->json(['message' => 'User not authenticated'], 401);
+
+        if (!$user || $user->role !== 'User') {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        if($user->role !== 'User'){
+        // Buat dan simpan refresh token
+        $refreshToken = Str::random(60);
+        $user->refresh_token = hash('sha256', $refreshToken);
+        $user->refresh_token_expires_at = now()->addDays(30); 
+        $user->save();
 
-            return response()->json([
-                'error' => 'Unauthorized',
-                'message' => 'Hanya user yang bisa login'
-            ], 401);
-        }
+        // expires dalam menit ya 
 
-        return $this->respondWithToken($token);
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL(),
+            'refresh_token' => $refreshToken,
+            'refresh_token_expires_at' => now()->addDays(30)->toDateTimeString()
+        ]);
     }
 
     public function me()
@@ -111,14 +143,44 @@ class AuthController extends Controller
 
     public function logout()
     {
-        auth()->logout();
+        $user = auth('api')->user();
+
+        if ($user) {
+            // Clear refresh token saat logout
+            $user->refresh_token = null;
+            $user->refresh_token_expires_at = null;
+            $user->save();
+        }
+
+        auth('api')->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
     }
 
-    public function refresh()
+    public function refresh(Request $request)
     {
-        return $this->respondWithToken(auth('api')->refresh());
+        $refreshToken = $request->refresh_token;
+
+        if (!$refreshToken) {
+            return response()->json(['error' => 'Refresh token is required'], 400);
+        }
+
+        $user = User::where('refresh_token', hash('sha256', $refreshToken))
+            ->where('refresh_token_expires_at', '>', now())
+            ->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'Invalid or expired refresh token'], 401);
+        }
+
+        // Login ulang untuk dapatkan access token baru
+        $newAccessToken = auth('api')->login($user);
+
+        return response()->json([
+            'access_token' => $newAccessToken,
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL()
+        ]);
     }
 
     protected function respondWithToken($token)
