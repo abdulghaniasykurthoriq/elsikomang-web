@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CoverMenuController;
+use App\Http\Controllers\API\EntertaintmentController;
 use App\Http\Controllers\API\EventController;
+use App\Http\Controllers\API\InvestasiController;
 use App\Http\Controllers\API\KeranjangController;
 use App\Http\Controllers\API\KritikDanSaranController;
 use App\Http\Controllers\API\PariwisataController;
@@ -53,6 +55,8 @@ Route::get('/pariwisata', [PariwisataController::class, 'index']);
 Route::get('/pariwisata/{id}', [PariwisataController::class, 'show']);
 
 Route::get('/events', [EventController::class, 'index']);
+Route::get('/entertaintments', [EntertaintmentController::class, 'index']);
+Route::get('/investasi', [InvestasiController::class, 'index']);
 
 
 Route::post('/kritiksaran', [KritikDanSaranController::class, 'create']);
