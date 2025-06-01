@@ -11,6 +11,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.19",
         "laravel/tinker": "^2.10.1",
+        "midtrans/midtrans-php": "^2.6",
         "php-ai/php-ml": "^0.10.0",
         "tymon/jwt-auth": "^2.2",
         "yajra/laravel-datatables": "12.0",
