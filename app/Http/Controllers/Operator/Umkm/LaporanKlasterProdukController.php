@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Operator;
+namespace App\Http\Controllers\Operator\Umkm;
+
 
 use App\Http\Controllers\Controller;
 use App\Models\ProdukUmkm;

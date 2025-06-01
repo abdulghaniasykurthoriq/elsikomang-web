@@ -22,6 +22,12 @@ use App\Http\Controllers\Admin\IklanController;
 use App\Http\Controllers\Admin\LaporanTransaksiUmkmController;
 use App\Http\Controllers\Admin\SplashScreenController;
 use App\Http\Controllers\Admin\Operator\LaporanKlasterProdukController;
+use App\Http\Controllers\Operator\Entertaiment\EntertaimentController;
+use App\Http\Controllers\Operator\Event\OperatorEventController as EventOperatorEventController;
+use App\Http\Controllers\Operator\Investasi\InvestasiController;
+use App\Http\Controllers\Operator\Umkm\LaporanKlasterProdukController as UmkmLaporanKlasterProdukController;
+use App\Http\Controllers\Operator\Umkm\MemberUmkmController as UmkmMemberUmkmController;
+use App\Http\Controllers\Operator\Umkm\ProdukUmkmController as UmkmProdukUmkmController;
 
 // Halaman login
 Route::get('/', function () {
@@ -87,11 +93,13 @@ Route::middleware(['auth', OperatorMiddleware::class])->group(function () {
         Route::get('/rekomendasi', [RekomendasiWisataController::class, 'index'])->name('operator.pariwisata.rekomendasi');
         
 
-        Route::resource('/produk_umkm', ProdukUmkmController::class)->except(['show']);
-        Route::resource('/member_umkm', MemberUmkmController::class)->except(['show']);
-        Route::resource('/event', OperatorEventController::class)->except(['show']);
-        
-        Route::get('/klasterisasi_umkm', [LaporanKlasterProdukController::class, 'index'])->name('klasterisasi-produk.index');
+        Route::resource('/produk_umkm', UmkmProdukUmkmController::class)->except(['show']);
+        Route::resource('/member_umkm', UmkmMemberUmkmController::class)->except(['show']);
+        Route::resource('/event', EventOperatorEventController::class)->except(['show']);
+        Route::resource('/entertaiment', EntertaimentController::class)->except(['show']);
+        Route::resource('/investasi', InvestasiController::class)->except(['show']);
+
+        Route::get('/klasterisasi_umkm', [UmkmLaporanKlasterProdukController::class, 'index'])->name('klasterisasi-produk.index');
 
     });
 });

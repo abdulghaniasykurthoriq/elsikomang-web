@@ -6,10 +6,10 @@
     $jenis = request()->route('jenis');
 @endphp
 
-<div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
-    <h1 class="text-xl text-white">Data Operator Event</h1>
+<div class="bg-indigo-600 px-8 pt-10 pb-28 flex justify-between items-center">
+    <h1 class="text-xl text-white">Data Event</h1>
 
-    <a href="{{ route('event.create', ['jenis' => $jenis]) }}" class="btn btn-success">+ Tambah Event</a>
+    <a href="{{ route('event.create', ['jenis' => $jenis]) }}" class="btn bg-white text-gray-800">+ Tambah Event</a>
 </div>
 
 <div class="m-2 p-6 -mt-24 relative z-10">

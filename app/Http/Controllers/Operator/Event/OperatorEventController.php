@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Operator;
+namespace App\Http\Controllers\Operator\Event;
+
 
 use App\Http\Controllers\Controller;
 use App\Models\OperatorEvent;

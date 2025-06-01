@@ -101,7 +101,7 @@
             <!-- Investasi -->
             @elseif ($user->jenis_operator_id == 3)
                 <li>
-                    <a href="{{ url('investasi/laporan') }}"
+                    <a href="{{ url($pathRole.'/investasi') }}"
                         class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition">
                         <i data-feather="bar-chart" class="w-4 h-4 mr-3"></i>
                         Laporan Investasi
@@ -121,7 +121,7 @@
             <!-- Entertainment -->
             @elseif ($user->jenis_operator_id == 5)
                 <li>
-                    <a href="{{ url('entertainment/data') }}"
+                    <a href="{{ url($pathRole.'/entertaiment') }}"
                         class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition">
                         <i data-feather="film" class="w-4 h-4 mr-3"></i>
                         Data Entertainment
