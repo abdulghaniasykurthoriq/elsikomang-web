@@ -6,7 +6,7 @@
     <h1 class="text-xl text-white">Data Produk UMKM</h1>
 
     {{-- ✅ Tambahkan parameter "jenis" agar route tidak error --}}
-    <a href="{{ route('produk_umkm.create', ['jenis' => request()->route('jenis')]) }}" class="btn bg-white text-gray-800">Tambah Produk UMKM</a>
+    <a href="{{ route('produk_umkm.create') }}" class="btn bg-white text-gray-800">Tambah Produk UMKM</a>
 </div>
 
 <div class="mx-2 px-6 -mt-24 relative z-10">
@@ -64,10 +64,10 @@
 
                             {{-- Aksi --}}
                             <td class="px-6 py-4 flex gap-2">
-                                <a href="{{ route('produk_umkm.edit', ['jenis' => request()->route('jenis'), 'produk_umkm' => $item->id]) }}" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
+                                <a href="{{ route('produk_umkm.edit', ['produk_umkm' => $item->id]) }}" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
                                     <i data-feather="edit" class="w-4 h-4"></i>
                                 </a>
-                                <form action="{{ route('produk_umkm.destroy', ['jenis' => request()->route('jenis'), 'produk_umkm' => $item->id]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
+                                <form action="{{ route('produk_umkm.destroy', ['produk_umkm' => $item->id]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm bg-red-500 text-white hover:bg-red-600">

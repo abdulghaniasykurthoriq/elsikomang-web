@@ -80,7 +80,7 @@ class ProdukUmkmController extends Controller
         }
     }
 
-    public function edit($jenis, $id)
+    public function edit( $id)
     {
         $produk_umkm = ProdukUmkm::with('images', 'produk_variant')->findOrFail($id);
         $member_umkms = MemberUmkm::all();
@@ -88,7 +88,7 @@ class ProdukUmkmController extends Controller
         return view('Operator.umkm.ProdukUmkm.edit', compact('produk_umkm', 'member_umkms', 'kategori_produk'));
     }
 
-    public function update(Request $request, $jenis, $id)
+    public function update(Request $request, $id)
     {
         $produk_umkm = ProdukUmkm::findOrFail($id);
 
@@ -143,7 +143,7 @@ class ProdukUmkmController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('produk_umkm.index', ['jenis' => $jenis])
+            return redirect()->route('produk_umkm.index')
                 ->with('success', 'Produk UMKM berhasil diperbarui.');
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -151,7 +151,7 @@ class ProdukUmkmController extends Controller
         }
     }
 
-    public function destroy($jenis, $id)
+    public function destroy( $id)
     {
         DB::beginTransaction();
 
@@ -169,7 +169,7 @@ class ProdukUmkmController extends Controller
             $produk_umkm->delete();
 
             DB::commit();
-            return redirect()->route('produk_umkm.index', ['jenis' => $jenis])
+            return redirect()->route('produk_umkm.index')
                 ->with('success', 'Produk UMKM berhasil dihapus.');
         } catch (\Throwable $th) {
             DB::rollBack();

@@ -30,6 +30,7 @@ use App\Http\Controllers\Operator\Investasi\InvestasiController;
 use App\Http\Controllers\Operator\Umkm\LaporanKlasterProdukController as UmkmLaporanKlasterProdukController;
 use App\Http\Controllers\Operator\Umkm\MemberUmkmController as UmkmMemberUmkmController;
 use App\Http\Controllers\Operator\Umkm\ProdukUmkmController as UmkmProdukUmkmController;
+use App\Http\Middleware\CheckUserRoleMiddleware;
 
 // Halaman login
 Route::get('/', function () {
@@ -43,68 +44,42 @@ Route::get('auth/google/callback', [AuthenticatedSessionController::class, 'hand
 // ===========================
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-
-    // Cover Menu
     Route::get('/cover-menu', [CoverMenuController::class, 'index'])->name('cover-menu.index');
     Route::get('/cover-menu/data', [CoverMenuController::class, 'data'])->name('cover-menu.data');
     Route::get('/cover-menu/{id}/edit', [CoverMenuController::class, 'edit'])->name('cover-menu.edit');
     Route::patch('/cover-menu/{coverMenu}', [CoverMenuController::class, 'update'])->name('cover-menu.update');
-
     Route::get('/laporan-transaksi-produk-umkm', [LaporanTransaksiUmkmController::class, 'index'])->name('transaksi-produk-umkm.index');
-
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
-
     Route::get('/users/data', [UserController::class, 'data'])->name('users.data');;
-
     Route::resource('/splashscreen', SplashScreenController::class)->except(['show','create','store','destroy']);
-
-
-
-
-
-    // CRUD Operator (dibuat oleh Admin)
     Route::resource('/operator', OperatorController::class)->except(['show']);
-
-
-
-
-    // Route::prefix('iklan/{slug}')->name('iklan.')->group(function () {
-    //     Route::get('/', [IklanController::class, 'index'])->name('index');
-    //     Route::get('/create', [IklanController::class, 'create'])->name('create');
-    //     Route::post('/store', [IklanController::class, 'store'])->name('store');
-    // });
-    
-
-
 });
 
 // ===========================
 // OPERATOR ROUTE
 // ===========================
-Route::middleware(['auth', OperatorMiddleware::class])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/{jenis}/dashboard', [OperatorDashboardController::class, 'index'])->name('operator.dashboard');
 
-    Route::prefix('{jenis}')->group(function () {
+    Route::middleware(CheckUserRoleMiddleware::class.':Operator investasi')->group(function () {
+        Route::resource('/investasi', InvestasiController::class)->except(['show']);
+    });
+    Route::middleware(CheckUserRoleMiddleware::class.':Operator entertaiment')->group(function () {
+        Route::resource('/entertaiment', EntertaimentController::class)->except(['show']);
+    });
+    Route::middleware(CheckUserRoleMiddleware::class.':Operator event')->group(function () {
+        Route::resource('/event', EventOperatorEventController::class)->except(['show']);
+    });
+    Route::middleware(CheckUserRoleMiddleware::class.':Operator pariwisata')->group(function () {
         Route::resource('/pariwisata', PariwisataController::class)
             ->names('operator.pariwisata.data')
             ->parameters(['pariwisata' => 'id']);
-
         Route::resource('/laporan', LaporanPariwisataController::class)
             ->names('operator.pariwisata.laporan');
-
         Route::get('/rekomendasi', [RekomendasiWisataController::class, 'index'])->name('operator.pariwisata.rekomendasi');
-        
 
-        Route::resource('/produk_umkm', UmkmProdukUmkmController::class)->except(['show']);
-        Route::resource('/member_umkm', UmkmMemberUmkmController::class)->except(['show']);
-        Route::resource('/event', EventOperatorEventController::class)->except(['show']);
-        Route::resource('/entertaiment', EntertaimentController::class)->except(['show']);
-        Route::resource('/investasi', InvestasiController::class)->except(['show']);
-        Route::resource('/iklan', BoxOfficeIklanController::class)->except(['show']);
-        // Route::resource('iklandata', IklanContentController::class)->except(['show']);
-        // Route::resource('iklandata', IklanContentController::class)->parameters([
-        //     'iklandata' => 'id',
-        // ])->except(['show']);
+    });
+    Route::middleware(CheckUserRoleMiddleware::class.':Operator box office')->group(function () {
         Route::get('/iklandata', [IklanContentController::class, 'index'])->name('iklandata.index');
         Route::get('/iklandata/create', [IklanContentController::class, 'create'])->name('iklandata.create');
         Route::post('/iklandata', [IklanContentController::class, 'store'])->name('iklandata.store');
@@ -112,11 +87,11 @@ Route::middleware(['auth', OperatorMiddleware::class])->group(function () {
         Route::put('/iklandata/{id}', [IklanContentController::class, 'update'])->name('iklandata.update');
         Route::delete('/iklandata/{id}', [IklanContentController::class, 'destroy'])->name('iklandata.destroy');
 
-
-
-
+    });
+    Route::middleware(CheckUserRoleMiddleware::class.':Operator umkm')->group(function () {
+        Route::resource('/produk_umkm', UmkmProdukUmkmController::class)->except(['show']);
+        Route::resource('/member_umkm', UmkmMemberUmkmController::class)->except(['show']);
         Route::get('/klasterisasi_umkm', [UmkmLaporanKlasterProdukController::class, 'index'])->name('klasterisasi-produk.index');
-
     });
 });
 
