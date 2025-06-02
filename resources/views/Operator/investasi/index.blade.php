@@ -11,7 +11,7 @@
 <div class="m-2 p-6 -mt-24 relative z-10">
     <div class="bg-white rounded-xl shadow-xl overflow-hidden w-full">
         <div class="p-4 border-b border-gray-100">
-            <h2 class="text-lg font-semibold text-gray-800">Daftar Invvestasi</h2>
+            <h2 class="text-lg font-semibold text-gray-800">Daftar Investasi</h2>
         </div>
 
         <div class="overflow-x-auto">

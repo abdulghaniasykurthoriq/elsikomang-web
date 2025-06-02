@@ -23,14 +23,14 @@
             </div>
         @endif
 
-        <form action="{{ route('produk_umkm.update', ['jenis' => request()->route('jenis'), 'produk_umkm' => $produk_umkm->id]) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('produk_umkm.update', ['jenis' => request()->route('jenis'), 'produk_umkm' => $produk_umkm->id]) }}" method="POST" enctype="multipart/form-data" id="produkForm">
             @csrf
             @method('PUT')
 
             {{-- Member UMKM --}}
             <div class="mb-4">
                 <label for="member_id" class="block text-sm font-medium text-gray-700">Member UMKM</label>
-                <select name="member_id" id="member_id" class="form-select mt-1 block w-full" required>
+                <select name="member_id" id="member_id" class="form-select mt-1 block w-full" >
                     @foreach($member_umkms as $member)
                         <option value="{{ $member->id }}" {{ old('member_id', $produk_umkm->member_id) == $member->id ? 'selected' : '' }}>
                             {{ $member->nama_toko }}
@@ -46,7 +46,7 @@
             <div class="mb-4">
                 <label for="nama_produk" class="block text-sm font-medium text-gray-700">Nama Produk</label>
                 <input type="text" id="nama_produk" name="nama_produk" class="form-input mt-1 block w-full"
-                    value="{{ old('nama_produk', $produk_umkm->nama_produk) }}" required>
+                    value="{{ old('nama_produk', $produk_umkm->nama_produk) }}" >
                 @error('nama_produk')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
@@ -55,7 +55,7 @@
             {{-- Kategori --}}
             <div class="mb-4">
                 <label for="kategori_id" class="block text-sm font-medium text-gray-700">Kategori</label>
-                <select name="kategori_id" id="kategori_id" class="form-select mt-1 block w-full" required>
+                <select name="kategori_id" id="kategori_id" class="form-select mt-1 block w-full" >
                     @foreach($kategori_produk as $kategori)
                         <option value="{{ $kategori->id }}" {{ old('kategori_id', $produk_umkm->kategori_id) == $kategori->id ? 'selected' : '' }}>
                             {{ $kategori->name }}
@@ -70,7 +70,7 @@
             {{-- Deskripsi --}}
             <div class="mb-4">
                 <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi</label>
-                <textarea id="deskripsi" name="deskripsi" class="form-textarea mt-1 block w-full" rows="3" required>{{ old('deskripsi', $produk_umkm->deskripsi) }}</textarea>
+                <textarea id="deskripsi" name="deskripsi" class="form-textarea mt-1 block w-full" rows="3" >{{ old('deskripsi', $produk_umkm->deskripsi) }}</textarea>
                 @error('deskripsi')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
@@ -109,9 +109,9 @@
                     @php $variants = old('produk_variant') ?: $produk_umkm->produk_variant; @endphp
                     @foreach($variants as $index => $varian)
                         <div class="flex gap-2 items-center">
-                            <input type="text" name="produk_variant[{{ $index }}][varian]" class="form-input w-1/3" placeholder="Varian" value="{{ is_array($varian) ? $varian['varian'] : $varian->varian }}" required>
-                            <input type="number" name="produk_variant[{{ $index }}][harga]" class="form-input w-1/3" placeholder="Harga" value="{{ is_array($varian) ? $varian['harga'] : $varian->harga }}" required>
-                            <input type="number" name="produk_variant[{{ $index }}][stok]" class="form-input w-1/4" placeholder="Stok" value="{{ is_array($varian) ? $varian['stok'] : $varian->stok }}" required>
+                            <input type="text" name="produk_variant[{{ $index }}][varian]" class="form-input w-1/3" placeholder="Varian" value="{{ is_array($varian) ? $varian['varian'] : $varian->varian }}" >
+                            <input type="number" name="produk_variant[{{ $index }}][harga]" class="form-input w-1/3" placeholder="Harga" value="{{ is_array($varian) ? $varian['harga'] : $varian->harga }}" >
+                            <input type="number" name="produk_variant[{{ $index }}][stok]" class="form-input w-1/4" placeholder="Stok" value="{{ is_array($varian) ? $varian['stok'] : $varian->stok }}" >
                             <button type="button" class="btn bg-red-500 text-white hover:bg-red-600 remove-varian">X</button>
                         </div>
                     @endforeach
@@ -120,7 +120,16 @@
             </div>
 
             <div class="pt-4 flex justify-end gap-2">
-                <button type="submit" class="btn bg-indigo-600 text-white hover:bg-indigo-700">Update</button>
+                <button type="submit" id="submitBtn"
+                    class="btn bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300 flex items-center justify-center">
+                    <span id="btnText">Perbarui</span>
+                    <svg id="btnSpinner" class="hidden animate-spin ml-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                </button>
             </div>
         </form>
     </div>
@@ -145,9 +154,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const div = document.createElement('div');
         div.classList.add('flex', 'gap-2', 'items-center');
         div.innerHTML = `
-            <input type="text" class="form-input w-1/3" placeholder="Varian" required>
-            <input type="number" class="form-input w-1/3" placeholder="Harga" required>
-            <input type="number" class="form-input w-1/4" placeholder="Stok" required>
+            <input type="text" class="form-input w-1/3" placeholder="Varian" >
+            <input type="number" class="form-input w-1/3" placeholder="Harga" >
+            <input type="number" class="form-input w-1/4" placeholder="Stok" >
             <button type="button" class="btn bg-red-500 text-white hover:bg-red-600 remove-varian">X</button>
         `;
         wrapper.appendChild(div);
@@ -162,5 +171,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+<script>
+    document.getElementById('produkForm').addEventListener('submit', function () {
+        const btn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+
+        // Disable tombol dan tampilkan spinner
+        btn.disabled = true;
+        btnText.textContent = 'Menyimpan...';
+        btnSpinner.classList.remove('hidden');
+    });
+</script>
+
 
 @endsection

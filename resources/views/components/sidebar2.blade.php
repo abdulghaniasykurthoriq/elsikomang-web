@@ -41,10 +41,10 @@
                         <i data-feather="package" class="w-4 h-4 mr-3"></i>
                         Data Produk
                     </a>
-                    <a href="{{ url($pathRole . '/produk_umkm') }}"
-                    class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/produk_umkm*') ? 'bg-gray-800' : '' }}">
+                    <a href="{{ url($pathRole . '/member_umkm') }}"
+                    class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/member_umkm*') ? 'bg-gray-800' : '' }}">
                     <i data-feather="package" class="w-4 h-4 mr-3"></i>
-                    D
+                    Member UMKM
                 </a>
 
                 <button type="button"

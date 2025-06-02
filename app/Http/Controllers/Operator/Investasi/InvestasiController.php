@@ -26,7 +26,7 @@ class InvestasiController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->validate([
-                'foto_investasi' => 'nullable|image|max:2048',
+                'foto_investasi' => 'required|image|max:2048',
                 'nama_investasi' => 'required|string',
                 'deskripsi' => 'required|string',
             ]);
@@ -61,8 +61,8 @@ class InvestasiController extends Controller
 
             $data = $request->validate([
                 'foto_investasi' => 'nullable|image|max:2048',
-                'nama_investasi' => 'required|string',
-                'deskripsi' => 'required|string',
+                'nama_investasi' => 'nullable|string',
+                'deskripsi' => 'nullable|string',
             ]);
 
             if ($request->hasFile('foto_investasi')) {

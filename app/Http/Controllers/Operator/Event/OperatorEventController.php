@@ -30,8 +30,8 @@ class OperatorEventController extends Controller
     {
         $request->validate([
             'nama_event'   => 'required|string|max:255',
-            'deskripsi'    => 'nullable|string',
-            'foto_event'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'deskripsi'    => 'required|string',
+            'foto_event'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         DB::beginTransaction();
@@ -65,7 +65,7 @@ class OperatorEventController extends Controller
     public function update(Request $request, $jenis, $id)
     {
         $request->validate([
-            'nama_event'   => 'required|string|max:255',
+            'nama_event'   => 'nullable|string|max:255',
             'deskripsi'    => 'nullable|string',
             'foto_event'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);

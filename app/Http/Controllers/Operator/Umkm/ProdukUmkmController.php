@@ -34,7 +34,7 @@ class ProdukUmkmController extends Controller
             'nama_produk' => 'required|string|max:255',
             'kategori_id' => 'required|exists:kategori_produk,id',
             'deskripsi' => 'required|string',
-            'files.*' => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov|max:51200',
+            'files.*' => 'required|file|mimes:jpg,jpeg,png,mp4,mov|max:51200',
         ]);
 
         DB::beginTransaction();
@@ -93,10 +93,10 @@ class ProdukUmkmController extends Controller
         $produk_umkm = ProdukUmkm::findOrFail($id);
 
         $request->validate([
-            'member_id' => 'required|exists:member_umkm,id',
-            'nama_produk' => 'required|string|max:255',
-            'kategori_id' => 'required|exists:kategori_produk,id',
-            'deskripsi' => 'required|string',
+            'member_id' => 'nullable|exists:member_umkm,id',
+            'nama_produk' => 'nullable|string|max:255',
+            'kategori_id' => 'nullable|exists:kategori_produk,id',
+            'deskripsi' => 'nullable|string',
             'files.*' => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov|max:51200',
         ]);
 

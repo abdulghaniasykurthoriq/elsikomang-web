@@ -6,7 +6,7 @@
     <h1 class="text-xl text-white">Data Produk UMKM</h1>
 
     {{-- ✅ Tambahkan parameter "jenis" agar route tidak error --}}
-    <a href="{{ route('produk_umkm.create', ['jenis' => request()->route('jenis')]) }}" class="btn btn-success">+ Tambah Produk UMKM</a>
+    <a href="{{ route('produk_umkm.create', ['jenis' => request()->route('jenis')]) }}" class="btn bg-white text-gray-800">Tambah Produk UMKM</a>
 </div>
 
 <div class="mx-2 px-6 -mt-24 relative z-10">
