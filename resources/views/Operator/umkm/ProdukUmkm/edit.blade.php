@@ -4,7 +4,7 @@
 
 <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
     <h1 class="text-xl text-white">Edit Produk UMKM</h1>
-    <a href="{{ route('produk_umkm.index', ['jenis' => request()->route('jenis')]) }}"
+    <a href="{{ route('produk_umkm.index') }}"
         class="btn bg-white text-gray-800 border-gray-600 hover:bg-gray-100">
         Kembali
     </a>

@@ -41,7 +41,7 @@
                         <i data-feather="package" class="w-4 h-4 mr-3"></i>
                         Data Produk
                     </a>
-                    <a href="{{ url($pathRole . '/member_umkm') }}"
+                    <a href="{{ route('member_umkm.index') }}"
                     class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/member_umkm*') ? 'bg-gray-800' : '' }}">
                     <i data-feather="package" class="w-4 h-4 mr-3"></i>
                     Member UMKM
@@ -64,9 +64,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ url($pathRole.'/klasterisasi_umkm') }}"
-                            class="block px-2 py-1 rounded-md hover:bg-gray-800 transition text-sm">
-                            Klaster
+                        <a href="{{ route('klasterisasi-produk.index') }}"
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/klasterisasi_umkm*') ? 'bg-gray-800' : '' }}">
+                        Klaster
                         </a>
                     </li>
                 </ul>
@@ -77,23 +77,24 @@
             <!-- Pariwisata -->
             @elseif ($user->jenis_operator_id == 2)
                 <li>
-                    <a href="{{ route('operator.pariwisata.data.index', ['jenis' => 'pariwisata']) }}"
-                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition">
+                    <a href="{{ route('operator.pariwisata.data.index') }}"
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/pariwisata*') ? 'bg-gray-800' : '' }}">
                         <i data-feather="map-pin" class="w-4 h-4 mr-3"></i>
                         Data Pariwisata
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('operator.pariwisata.laporan.index', ['jenis' => 'pariwisata']) }}"
-                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition">
+                    <a href="{{ route('operator.pariwisata.laporan.index') }}"
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/laporan*') ? 'bg-gray-800' : '' }}">
                         <i data-feather="file-text" class="w-4 h-4 mr-3"></i>
                         Laporan Pariwisata
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link"
-                        href="{{ route('operator.pariwisata.rekomendasi', ['jenis' => 'pariwisata']) }}">
-                        <i data-feather="star" class="w-4 h-4 mr-2"></i>
+                        href="{{ route('operator.pariwisata.rekomendasi') }}"
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/rekomendasi*') ? 'bg-gray-800' : '' }}">
+                        <i data-feather="star" class="w-4 h-4 mr-3"></i>
                         Rekomendasi Wisata
                     </a>
                 </li>
@@ -101,8 +102,8 @@
             <!-- Investasi -->
             @elseif ($user->jenis_operator_id == 3)
                 <li>
-                    <a href="{{ url($pathRole.'/investasi') }}"
-                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition">
+                    <a href="{{ route('investasi.index') }}"
+                    class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/investasi*') ? 'bg-gray-800' : '' }}">
                         <i data-feather="bar-chart" class="w-4 h-4 mr-3"></i>
                         Laporan Investasi
                     </a>
@@ -111,8 +112,8 @@
             <!-- Event -->
             @elseif ($user->jenis_operator_id == 4)
                 <li>
-                    <a href="{{ url($pathRole.'/event') }}"
-                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition">
+                    <a href="{{ route('event.index') }}"
+                    class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/event*') ? 'bg-gray-800' : '' }}">
                         <i data-feather="calendar" class="w-4 h-4 mr-3"></i>
                         Data Event
                     </a>
@@ -120,13 +121,10 @@
 
             <!-- Entertainment -->
             @elseif ($user->jenis_operator_id == 5)
-                <li>
-                    <a href="{{ url($pathRole.'/entertaiment') }}"
-                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition">
-                        <i data-feather="film" class="w-4 h-4 mr-3"></i>
-                        Data Entertainment
-                    </a>
-                </li>
+            <a href="{{ route('entertaiment.index') }}"
+            class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/entertaiment*') ? 'bg-gray-800' : '' }}">
+            <i data-feather="package" class="w-4 h-4 mr-3"></i>
+            Data Entertaiment
 
             <!-- Box Office -->
             @elseif ($user->jenis_operator_id == 6)

@@ -6,8 +6,8 @@
 
 
 <div class="bg-indigo-600 px-8 pt-10 pb-28 flex justify-between items-center">
-    <h1 class="text-xl text-white">+ Tambah Entertaiment</h1>
-    <a href="{{ route('entertaiment.index', ['jenis' => $jenis]) }}" class="btn bg-white text-gray-800">Kembali</a>
+    <h1 class="text-xl text-white"> Tambah Data Entertaiment</h1>
+    <a href="{{ route('entertaiment.index') }}" class="btn bg-white text-gray-800">Kembali</a>
 </div>
 
 <div class="m-2 px-6 -mt-24">
@@ -25,7 +25,7 @@
         @endif
 
         {{-- Form tambah entertaiments --}}
-        <form action="{{ route('entertaiment.store', ['jenis' => $jenis]) }}" method="POST" enctype="multipart/form-data" id="entertaimentForm">
+        <form action="{{ route('entertaiment.store') }}" method="POST" enctype="multipart/form-data" id="entertaimentForm">
             @csrf
 
             <div class="mb-4">

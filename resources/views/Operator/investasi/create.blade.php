@@ -4,8 +4,8 @@
 
 @section('content')
 <div class="bg-indigo-600 px-8 pt-10 pb-28 flex justify-between items-center">
-    <h1 class="text-xl text-white">+ Tambah Investasi</h1>
-    <a href="{{ route('investasi.index', ['jenis' => $jenis]) }}" class="btn bg-white text-gray-800">Kembali</a>
+    <h1 class="text-xl text-white">Tambah Data Investasi</h1>
+    <a href="{{ route('investasi.index') }}" class="btn bg-white text-gray-800">Kembali</a>
 </div>
 
 <div class="m-2 px-6 -mt-24">
@@ -20,7 +20,7 @@
             </div>
         @endif
 
-        <form id="formTambahInvestasi" action="{{ route('investasi.store', ['jenis' => $jenis]) }}" method="POST" enctype="multipart/form-data">
+        <form id="formTambahInvestasi" action="{{ route('investasi.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="mb-4">

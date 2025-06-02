@@ -5,7 +5,7 @@
 @section('content')
 <div class="bg-indigo-600 px-8 pt-10 pb-28 flex justify-between items-center">
     <h1 class="text-xl text-white">Data Investasi</h1>
-    <a href="{{ route('investasi.create', ['jenis' => $jenis]) }}" class="btn bg-white text-gray-800">+ Tambah</a>
+    <a href="{{ route('investasi.create') }}" class="btn bg-white text-gray-800"> + Tambah Investasi</a>
 </div>
 
 <div class="m-2 p-6 -mt-24 relative z-10">
@@ -41,10 +41,10 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 flex gap-2">
-                                <a href="{{ route('investasi.edit', ['jenis' => $jenis, 'investasi' => $item->id]) }}" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
+                                <a href="{{ route('investasi.edit', [ 'investasi' => $item->id]) }}" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
                                     <i data-feather="edit" class="w-4 h-4"></i>
                                 </a>
-                                <form action="{{ route('investasi.destroy', ['jenis' => $jenis, 'investasi' => $item->id]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus investasi ini?')">
+                                <form action="{{ route('investasi.destroy', [ 'investasi' => $item->id]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus investasi ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm bg-red-500 text-white hover:bg-red-600">

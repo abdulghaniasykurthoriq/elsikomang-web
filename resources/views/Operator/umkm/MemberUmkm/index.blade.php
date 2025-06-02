@@ -7,7 +7,7 @@
 <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
     <h1 class="text-xl text-white">Data Member UMKM</h1>
 
-    <a href="{{ route('member_umkm.create', ['jenis' => $jenis]) }}" class="btn bg-white text-gray-800">Tambah Member UMKM</a>
+    <a href="{{ route('member_umkm.create') }}" class="btn bg-white text-gray-800"> + Tambah Member UMKM</a>
 </div>
 
 <div class="m-2 p-6 -mt-24 relative z-10">
@@ -43,10 +43,10 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 flex gap-2">
-                                <a href="{{ route('member_umkm.edit', ['jenis' => $jenis, 'member_umkm' => $item->id]) }}" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
+                                <a href="{{ route('member_umkm.edit', [ 'member_umkm' => $item->id]) }}" class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
                                     <i data-feather="edit" class="w-4 h-4"></i>
                                 </a>
-                                <form action="{{ route('member_umkm.destroy', ['jenis' => $jenis, 'member_umkm' => $item->id]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus member ini?')">
+                                <form action="{{ route('member_umkm.destroy', [ 'member_umkm' => $item->id]) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus member ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm bg-red-500 text-white hover:bg-red-600">

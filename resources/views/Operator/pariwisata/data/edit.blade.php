@@ -6,7 +6,7 @@
 
     <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
         <h1 class="text-xl text-white">Edit Data Pariwisata</h1>
-        <a href="{{ route('operator.pariwisata.data.index', ['jenis' => request()->route('jenis')]) }}"
+        <a href="{{ route('operator.pariwisata.data.index') }}"
             class="btn bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-indigo-300">
             Kembali
         </a>
@@ -27,7 +27,7 @@
             @endif
 
             <form
-                action="{{ route('operator.pariwisata.data.update', ['jenis' => request()->route('jenis'), 'id' => $item->id]) }}"
+                action="{{ route('operator.pariwisata.data.update', [ 'id' => $item->id]) }}"
                 method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')

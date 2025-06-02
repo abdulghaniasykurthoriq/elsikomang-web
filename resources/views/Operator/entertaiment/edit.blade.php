@@ -6,8 +6,8 @@
 
 
 <div class="bg-indigo-600 px-8 pt-10 pb-28 flex justify-between items-center">
-    <h1 class="text-xl text-white">Edit Entertaiment</h1>
-    <a href="{{ route('entertaiment.index', ['jenis' => $jenis]) }}" class="btn bg-white text-gray-800">Kembali</a>
+    <h1 class="text-xl text-white">Edit Data Entertaiment</h1>
+    <a href="{{ route('entertaiment.index') }}" class="btn bg-white text-gray-800">Kembali</a>
 </div>
 
 <div class="m-2 px-6 -mt-24">
@@ -25,13 +25,13 @@
         @endif
 
         {{-- Form edit entertaiments --}}
-        <form action="{{ route('entertaiment.update', ['jenis' => $jenis, 'entertaiment' => $entertaiments->id]) }}" method="POST" enctype="multipart/form-data" id="entertaimentForm">
+        <form action="{{ route('entertaiment.update', [ 'entertaiment' => $entertaiments->id]) }}" method="POST" enctype="multipart/form-data" id="entertaimentForm">
             @csrf
             @method('PUT')
 
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700">Nama Entertaiment</label>
-                <input type="text" name="nama_entertaiment" class="input input-bordered w-full" value="{{ old('nama_entertaiment', $entertaiments->nama_entertaiment) }}" required>
+                <input type="text" name="nama_entertaiment" class="input input-bordered w-full" value="{{ old('nama_entertaiment', $entertaiments->nama_entertaiment) }}" >
             </div>
 
             <div class="mb-4">

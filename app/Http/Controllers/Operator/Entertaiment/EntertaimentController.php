@@ -10,18 +10,18 @@ use Illuminate\Support\Facades\DB;
 
 class EntertaimentController extends Controller
 {
-    public function index($jenis)
+    public function index()
     {
         $entertaiments = Entertaiment::latest()->get();
-        return view('Operator.Entertaiment.index', compact('entertaiments', 'jenis'));
+        return view('Operator.Entertaiment.index', compact('entertaiments'));
     }
 
-    public function create($jenis)
+    public function create()
     {
-        return view('Operator.Entertaiment.create', compact('jenis'));
+        return view('Operator.Entertaiment.create');
     }
 
-    public function store(Request $request, $jenis)
+    public function store(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -40,7 +40,7 @@ class EntertaimentController extends Controller
             Entertaiment::create($data);
             DB::commit();
 
-            return redirect()->route('entertaiment.index', ['jenis' => $jenis])
+            return redirect()->route('entertaiment.index')
                              ->with('success', 'Data berhasil ditambahkan.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -48,13 +48,13 @@ class EntertaimentController extends Controller
         }
     }
 
-    public function edit($jenis, $id)
+    public function edit($id)
     {
         $entertaiments = Entertaiment::findOrFail($id);
-        return view('Operator.Entertaiment.edit', compact('entertaiments', 'jenis'));
+        return view('Operator.Entertaiment.edit', compact('entertaiments'));
     }
 
-    public function update(Request $request, $jenis, $id)
+    public function update(Request $request, $id)
     {
         DB::beginTransaction();
         try {
@@ -62,8 +62,8 @@ class EntertaimentController extends Controller
 
             $data = $request->validate([
                 'foto_entertaiment' => 'nullable|image|max:2048',
-                'nama_entertaiment' => 'nullabe|string',
-                'deskripsi' => 'nullabe|string',
+                'nama_entertaiment' => 'nullable|string',
+                'deskripsi' => 'nullable|string',
             ]);
 
             if ($request->hasFile('foto_entertaiment')) {
@@ -75,7 +75,7 @@ class EntertaimentController extends Controller
             $entertaiments->update($data);
             DB::commit();
 
-            return redirect()->route('entertaiment.index', ['jenis' => $jenis])
+            return redirect()->route('entertaiment.index')
                              ->with('success', 'Data berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -83,12 +83,12 @@ class EntertaimentController extends Controller
         }
     }
 
-    public function destroy($jenis, $id)
+    public function destroy( $id)
     {
         $entertaiments = Entertaiment::findOrFail($id);
         $entertaiments->delete();
 
-        return redirect()->route('entertaiment.index', ['jenis' => $jenis])
+        return redirect()->route('entertaiment.index')
                          ->with('success', 'Data berhasil dihapus.');
     }
 }

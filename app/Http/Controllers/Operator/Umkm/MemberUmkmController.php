@@ -11,18 +11,18 @@ use Illuminate\Support\Facades\DB;
 
 class MemberUmkmController extends Controller
 {
-    public function index(Request $request, $jenis)
+    public function index(Request $request)
     {
         $member_umkm = MemberUmkm::all();
-        return view('Operator.umkm.MemberUmkm.index', compact('member_umkm', 'jenis'));
+        return view('Operator.umkm.MemberUmkm.index', compact('member_umkm'));
     }
 
-    public function create(Request $request, $jenis)
+    public function create(Request $request)
     {
-        return view('Operator.umkm.MemberUmkm.create', compact('jenis'));
+        return view('Operator.umkm.MemberUmkm.create');
     }
 
-    public function store(Request $request, $jenis)
+    public function store(Request $request)
     {
         $request->validate([
             'nama_toko' => 'required',
@@ -43,7 +43,7 @@ class MemberUmkmController extends Controller
             MemberUmkm::create($data);
 
             DB::commit();
-            return redirect()->route('member_umkm.index', ['jenis' => $jenis])
+            return redirect()->route('member_umkm.index')
                 ->with('success', 'Member UMKM berhasil ditambahkan.');
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -51,13 +51,13 @@ class MemberUmkmController extends Controller
         }
     }
 
-    public function edit(Request $request, $jenis, $id)
+    public function edit(Request $request, $id)
     {
         $memberUmkm = MemberUmkm::findOrFail($id);
-        return view('Operator.umkm.MemberUmkm.edit', compact('memberUmkm', 'jenis'));
+        return view('Operator.umkm.MemberUmkm.edit', compact('memberUmkm'));
     }
 
-    public function update(Request $request, $jenis, $id)
+    public function update(Request $request, $id)
     {
         $memberUmkm = MemberUmkm::findOrFail($id);
 
@@ -80,7 +80,7 @@ class MemberUmkmController extends Controller
             $memberUmkm->update($data);
 
             DB::commit();
-            return redirect()->route('member_umkm.index', ['jenis' => $jenis])
+            return redirect()->route('member_umkm.index')
                 ->with('success', 'Member UMKM berhasil diperbarui.');
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -88,7 +88,7 @@ class MemberUmkmController extends Controller
         }
     }
 
-    public function destroy(Request $request, $jenis, $id)
+    public function destroy(Request $request, $id)
     {
         DB::beginTransaction();
         try {
@@ -96,7 +96,7 @@ class MemberUmkmController extends Controller
             $memberUmkm->delete();
 
             DB::commit();
-            return redirect()->route('member_umkm.index', ['jenis' => $jenis])
+            return redirect()->route('member_umkm.index')
                 ->with('success', 'Member UMKM berhasil dihapus.');
         } catch (\Throwable $th) {
             DB::rollBack();

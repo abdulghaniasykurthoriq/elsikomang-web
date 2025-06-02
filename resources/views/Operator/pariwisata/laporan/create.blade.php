@@ -6,7 +6,7 @@
 
 <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
     <h1 class="text-xl text-white">Tambah Laporan Pariwisata</h1>
-    <a href="{{ route('operator.pariwisata.laporan.index', ['jenis' => request()->route('jenis')]) }}"
+    <a href="{{ route('operator.pariwisata.laporan.index') }}"
         class="btn bg-white text-gray-800 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-indigo-300">
         Kembali
     </a>
@@ -26,7 +26,7 @@
             </div>
         @endif
 
-        <form action="{{ route('operator.pariwisata.laporan.store', ['jenis' => request()->route('jenis')]) }}" method="POST">
+        <form action="{{ route('operator.pariwisata.laporan.store') }}" method="POST">
             @csrf
 
             <div class="mb-4">
@@ -60,7 +60,7 @@
 
             <div class="pt-4 flex justify-end gap-2">
                 <button type="submit" class="btn bg-indigo-600 text-white hover:bg-indigo-700">Simpan</button>
-                <a href="{{ route('operator.pariwisata.laporan.index', ['jenis' => request()->route('jenis')]) }}"
+                <a href="{{ route('operator.pariwisata.laporan.index') }}"
                     class="btn bg-gray-100 text-gray-700 hover:bg-gray-200">Batal</a>
             </div>
         </form>

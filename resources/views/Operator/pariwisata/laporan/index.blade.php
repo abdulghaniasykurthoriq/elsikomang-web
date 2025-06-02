@@ -8,7 +8,7 @@
     <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
         <h1 class="text-xl text-white">Laporan Pariwisata</h1>
 
-        <a href="{{ route('operator.pariwisata.laporan.create', ['jenis' => $jenis]) }}" class="btn btn-success">
+        <a href="{{ route('operator.pariwisata.laporan.create') }}" class="btn btn-success">
             + Tambah Data
         </a>
     </div>

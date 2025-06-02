@@ -13,20 +13,20 @@ use Illuminate\Support\Facades\Storage;
 class OperatorEventController extends Controller
 {
     // Menampilkan daftar event
-    public function index($jenis)
+    public function index()
     {
         $operator_events = OperatorEvent::latest()->get();
-        return view('Operator.event.index', compact('operator_events', 'jenis'));
+        return view('Operator.event.index', compact('operator_events'));
     }
 
     // Form tambah event
-    public function create($jenis)
+    public function create()
     {
-        return view('Operator.event.create', compact('jenis'));
+        return view('Operator.event.create');
     }
 
     // Simpan event baru
-    public function store(Request $request, $jenis)
+    public function store(Request $request)
     {
         $request->validate([
             'nama_event'   => 'required|string|max:255',
@@ -47,7 +47,7 @@ class OperatorEventController extends Controller
             OperatorEvent::create($data);
             DB::commit();
 
-            return redirect()->route('event.index', ['jenis' => $jenis])->with('success', 'Event berhasil ditambahkan.');
+            return redirect()->route('event.index')->with('success', 'Event berhasil ditambahkan.');
         } catch (\Throwable $e) {
             DB::rollBack();
             return back()->withErrors('Gagal menyimpan event: ' . $e->getMessage())->withInput();
@@ -55,14 +55,14 @@ class OperatorEventController extends Controller
     }
 
     // Form edit event
-    public function edit($jenis, $id)
+    public function edit( $id)
     {
         $event = OperatorEvent::findOrFail($id);
-        return view('Operator.event.edit', compact('event', 'jenis'));
+        return view('Operator.event.edit', compact('event'));
     }
 
     // Update event
-    public function update(Request $request, $jenis, $id)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'nama_event'   => 'nullable|string|max:255',
@@ -87,7 +87,7 @@ class OperatorEventController extends Controller
             $event->update($data);
             DB::commit();
 
-            return redirect()->route('event.index', ['jenis' => $jenis])->with('success', 'Event berhasil diperbarui.');
+            return redirect()->route('event.index')->with('success', 'Event berhasil diperbarui.');
         } catch (\Throwable $e) {
             DB::rollBack();
             return back()->withErrors('Gagal memperbarui event: ' . $e->getMessage())->withInput();
@@ -95,7 +95,7 @@ class OperatorEventController extends Controller
     }
 
     // Hapus event
-    public function destroy($jenis, $id)
+    public function destroy( $id)
     {
         $event = OperatorEvent::findOrFail($id);
 
@@ -105,7 +105,7 @@ class OperatorEventController extends Controller
 
         $event->delete();
 
-        // return redirect()->route($jenis . 'event.index')
-        return redirect()->route('event.index', ['jenis' => $jenis])->with('success', 'Event berhasil dihapus.');
+        // return redirect()->route( . 'event.index')
+        return redirect()->route('event.index')->with('success', 'Event berhasil dihapus.');
     }
 }

@@ -4,8 +4,7 @@
 
 <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
     <h1 class="text-xl text-white">Laporan Jumlah Transaksi per Klaster - Tahun {{ $year }}</h1>
-    {{-- <a href="{{ route('Klasterisasi-umkm.index', ['jenis' => request()->route('jenis')]) }}"class="btn btn-success"></a> --}}
-    <a href="{{ route('klasterisasi-produk.index', ['jenis' => request()->route('jenis')]) }}" class="btn btn-success"></a>
+    <a href="{{ route('klasterisasi-produk.index') }}" class="btn btn-success"></a>
 
 </div>
 

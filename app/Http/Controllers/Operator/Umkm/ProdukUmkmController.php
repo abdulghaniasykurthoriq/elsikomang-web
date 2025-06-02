@@ -71,8 +71,7 @@ class ProdukUmkmController extends Controller
             }
 
             DB::commit();
-            $jenis = $request->route('jenis');
-            return redirect()->route('produk_umkm.index', ['jenis' => $jenis])
+            return redirect()->route('produk_umkm.index')
                 ->with('success', 'Produk UMKM berhasil ditambahkan.');
         } catch (\Throwable $th) {
             DB::rollBack();

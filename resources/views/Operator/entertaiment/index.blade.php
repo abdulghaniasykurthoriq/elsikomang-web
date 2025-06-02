@@ -7,7 +7,7 @@
 
 <div class="bg-indigo-600 px-8 pt-10 pb-28 flex justify-between items-center">
     <h1 class="text-xl text-white">Data Entertaiment</h1>
-    <a href="{{ route('entertaiment.create', ['jenis' => $jenis]) }}" class="btn bg-white text-gray-800">+ Tambah Entertaiment</a>
+    <a href="{{ route('entertaiment.create') }}" class="btn bg-white text-gray-800"> + Tambah Entertaiment</a>
 </div>
 
 <div class="m-2 px-6 -mt-24">
@@ -41,12 +41,12 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 flex gap-2">
-                                <a href="{{ route('entertaiment.edit', ['jenis' => $jenis, 'entertaiment' => $entertaiments->id]) }}"
+                                <a href="{{ route('entertaiment.edit', ['entertaiment' => $entertaiments->id]) }}"
                                    class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">
                                     <i data-feather="edit" class="w-4 h-4"></i>
                                 </a>
 
-                                <form action="{{ route('entertaiment.destroy', ['jenis' => $jenis, 'entertaiment' => $entertaiments->id]) }}"
+                                <form action="{{ route('entertaiment.destroy', [ 'entertaiment' => $entertaiments->id]) }}"
                                       method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                     @csrf
                                     @method('DELETE')

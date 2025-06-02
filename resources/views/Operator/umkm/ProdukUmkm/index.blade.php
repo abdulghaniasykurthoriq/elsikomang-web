@@ -5,7 +5,6 @@
 <div class=" bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
     <h1 class="text-xl text-white">Data Produk UMKM</h1>
 
-    {{-- ✅ Tambahkan parameter "jenis" agar route tidak error --}}
     <a href="{{ route('produk_umkm.create') }}" class="btn bg-white text-gray-800">Tambah Produk UMKM</a>
 </div>
 

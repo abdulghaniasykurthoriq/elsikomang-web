@@ -11,7 +11,7 @@
         <div class="bg-white rounded-xl shadow-xl p-6">
 
             <!-- Form Preferensi -->
-            <form action="{{ route('operator.pariwisata.rekomendasi', ['jenis' => request()->route('jenis')]) }}"
+            <form action="{{ route('operator.pariwisata.rekomendasi') }}"
                 method="GET" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Harga Tiket</label>

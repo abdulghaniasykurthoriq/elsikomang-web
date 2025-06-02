@@ -2,14 +2,12 @@
 @section('title', 'Tambah Produk UMKM')
 @section('content')
 
-@php
-    $jenis = request()->route('jenis');
-@endphp
+
 
 <div class=" bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
     <h1 class="text-xl text-white">+ Tambah Produk UMKM</h1>
 
-    <a href="{{ route('produk_umkm.index', ['jenis' => $jenis]) }}"
+    <a href="{{ route('produk_umkm.index') }}"
         class="btn bg-white text-gray-800 border-gray-600 hover:bg-gray-100 hover:text-gray-800 hover:border-gray-200 active:bg-gray-100 active:text-gray-800 active:border-gray-200 focus:outline-none focus:ring-4 focus:ring-indigo-300">
         Kembali
     </a>
@@ -30,7 +28,7 @@
             </div>
         @endif
 
-        <form action="{{ route('produk_umkm.store', ['jenis' => $jenis]) }}" method="POST" enctype="multipart/form-data" id="produkForm">
+        <form action="{{ route('produk_umkm.store') }}" method="POST" enctype="multipart/form-data" id="produkForm">
             @csrf
 
             {{-- Member UMKM --}}

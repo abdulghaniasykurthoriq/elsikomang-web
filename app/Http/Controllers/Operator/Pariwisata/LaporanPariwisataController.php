@@ -8,18 +8,18 @@ use App\Models\LaporanPariwisata;
 
 class LaporanPariwisataController extends Controller
 {
-    public function index($jenis)
+    public function index()
     {
         $laporanPariwisatas = LaporanPariwisata::all();
-        return view('Operator.pariwisata.laporan.index', compact('laporanPariwisatas', 'jenis'));
+        return view('Operator.pariwisata.laporan.index', compact('laporanPariwisatas'));
     }
 
-    public function create($jenis)
+    public function create()
     {
-        return view('Operator.pariwisata.laporan.create', compact('jenis'));
+        return view('Operator.pariwisata.laporan.create');
     }
 
-    public function store(Request $request, $jenis)
+    public function store(Request $request)
     {
         $request->validate([
             'tanggal' => 'required|date',
@@ -30,17 +30,17 @@ class LaporanPariwisataController extends Controller
 
         LaporanPariwisata::create($request->all());
         return redirect()
-            ->route('operator.pariwisata.laporan.index', ['jenis' => $jenis])
+            ->route('operator.pariwisata.laporan.index')
             ->with('success', 'Laporan berhasil ditambahkan.');
     }
 
-    public function edit($jenis, $id)
+    public function edit( $id)
     {
         $laporan = LaporanPariwisata::findOrFail($id);
-        return view('Operator.pariwisata.laporan.edit', compact('laporan', 'jenis'));
+        return view('Operator.pariwisata.laporan.edit', compact('laporan'));
     }
 
-    public function update(Request $request, $jenis, $id)
+    public function update(Request $request,  $id)
     {
         $request->validate([
             'tanggal' => 'required|date',
@@ -53,15 +53,15 @@ class LaporanPariwisataController extends Controller
         $laporan->update($request->all());
 
         return redirect()
-            ->route('operator.pariwisata.laporan.index', ['jenis' => $jenis])
+            ->route('operator.pariwisata.laporan.index')
             ->with('success', 'Laporan berhasil diperbarui.');
     }
 
-    public function destroy($jenis, $id)
+    public function destroy( $id)
     {
         LaporanPariwisata::destroy($id);
         return redirect()
-            ->route('operator.pariwisata.laporan.index', ['jenis' => $jenis])
+            ->route('operator.pariwisata.laporan.index')
             ->with('success', 'Laporan berhasil dihapus.');
     }
 }

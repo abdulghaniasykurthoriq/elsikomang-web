@@ -7,7 +7,7 @@
     <!-- Header Section -->
     <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
         <h1 class="text-xl text-white">Data Pariwisata</h1>
-        <a href="{{ route('operator.pariwisata.data.create', ['jenis' => request()->route('jenis')]) }}"
+        <a href="{{ route('operator.pariwisata.data.create') }}"
             class="btn bg-white text-indigo-700 hover:bg-indigo-50 shadow font-semibold">
             + Tambah Data
         </a>
@@ -44,12 +44,12 @@
                                 <td class="px-6 py-4 capitalize">{{ $item->kategori }}</td>
                                 <td class="px-6 py-4">Rp{{ number_format($item->harga_tiket) }}</td>
                                 <td class="px-6 py-4 flex gap-2 justify-center">
-                                    <a href="{{ route('operator.pariwisata.data.edit', ['jenis' => request()->route('jenis'), 'id' => $item->id]) }}"
+                                    <a href="{{ route('operator.pariwisata.data.edit', ['id' => $item->id]) }}"
                                         class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600" title="Edit">
                                         <i data-feather="edit" class="w-4 h-4"></i>
                                     </a>
                                     <form
-                                        action="{{ route('operator.pariwisata.data.destroy', ['jenis' => request()->route('jenis'), 'id' => $item->id]) }}"
+                                        action="{{ route('operator.pariwisata.data.destroy', ['id' => $item->id]) }}"
                                         method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                         @csrf
                                         @method('DELETE')

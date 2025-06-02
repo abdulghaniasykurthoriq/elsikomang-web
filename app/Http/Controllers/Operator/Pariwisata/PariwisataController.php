@@ -44,22 +44,21 @@ class PariwisataController extends Controller
         }
 
         return redirect()
-            ->route('operator.pariwisata.data.index', ['jenis' => request()->route('jenis')])
+            ->route('operator.pariwisata.data.index')
             ->with('success', 'Pariwisata berhasil ditambahkan!');
     }
 
-    public function edit($jenis, $id)
+    public function edit( $id)
     {
         $pariwisata = Pariwisata::with('fasilitas')->findOrFail($id);
         $fasilitas = Fasilitas::all();
         return view('Operator.pariwisata.data.edit', [
             'item' => $pariwisata,
             'fasilitas' => $fasilitas,
-            'jenis' => $jenis,
         ]);
     }
 
-    public function update(Request $request, $jenis, $id)
+    public function update(Request $request,  $id)
     {
         $validated = $request->validate([
             'nama' => 'required|string',
@@ -85,18 +84,18 @@ class PariwisataController extends Controller
         $pariwisata->fasilitas()->sync($request->fasilitas);
 
         return redirect()
-            ->route('operator.pariwisata.data.index', ['jenis' => request()->route('jenis')])
+            ->route('operator.pariwisata.data.index')
             ->with('success', 'Data pariwisata berhasil diupdate!');
     }
 
-    public function destroy($jenis, $id)
+    public function destroy( $id)
     {
         $pariwisata = Pariwisata::findOrFail($id);
         $pariwisata->fasilitas()->detach();
         $pariwisata->delete();
 
         return redirect()
-            ->route('operator.pariwisata.data.index', ['jenis' => request()->route('jenis')])
+            ->route('operator.pariwisata.data.index')
             ->with('success', 'Data pariwisata berhasil dihapus!');
     }
 }

@@ -10,18 +10,18 @@ use Illuminate\Support\Facades\DB;
 
 class InvestasiController extends Controller
 {
-    public function index($jenis)
+    public function index()
     {
         $investasis = Investasi::latest()->get();
-        return view('Operator.Investasi.index', compact('investasis', 'jenis'));
+        return view('Operator.Investasi.index', compact('investasis'));
     }
 
-    public function create($jenis)
+    public function create()
     {
-        return view('Operator.Investasi.create', compact('jenis'));
+        return view('Operator.Investasi.create');
     }
 
-    public function store(Request $request, $jenis)
+    public function store(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -40,20 +40,20 @@ class InvestasiController extends Controller
             Investasi::create($data);
             DB::commit();
 
-            return redirect()->route('investasi.index', ['jenis' => $jenis])->with('success', 'Data berhasil ditambahkan.');
+            return redirect()->route('investasi.index')->with('success', 'Data berhasil ditambahkan.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['msg' => 'Gagal menyimpan data: ' . $e->getMessage()]);
         }
     }
 
-    public function edit($jenis, $id)
+    public function edit( $id)
     {
         $investasi = Investasi::findOrFail($id);
-        return view('Operator.Investasi.edit', compact('investasi', 'jenis'));
+        return view('Operator.Investasi.edit', compact('investasi'));
     }
 
-    public function update(Request $request, $jenis, $id)
+    public function update(Request $request, $id)
     {
         DB::beginTransaction();
         try {
@@ -74,18 +74,18 @@ class InvestasiController extends Controller
             $investasi->update($data);
             DB::commit();
 
-            return redirect()->route('investasi.index', ['jenis' => $jenis])->with('success', 'Data berhasil diperbarui.');
+            return redirect()->route('investasi.index')->with('success', 'Data berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['msg' => 'Gagal memperbarui data: ' . $e->getMessage()]);
         }
     }
 
-    public function destroy($jenis, $id)
+    public function destroy( $id)
     {
         $investasi = Investasi::findOrFail($id);
         $investasi->delete();
 
-        return redirect()->route('investasi.index', ['jenis' => $jenis])->with('success', 'Data berhasil dihapus.');
+        return redirect()->route('investasi.index')->with('success', 'Data berhasil dihapus.');
     }
 }
