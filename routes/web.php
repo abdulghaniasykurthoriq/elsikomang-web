@@ -22,6 +22,8 @@ use App\Http\Controllers\Admin\IklanController;
 use App\Http\Controllers\Admin\LaporanTransaksiUmkmController;
 use App\Http\Controllers\Admin\SplashScreenController;
 use App\Http\Controllers\Admin\Operator\LaporanKlasterProdukController;
+use App\Http\Controllers\Operator\BoxOffice\IklanContentController;
+use App\Http\Controllers\Operator\BoxOffice\IklanController as BoxOfficeIklanController;
 use App\Http\Controllers\Operator\Entertaiment\EntertaimentController;
 use App\Http\Controllers\Operator\Event\OperatorEventController as EventOperatorEventController;
 use App\Http\Controllers\Operator\Investasi\InvestasiController;
@@ -66,11 +68,11 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
 
 
 
-    Route::prefix('iklan/{slug}')->name('iklan.')->group(function () {
-        Route::get('/', [IklanController::class, 'index'])->name('index');
-        Route::get('/create', [IklanController::class, 'create'])->name('create');
-        Route::post('/store', [IklanController::class, 'store'])->name('store');
-    });
+    // Route::prefix('iklan/{slug}')->name('iklan.')->group(function () {
+    //     Route::get('/', [IklanController::class, 'index'])->name('index');
+    //     Route::get('/create', [IklanController::class, 'create'])->name('create');
+    //     Route::post('/store', [IklanController::class, 'store'])->name('store');
+    // });
     
 
 
@@ -98,6 +100,20 @@ Route::middleware(['auth', OperatorMiddleware::class])->group(function () {
         Route::resource('/event', EventOperatorEventController::class)->except(['show']);
         Route::resource('/entertaiment', EntertaimentController::class)->except(['show']);
         Route::resource('/investasi', InvestasiController::class)->except(['show']);
+        Route::resource('/iklan', BoxOfficeIklanController::class)->except(['show']);
+        // Route::resource('iklandata', IklanContentController::class)->except(['show']);
+        // Route::resource('iklandata', IklanContentController::class)->parameters([
+        //     'iklandata' => 'id',
+        // ])->except(['show']);
+        Route::get('/iklandata', [IklanContentController::class, 'index'])->name('iklandata.index');
+        Route::get('/iklandata/create', [IklanContentController::class, 'create'])->name('iklandata.create');
+        Route::post('/iklandata', [IklanContentController::class, 'store'])->name('iklandata.store');
+        Route::get('/iklandata/{id}/edit', [IklanContentController::class, 'edit'])->name('iklandata.edit');
+        Route::put('/iklandata/{id}', [IklanContentController::class, 'update'])->name('iklandata.update');
+        Route::delete('/iklandata/{id}', [IklanContentController::class, 'destroy'])->name('iklandata.destroy');
+
+
+
 
         Route::get('/klasterisasi_umkm', [UmkmLaporanKlasterProdukController::class, 'index'])->name('klasterisasi-produk.index');
 

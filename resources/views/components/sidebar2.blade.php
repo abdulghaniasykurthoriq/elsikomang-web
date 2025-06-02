@@ -130,13 +130,35 @@
 
             <!-- Box Office -->
             @elseif ($user->jenis_operator_id == 6)
-                <li>
-                    <a href="{{ url('box-office/data') }}"
-                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition">
-                        <i data-feather="tv" class="w-4 h-4 mr-3"></i>
-                        Data Box Office
+                
+                <li class="nav-item">
+                    <a class="nav-link flex items-center justify-between px-3 py-2 text-white hover:bg-gray-800 transition cursor-pointer"
+                    data-bs-toggle="collapse"
+                    href="#navIklan"
+                    role="button"
+                    aria-expanded="false"
+                    aria-controls="navIklan">
+                        <span class="flex items-center gap-2">
+                            <i data-feather="file-text" class="w-4 h-4"></i>
+                            Iklan
+                        </span>
+                        <i data-feather="chevron-down" class="w-4 h-4 transition-transform duration-200"></i>
                     </a>
+                    <div class="collapse" id="navIklan" data-bs-parent="#sideNavbar">
+                        <ul class="pl-10 py-2 text-sm space-y-1">
+                            
+                            <li><a href="{{ url($pathRole.'/iklan')}}" class="block text-gray-300 hover:text-white">Halaman Iklan</a></li>
+                            <li><a href="{{ url($pathRole.'/iklandata?q=home-1')}}" class="block text-gray-300 hover:text-white">Halaman Home</a></li>
+                            <li><a href="{{ url($pathRole.'/iklandata?q=umkm-1')}}" class="block text-gray-300 hover:text-white">Halaman UMKM</a></li>
+                            <li><a href="{{ url($pathRole.'/iklandata?q=pariwisata-1')}}" class="block text-gray-300 hover:text-white">Halaman Pariwisata</a></li>
+                            <li><a href="{{ url($pathRole.'/iklandata?q=event-1')}}" class="block text-gray-300 hover:text-white">Halaman Event</a></li>
+                            <li><a href="{{ url($pathRole.'/iklandata?q=investasi-1')}}" class="block text-gray-300 hover:text-white">Halaman Investasi</a></li>
+                            <li><a href="{{ url($pathRole.'/iklandata?q=entertaiment-1')}}" class="block text-gray-300 hover:text-white">Halaman Entertaiment</a></li>
+                        </ul>
+                    </div>
                 </li>
+
+
             @endif
 
 

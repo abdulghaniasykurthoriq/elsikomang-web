@@ -12,6 +12,10 @@ class Iklan extends Model
     {
         return $this->hasMany(IklanData::class, 'iklan_id', 'id');
     }
+    public function data()
+    {
+        return $this->hasMany(IklanData::class, 'iklan_id', 'id');
+    }
 
     public function setNamaAttribute($value)
     {

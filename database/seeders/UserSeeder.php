@@ -70,7 +70,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => 'operator box office',
-            'email' => 'boxoffice@gmail.com ',
+            'email' => 'boxoffice@gmail.com',
             'password' => Hash::make('12345678'),
             'role' => 'Operator box office',
             'jenis_operator_id' => '6',
