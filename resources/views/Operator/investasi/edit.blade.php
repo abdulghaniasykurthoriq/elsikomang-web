@@ -20,18 +20,18 @@
             </div>
         @endif
 
-        <form action="{{ route('investasi.update', ['jenis' => $jenis, 'investasi' => $investasi->id]) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('investasi.update', ['jenis' => $jenis, 'investasi' => $investasi->id]) }}" method="POST" enctype="multipart/form-data"id='investasiForm'>
             @csrf
             @method('PUT')
 
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700">Nama Investasi</label>
-                <input type="text" name="nama_investasi" class="input input-bordered w-full" value="{{ old('nama_investasi', $investasi->nama_investasi) }}" required>
+                <input type="text" name="nama_investasi" class="input input-bordered w-full" value="{{ old('nama_investasi', $investasi->nama_investasi) }}" >
             </div>
 
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
-                <textarea name="deskripsi" id="editor" class="w-full input input-bordered" rows="5" required>{{ old('deskripsi', $investasi->deskripsi) }}</textarea>
+                <textarea name="deskripsi" id="editor" class="w-full input input-bordered" rows="5" >{{ old('deskripsi', $investasi->deskripsi) }}</textarea>
             </div>
 
             <div class="mb-6">
@@ -46,11 +46,19 @@
             </div>
 
             <div class="flex justify-end">
-                <button type="submit" class="btn bg-indigo-600 text-white hover:bg-indigo-700">Update</button>
-            </div>
-        </form>
-    </div>
-</div>
+                    <button type="submit" id="submitBtn"
+                        class="btn bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300 flex items-center justify-center">
+                        <span id="btnText">Perbarui</span>
+                        <svg id="btnSpinner" class="hidden animate-spin ml-2 h-4 w-4 text-white"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
 
 {{-- CKEditor --}}
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
@@ -61,4 +69,16 @@
             console.error(error);
         });
 </script>
+<script>
+    document.getElementById('investasiForm').addEventListener('submit', function () {
+        const btn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+    
+        // Disable tombol dan tampilkan spinner
+        btn.disabled = true;
+        btnText.textContent = 'Menyimpan...';
+        btnSpinner.classList.remove('hidden');
+    });
+    </script>
 @endsection

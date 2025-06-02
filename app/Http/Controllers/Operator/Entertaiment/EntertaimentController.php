@@ -26,7 +26,7 @@ class EntertaimentController extends Controller
         DB::beginTransaction();
         try {
             $data = $request->validate([
-                'foto_entertaiment' => 'nullable|image|max:2048',
+                'foto_entertaiment' => 'required|image|max:2048',
                 'nama_entertaiment' => 'required|string',
                 'deskripsi' => 'required|string',
             ]);
@@ -62,8 +62,8 @@ class EntertaimentController extends Controller
 
             $data = $request->validate([
                 'foto_entertaiment' => 'nullable|image|max:2048',
-                'nama_entertaiment' => 'required|string',
-                'deskripsi' => 'required|string',
+                'nama_entertaiment' => 'nullabe|string',
+                'deskripsi' => 'nullabe|string',
             ]);
 
             if ($request->hasFile('foto_entertaiment')) {

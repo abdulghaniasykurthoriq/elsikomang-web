@@ -2,29 +2,27 @@
 
 namespace App\Http\Controllers\Operator\Umkm;
 
-
 use App\Http\Controllers\Controller;
 use App\Models\JenisOperator;
 use Illuminate\Http\Request;
 use App\Models\MemberUmkm;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MemberUmkmController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, $jenis)
     {
-            $member_umkm = MemberUmkm::all();
-        return view('Operator.umkm.MemberUmkm.index', compact('member_umkm'));
+        $member_umkm = MemberUmkm::all();
+        return view('Operator.umkm.MemberUmkm.index', compact('member_umkm', 'jenis'));
     }
 
-    public function create()
+    public function create(Request $request, $jenis)
     {
-        return view('Operator.umkm.MemberUmkm.create');
+        return view('Operator.umkm.MemberUmkm.create', compact('jenis'));
     }
-    
-    public function store(Request $request)
+
+    public function store(Request $request, $jenis)
     {
         $request->validate([
             'nama_toko' => 'required',
@@ -45,20 +43,21 @@ class MemberUmkmController extends Controller
             MemberUmkm::create($data);
 
             DB::commit();
-            return redirect()->route('member_umkm.index')->with('success', 'Member UMKM berhasil ditambahkan.');
+            return redirect()->route('member_umkm.index', ['jenis' => $jenis])
+                ->with('success', 'Member UMKM berhasil ditambahkan.');
         } catch (\Throwable $th) {
             DB::rollBack();
             return back()->withErrors('Gagal menambahkan member: ' . $th->getMessage());
         }
-    }    
-
-    public function edit($id)
-    {
-        $memberUmkm = MemberUmkm::findOrFail($id);
-        return view('Operator.umkm.MemberUmkm.edit', compact('memberUmkm'));
     }
 
-    public function update(Request $request, $id)
+    public function edit(Request $request, $jenis, $id)
+    {
+        $memberUmkm = MemberUmkm::findOrFail($id);
+        return view('Operator.umkm.MemberUmkm.edit', compact('memberUmkm', 'jenis'));
+    }
+
+    public function update(Request $request, $jenis, $id)
     {
         $memberUmkm = MemberUmkm::findOrFail($id);
 
@@ -81,14 +80,15 @@ class MemberUmkmController extends Controller
             $memberUmkm->update($data);
 
             DB::commit();
-            return redirect()->route('member_umkm.index')->with('success', 'Member UMKM berhasil diperbarui.');
+            return redirect()->route('member_umkm.index', ['jenis' => $jenis])
+                ->with('success', 'Member UMKM berhasil diperbarui.');
         } catch (\Throwable $th) {
             DB::rollBack();
             return back()->withErrors('Gagal memperbarui member: ' . $th->getMessage());
         }
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $jenis, $id)
     {
         DB::beginTransaction();
         try {
@@ -96,7 +96,8 @@ class MemberUmkmController extends Controller
             $memberUmkm->delete();
 
             DB::commit();
-            return redirect()->route('member_umkm.index')->with('success', 'Member UMKM berhasil dihapus.');
+            return redirect()->route('member_umkm.index', ['jenis' => $jenis])
+                ->with('success', 'Member UMKM berhasil dihapus.');
         } catch (\Throwable $th) {
             DB::rollBack();
             return back()->withErrors('Gagal menghapus member: ' . $th->getMessage());

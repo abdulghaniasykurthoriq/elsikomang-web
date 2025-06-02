@@ -27,7 +27,7 @@
         @endif
 
         {{-- Form Edit --}}
-        <form action="{{ route('event.update', ['jenis' => $jenis, 'event' => $event->id]) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('event.update', ['jenis' => $jenis, 'event' => $event->id]) }}" method="POST" enctype="multipart/form-data" id="eventForm">
             @csrf
             @method('PUT')
 
@@ -53,11 +53,19 @@
             </div>
 
             <div class="flex justify-end">
-                <button type="submit" class="btn bg-indigo-600 text-white hover:bg-indigo-700">Update</button>
+                <button type="submit" id="submitBtn"
+                    class="btn bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300 flex items-center justify-center">
+                    <span id="btnText">Perbarui</span>
+                    <svg id="btnSpinner" class="hidden animate-spin ml-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                </button>
             </div>
         </form>
     </div>
-</div>
 
 {{-- CKEditor --}}
 <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
@@ -68,4 +76,16 @@
             console.error(error);
         });
 </script>
+<script>
+    document.getElementById('eventForm').addEventListener('submit', function () {
+        const btn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+    
+        // Disable tombol dan tampilkan spinner
+        btn.disabled = true;
+        btnText.textContent = 'Menyimpan...';
+        btnSpinner.classList.remove('hidden');
+    });
+    </script>
 @endsection
