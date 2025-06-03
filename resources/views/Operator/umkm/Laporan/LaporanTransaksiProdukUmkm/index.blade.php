@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app2')
 
 @section('title', 'Prediksi Pendapatan Produk')
 
@@ -68,21 +68,16 @@
                                     $data = $bulanData[$i] ?? ['actual' => null, 'prediksi' => null, 'error' => null];
                                 @endphp
                                 <td class="px-4 py-3 text-xs text-center leading-tight">
-                                    {{-- Actual --}}
                                     @if (!is_null($data['actual']))
                                         <span class="text-blue-600 font-semibold block">
                                             A: {{ number_format($data['actual'], 0, ',', '.') }}
                                         </span>
                                     @endif
-
-                                    {{-- Prediksi --}}
                                     @if (!is_null($data['prediksi']))
                                         <span class="text-red-600 font-semibold block">
                                             P: {{ number_format($data['prediksi'], 0, ',', '.') }}
                                         </span>
                                     @endif
-
-                                    {{-- Error --}}
                                     @if (!is_null($data['error']))
                                         <span class="text-yellow-600 font-semibold block">
                                             E: {{ number_format($data['error'], 4) }}
@@ -102,9 +97,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 
 <script>
-const labels     = {!! json_encode($labels) !!};
-const dataActual = {!! json_encode($actual) !!};
-const dataPred   = {!! json_encode($prediction) !!};
+const labels     = {!! json_encode($labels ?? []) !!};
+const dataActual = {!! json_encode($actual ?? []) !!};
+const dataPred   = {!! json_encode($prediction ?? []) !!};
 
 const ctx = document.getElementById('pendapatanChart').getContext('2d');
 new Chart(ctx, {
@@ -136,24 +131,30 @@ new Chart(ctx, {
     options: {
         responsive: true,
         scales: {
-    y: {
-        beginAtZero: true,
-        title: {
-            display: true,
-            text: 'Jumlah Transaksi',
-            color: '#374151',
-            font: {
-                size: 14,
-                weight: 'bold'
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Jumlah Transaksi',
+                    color: '#374151',
+                    font: {
+                        size: 14,
+                        weight: 'bold'
+                    }
+                },
+                ticks: {
+                    stepSize: 10,
+                    callback: function(value) {
+                        return typeof value === 'number'
+                            ? value.toLocaleString('id-ID')
+                            : value;
+                    }
+                }
             }
-        },
-        ticks: {
-            stepSize: 10, // bisa kamu ubah sesuai data
-            callback: function(value) {
-                return value.toLocaleString('id-ID') + ' transaksi';
-            }
+        }
     }
 });
 </script>
+
 
 @endsection

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Iklan;
 use App\Models\IklanData;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class IklanContentController extends Controller
 {
@@ -50,45 +51,72 @@ class IklanContentController extends Controller
         'expired_at' => $request->expired_at,
     ]);
 
-    return redirect()->route('iklan-data.index')->with('success', 'Data berhasil ditambahkan.');
+    return redirect()
+    ->to(route('iklandata.index') . '?q=' . $request->iklan_slug)
+    ->with('success', 'Data berhasil dihapus.');
+
 }
 
 
-    public function edit($jenis,$id)
+    public function edit($id)
     {
-        $iklanData = IklanData::findOrFail($id);
-        $iklan = Iklan::findOrFail($iklanData->iklan_id);
-        return view('Operator.box-office.Iklan.content.edit', compact('iklanData','iklan'));
+        $iklandata = IklanData::findOrFail($id);
+        $iklan = Iklan::findOrFail($iklandata->iklan_id);
+        return view('Operator.box-office.Iklan.content.edit', compact('iklandata', 'iklan'));
     }
 
-    public function update(Request $request, $jenis, $id)
-    {
-        $iklanData = IklanData::with('iklan')->findOrFail($id);
 
-        // Validasi input
-        if ($request->hasFile('gambar')) {
-            $request->validate([
-                'gambar' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            ]);
-            // Simpan file gambar
-            $gambarPath = $request->file('gambar')->store('iklan_images', 'public');
-            $iklanData->gambar = $gambarPath; // Update path file
-        }
+public function update(Request $request, $id)
+{
+    $iklanData = IklanData::with('iklan')->findOrFail($id);
+
+    // Validasi umum
+    $request->validate([
+        'link' => 'required|url',
+        'status' => 'required|in:active,inactive',
+        'expired_at' => 'required|date',
+    ]);
+
+    // Validasi & proses upload gambar jika ada
+    if ($request->hasFile('gambar')) {
         $request->validate([
-            'iklan_id' => 'required|integer',
-            'link' => 'required|url',
-            'status' => 'required|in:active,inactive',
-            'expired_at' => 'required|date',
+            'gambar' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $iklanData->update($request->all());
+        // Hapus gambar lama jika ada
+        if ($iklanData->gambar && Storage::disk('public')->exists($iklanData->gambar)) {
+            Storage::disk('public')->delete($iklanData->gambar);
+        }
 
-        return redirect()->route('iklandata.index')->with('success', 'Data berhasil diperbarui.');
+        // Simpan gambar baru
+        $gambarPath = $request->file('gambar')->store('iklan_images', 'public');
+        $iklanData->gambar = $gambarPath;
     }
 
-    public function destroy(IklanData $iklanData)
-    {
-        $iklanData->delete();
-        return redirect()->route('iklan-data.index')->with('success', 'Data berhasil dihapus.');
+    // Update data lainnya (manual agar tidak overwrite gambar jika kosong)
+    $iklanData->link = $request->link;
+    $iklanData->status = $request->status;
+    $iklanData->expired_at = $request->expired_at;
+
+    $iklanData->save();
+
+    return redirect()
+        ->to(route('iklandata.index') . '?q=' . $request->iklan_slug)
+        ->with('success', 'Data berhasil diubah.');
+}
+
+
+    public function destroy($id)
+{
+    $iklanData = IklanData::findOrFail($id);
+
+    // Jika path gambar ada dan file ada di disk 'public'
+    if ($iklanData->gambar && Storage::disk('public')->exists($iklanData->gambar)) {
+        Storage::disk('public')->delete($iklanData->gambar);
     }
+
+    $iklanData->delete();
+
+    return redirect()->back()->with('success', 'Data berhasil dihapus.');
+}
 }

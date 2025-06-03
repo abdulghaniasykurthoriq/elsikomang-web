@@ -4,14 +4,16 @@
 <div class="max-w-3xl mx-auto py-10">
     <h1 class="text-2xl font-bold mb-6">Edit Iklan</h1>
 
-    <form action="{{ url('boxoffice/iklandata/' . $iklandata->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+    <form action="{{ route('iklandata.update', $iklandata->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         @method('PUT')
 
         <div>
             <label class="block text-sm font-medium">Halaman Iklan</label>
-            <input type="text" name="iklanheader" value="{{ $iklandata->nama ?? '-' }}" disabled class="mt-1 block w-full rounded border-gray-300 shadow-sm">
-            <input type="hidden" name="iklan_id" value="{{ $iklandata->id }}">
+            <input type="text" name="iklanheader" value="{{ $iklan->nama ?? '-' }}" disabled class="mt-1 block w-full rounded border-gray-300 shadow-sm">
+
+            <input type="text" name="iklan_slug" value="{{ $iklan->slug }}"  hidden >
+
         </div>
 
         <div class="border-t pt-4">

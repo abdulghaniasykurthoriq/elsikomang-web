@@ -58,8 +58,8 @@
                 </button>
                 <ul id="analisisSubmenu" class="pl-10 mt-1 space-y-1 hidden">
                     <li>
-                        <a href="{{ url($pathRole.'/analisis/data') }}"
-                            class="block px-2 py-1 rounded-md hover:bg-gray-800 transition text-sm">
+                        <a href="{{ route('transaksi-produk-umkm.index') }}"
+                            class="block px-3 py-2 rounded-md hover:bg-gray-800 transition text-sm">
                             Data
                         </a>
                     </li>
@@ -91,9 +91,9 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link"
+                    <a 
                         href="{{ route('operator.pariwisata.rekomendasi') }}"
-                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/rekomendasi*') ? 'bg-gray-800' : '' }}">
+                        class="flex items-center pl-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/rekomendasi*') ? 'bg-gray-800' : '' }}">
                         <i data-feather="star" class="w-4 h-4 mr-3"></i>
                         Rekomendasi Wisata
                     </a>
@@ -145,13 +145,14 @@
                     <div class="collapse" id="navIklan" data-bs-parent="#sideNavbar">
                         <ul class="pl-10 py-2 text-sm space-y-1">
                             
-                            <li><a href="{{ url($pathRole.'/iklan')}}" class="block text-gray-300 hover:text-white">Halaman Iklan</a></li>
-                            <li><a href="{{ url($pathRole.'/iklandata?q=home-1')}}" class="block text-gray-300 hover:text-white">Halaman Home</a></li>
-                            <li><a href="{{ url($pathRole.'/iklandata?q=umkm-1')}}" class="block text-gray-300 hover:text-white">Halaman UMKM</a></li>
-                            <li><a href="{{ url($pathRole.'/iklandata?q=pariwisata-1')}}" class="block text-gray-300 hover:text-white">Halaman Pariwisata</a></li>
-                            <li><a href="{{ url($pathRole.'/iklandata?q=event-1')}}" class="block text-gray-300 hover:text-white">Halaman Event</a></li>
-                            <li><a href="{{ url($pathRole.'/iklandata?q=investasi-1')}}" class="block text-gray-300 hover:text-white">Halaman Investasi</a></li>
-                            <li><a href="{{ url($pathRole.'/iklandata?q=entertaiment-1')}}" class="block text-gray-300 hover:text-white">Halaman Entertaiment</a></li>
+                            <li><a href="{{ route('iklan.index') }}" class="block text-gray-300 hover:text-white">Halaman Iklan</a></li>
+                            <li><a href="{{ route('iklandata.index', ['q' => 'home-1']) }}" class="block text-gray-300 hover:text-white">Halaman Home</a></li>
+                            <li><a href="{{ route('iklandata.index', ['q' => 'umkm-1']) }}" class="block text-gray-300 hover:text-white">Halaman UMKM</a></li>
+                            <li><a href="{{ route('iklandata.index', ['q' => 'pariwisata-1']) }}" class="block text-gray-300 hover:text-white">Halaman Pariwisata</a></li>
+                            <li><a href="{{ route('iklandata.index', ['q' => 'event-1']) }}" class="block text-gray-300 hover:text-white">Halaman Event</a></li>
+                            <li><a href="{{ route('iklandata.index', ['q' => 'investasi-1']) }}" class="block text-gray-300 hover:text-white">Halaman Investasi</a></li>
+                            <li><a href="{{ route('iklandata.index', ['q' => 'entertaiment-1']) }}" class="block text-gray-300 hover:text-white">Halaman Entertaiment</a></li>
+
                         </ul>
                     </div>
                 </li>

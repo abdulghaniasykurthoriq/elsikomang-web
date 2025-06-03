@@ -4,12 +4,13 @@
 <div class="max-w-3xl mx-auto py-10">
     <h1 class="text-2xl font-bold mb-6">Tambah Iklan</h1>
 
-    <form action="{{ url('box-office/iklandata' )}}" method="POST" enctype="multipart/form-data" class="space-y-6">
+    <form action="{{ route('iklandata.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         <div>
             <label class="block text-sm font-medium">Halaman Iklan</label>
             <input type="text" name="iklanheader" value="{{ $iklan->nama }}"  disabled class="mt-1 block w-full rounded border-gray-300 shadow-sm">
             <input type="text" name="iklan_id" value="{{ $iklan->id }}"  hidden >
+            <input type="text" name="iklan_slug" value="{{ $iklan->slug }}"  hidden >
         </div>
 
         <div class="border-t pt-4">

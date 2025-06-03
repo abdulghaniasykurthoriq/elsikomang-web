@@ -1,33 +1,26 @@
 <?php
 
-use App\Http\Controllers\Admin\Operator\MemberUmkmController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\IklanController;
 use App\Http\Controllers\Operator\DashboardController as OperatorDashboardController;
 use App\Http\Controllers\Admin\Operator\OperatorController;
-use App\Http\Controllers\Admin\Operator\ProdukUmkmController;
 use App\Http\Controllers\Operator\Pariwisata\PariwisataController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CoverMenuController;
-use App\Http\Controllers\Operator\OperatorEventController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Operator\Pariwisata\LaporanPariwisataController;
 use App\Http\Controllers\Operator\Pariwisata\RekomendasiWisataController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
-use App\Http\Middleware\OperatorMiddleware;
-
-
-use App\Http\Controllers\Admin\IklanController;
-use App\Http\Controllers\Admin\LaporanTransaksiUmkmController;
 use App\Http\Controllers\Admin\SplashScreenController;
-use App\Http\Controllers\Admin\Operator\LaporanKlasterProdukController;
 use App\Http\Controllers\Operator\BoxOffice\IklanContentController;
 use App\Http\Controllers\Operator\BoxOffice\IklanController as BoxOfficeIklanController;
 use App\Http\Controllers\Operator\Entertaiment\EntertaimentController;
 use App\Http\Controllers\Operator\Event\OperatorEventController as EventOperatorEventController;
 use App\Http\Controllers\Operator\Investasi\InvestasiController;
 use App\Http\Controllers\Operator\Umkm\LaporanKlasterProdukController as UmkmLaporanKlasterProdukController;
+use App\Http\Controllers\Operator\Umkm\LaporanTransaksiUmkmController as UmkmLaporanTransaksiUmkmController;
 use App\Http\Controllers\Operator\Umkm\MemberUmkmController as UmkmMemberUmkmController;
 use App\Http\Controllers\Operator\Umkm\ProdukUmkmController as UmkmProdukUmkmController;
 use App\Http\Middleware\CheckUserRoleMiddleware;
@@ -48,7 +41,6 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/cover-menu/data', [CoverMenuController::class, 'data'])->name('cover-menu.data');
     Route::get('/cover-menu/{id}/edit', [CoverMenuController::class, 'edit'])->name('cover-menu.edit');
     Route::patch('/cover-menu/{coverMenu}', [CoverMenuController::class, 'update'])->name('cover-menu.update');
-    Route::get('/laporan-transaksi-produk-umkm', [LaporanTransaksiUmkmController::class, 'index'])->name('transaksi-produk-umkm.index');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/data', [UserController::class, 'data'])->name('users.data');;
     Route::resource('/splashscreen', SplashScreenController::class)->except(['show','create','store','destroy']);
@@ -80,18 +72,17 @@ Route::middleware(['auth'])->group(function () {
 
     });
     Route::middleware(CheckUserRoleMiddleware::class.':Operator box office')->group(function () {
-        Route::get('/iklandata', [IklanContentController::class, 'index'])->name('iklandata.index');
-        Route::get('/iklandata/create', [IklanContentController::class, 'create'])->name('iklandata.create');
-        Route::post('/iklandata', [IklanContentController::class, 'store'])->name('iklandata.store');
-        Route::get('/iklandata/{id}/edit', [IklanContentController::class, 'edit'])->name('iklandata.edit');
-        Route::put('/iklandata/{id}', [IklanContentController::class, 'update'])->name('iklandata.update');
-        Route::delete('/iklandata/{id}', [IklanContentController::class, 'destroy'])->name('iklandata.destroy');
+
+        Route::resource('/iklan', BoxOfficeIklanController::class)->except(['show']);
+        Route::resource('iklandata', IklanContentController::class)->except(['show']);
 
     });
     Route::middleware(CheckUserRoleMiddleware::class.':Operator umkm')->group(function () {
         Route::resource('/produk_umkm', UmkmProdukUmkmController::class)->except(['show']);
         Route::resource('/member_umkm', UmkmMemberUmkmController::class)->except(['show']);
         Route::get('/klasterisasi_umkm', [UmkmLaporanKlasterProdukController::class, 'index'])->name('klasterisasi-produk.index');
+        Route::get('/laporan-transaksi-produk-umkm', [UmkmLaporanTransaksiUmkmController::class, 'index'])->name('transaksi-produk-umkm.index');
+        
     });
 });
 

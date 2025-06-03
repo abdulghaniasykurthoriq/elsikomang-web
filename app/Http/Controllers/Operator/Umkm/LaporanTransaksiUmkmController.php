@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Operator\Umkm;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProdukUmkm;
@@ -84,7 +84,7 @@ class LaporanTransaksiUmkmController extends Controller
             }
         }
 
-        return view('Admin.Laporan.transaksi_umkm', 
+        return view('Operator.umkm.Laporan.LaporanTransaksiProdukUmkm.index', 
             compact('year', 'months', 'dataView', 'labels', 'actual', 'prediction'));
     }
 }
