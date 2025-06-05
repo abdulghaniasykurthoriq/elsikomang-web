@@ -12,7 +12,7 @@ class WishlistController extends Controller
     {
         // Logic to retrieve the wishlist items for the authenticated user
         $user = auth()->user();
-        $wishlistItems = Wishlist::where('user_id',$user->id)->with(['produkUmkm.member','produkUmkm.produk_variant'])->get();
+        $wishlistItems = Wishlist::where('user_id',$user->id)->with(['produkUmkm.images','produkUmkm.member','produkUmkm.produk_variant'])->get();
         
         // Assuming you have a relationship set up
 
