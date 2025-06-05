@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CoverMenuController;
 use App\Http\Controllers\API\EntertaintmentController;
 use App\Http\Controllers\API\EventController;
+use App\Http\Controllers\API\IklanController;
 use App\Http\Controllers\API\InvestasiController;
 use App\Http\Controllers\API\KeranjangController;
 use App\Http\Controllers\API\KritikDanSaranController;
@@ -57,12 +58,11 @@ Route::get('/pariwisata/{id}', [PariwisataController::class, 'show']);
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/entertaintments', [EntertaintmentController::class, 'index']);
 Route::get('/investasi', [InvestasiController::class, 'index']);
+Route::get('/iklan', [IklanController::class, 'index']);
 
-
+ 
 Route::post('/kritiksaran', [KritikDanSaranController::class, 'create']);
-
 Route::get('/cover-menu', [CoverMenuController::class, 'index']);
-
 Route::get('/splashscreen', [SplashScreenController::class, 'index']);
 
 Route::get('/transaksi/success', [TransaksiController::class, 'success']);

@@ -21,6 +21,7 @@ use App\Http\Controllers\Operator\Event\OperatorEventController as EventOperator
 use App\Http\Controllers\Operator\Investasi\InvestasiController;
 use App\Http\Controllers\Operator\Umkm\LaporanKlasterProdukController as UmkmLaporanKlasterProdukController;
 use App\Http\Controllers\Operator\Umkm\LaporanTransaksiUmkmController as UmkmLaporanTransaksiUmkmController;
+use App\Http\Controllers\Operator\Umkm\LeastSquaresController;
 use App\Http\Controllers\Operator\Umkm\MemberUmkmController as UmkmMemberUmkmController;
 use App\Http\Controllers\Operator\Umkm\ProdukUmkmController as UmkmProdukUmkmController;
 use App\Http\Middleware\CheckUserRoleMiddleware;
@@ -82,7 +83,11 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('/member_umkm', UmkmMemberUmkmController::class)->except(['show']);
         Route::get('/klasterisasi_umkm', [UmkmLaporanKlasterProdukController::class, 'index'])->name('klasterisasi-produk.index');
         Route::get('/laporan-transaksi-produk-umkm', [UmkmLaporanTransaksiUmkmController::class, 'index'])->name('transaksi-produk-umkm.index');
-        
+
+
+    Route::get('/simulasi', [LeastSquaresController::class, 'index'])->name('simulasi.ls.index');
+    Route::post('/simulasi', [LeastSquaresController::class, 'proses'])->name('simulasi.ls.proses');
+
     });
 });
 
