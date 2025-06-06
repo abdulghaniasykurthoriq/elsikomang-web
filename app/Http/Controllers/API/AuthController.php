@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Google\Client as GoogleClient;
 
 class AuthController extends Controller
 {
@@ -82,28 +83,6 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Password updated successfully.']);
     }
-    // public function login()
-    // {
-    //     $credentials = request(['email', 'password']);
-
-    //     if (!$token = auth('api')->attempt($credentials)) {
-    //         return response()->json(['error' => 'Unauthorized'], 401);
-    //     }
-    //     $user = auth('api')->user();
-    //     if (!$user) {
-    //         return response()->json(['message' => 'User not authenticated'], 401);
-    //     }
-
-    //     if($user->role !== 'User'){
-
-    //         return response()->json([
-    //             'error' => 'Unauthorized',
-    //             'message' => 'Hanya user yang bisa login'
-    //         ], 401);
-    //     }
-
-    //     return $this->respondWithToken($token);
-    // }
 
     public function login(Request $request)
     {
@@ -133,6 +112,58 @@ class AuthController extends Controller
             'expires_in' => auth('api')->factory()->getTTL(),
             'refresh_token' => $refreshToken,
             'refresh_token_expires_at' => now()->addDays(30)->toDateTimeString()
+        ]);
+    }
+
+    public function google(Request $request)
+    {
+        $request->validate([
+            'id_token' => 'required|string',
+        ]);
+
+        // Verifikasi ID token dari Google
+        $client = new GoogleClient(['client_id' => env('GOOGLE_CLIENT_ID')]);
+        $payload = $client->verifyIdToken($request->id_token);
+
+        if (!$payload) {
+            return response()->json(['message' => 'Invalid Google ID token'], 401);
+        }
+
+        // Ambil data user dari payload
+        $email = $payload['email'];
+        $name = $payload['name'] ?? 'Google User';
+
+        // Cek apakah user sudah ada
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            // Jika belum ada, buat user baru
+            $user = User::create([
+                'name' => $name,
+                'email' => $email,
+                'password' => bcrypt(Str::random(16)), // Dummy password
+                'email_verified_at' => now(),
+            ]);
+        }
+
+        if (!$token = auth('api')->login($user)) {
+            return response()->json(['error' => 'Could not create token'], 500);
+        }
+
+        // Simpan refresh token
+        $refreshToken = Str::random(60);
+        $refreshTokenExpiresAt = now()->addDays(30);
+
+        $user->refresh_token = hash('sha256', $refreshToken);
+        $user->refresh_token_expires_at = $refreshTokenExpiresAt;
+        $user->save();
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL(),
+            'refresh_token' => $refreshToken,
+            'refresh_token_expires_at' => $refreshTokenExpiresAt->toDateTimeString(),
         ]);
     }
 

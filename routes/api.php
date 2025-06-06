@@ -20,9 +20,7 @@ use App\Http\Controllers\SocialAuthController;
 Route::group(['prefix' => 'auth'], function ($router) {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
-
-    Route::get('google', [SocialAuthController::class, 'redirectToGoogle']);
-    Route::get('google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
+    Route::post('google', [AuthController::class, 'google']);
 });
 Route::post('refresh', [AuthController::class, 'refresh']);
 
