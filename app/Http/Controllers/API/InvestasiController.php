@@ -25,4 +25,13 @@ class InvestasiController extends Controller
             'data' => $entertaiments
         ]);
     }
+    public function show($id)
+    {
+        $investasi = Investasi::findOrFail($id);
+
+        return response()->json([
+            'message' => 'Detail data investasi',
+            'data' => $investasi
+        ]);
+    }
 }

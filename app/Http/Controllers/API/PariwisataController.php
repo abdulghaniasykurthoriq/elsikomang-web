@@ -89,4 +89,13 @@ class PariwisataController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        $pariwisata = Pariwisata::with('fasilitas')->findOrFail($id);
+        return response()->json([
+                'message' => 'Detail data pariwisata',
+                'data' => $pariwisata
+                ]); 
+    }
+
 }

@@ -15,8 +15,6 @@ use App\Http\Controllers\API\TransaksiController;
 use App\Http\Controllers\API\WishlistController;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\SocialAuthController;
-
 Route::group(['prefix' => 'auth'], function ($router) {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('register', [AuthController::class, 'register']);
@@ -26,7 +24,6 @@ Route::post('refresh', [AuthController::class, 'refresh']);
 
 Route::middleware(['auth:api'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
-    // Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
 
     Route::post('auth/update', [AuthController::class, 'update']);
@@ -54,8 +51,13 @@ Route::get('/pariwisata', [PariwisataController::class, 'index']);
 Route::get('/pariwisata/{id}', [PariwisataController::class, 'show']);
 
 Route::get('/events', [EventController::class, 'index']);
+Route::get('/events/{id}', [EventController::class, 'show']);
+
 Route::get('/entertaintments', [EntertaintmentController::class, 'index']);
+Route::get('/entertaintments/{id}', [EntertaintmentController::class, 'show']);
 Route::get('/investasi', [InvestasiController::class, 'index']);
+Route::get('/investasi/{id}', [InvestasiController::class, 'show']);
+
 Route::get('/iklan', [IklanController::class, 'index']);
 
  

@@ -18,4 +18,12 @@ class EventController extends Controller
 
         return response()->json($operator_events);
     }
+    public function show($id)
+    {
+        $event = OperatorEvent::findOrFail($id);
+        return response()->json([
+            'message' => 'Detail data Event',
+            'data' => $event
+        ]);
+    }
 }

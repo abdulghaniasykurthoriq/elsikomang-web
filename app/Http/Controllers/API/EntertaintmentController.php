@@ -25,4 +25,13 @@ class EntertaintmentController extends Controller
             'data' => $entertaiments
         ]);
     }
+    public function show($id)
+    {
+        $entertaiment = Entertaiment::findOrFail($id);
+
+        return response()->json([
+            'message' => 'Detail data entertaiment',
+            'data' => $entertaiment
+        ]);
+    }
 }
