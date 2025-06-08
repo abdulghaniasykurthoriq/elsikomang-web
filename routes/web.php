@@ -74,7 +74,7 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::middleware(CheckUserRoleMiddleware::class.':Operator box office')->group(function () {
 
-        Route::resource('/iklan', BoxOfficeIklanController::class)->except(['show']);
+        Route::resource('/iklan', BoxOfficeIklanController::class)->only(['index']);
         Route::resource('iklandata', IklanContentController::class)->except(['show']);
 
     });

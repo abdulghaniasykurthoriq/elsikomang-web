@@ -4,7 +4,7 @@
 <div class="max-w-3xl mx-auto py-10">
     <h1 class="text-2xl font-bold mb-6">Tambah Iklan</h1>
 
-    <form action="{{ route('iklan.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+    <form action="#" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         <div>
             <label class="block text-sm font-medium">Nama Iklan</label>

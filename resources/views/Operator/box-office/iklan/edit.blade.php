@@ -4,7 +4,7 @@
 <div class="max-w-3xl mx-auto py-10">
     <h1 class="text-2xl font-bold mb-6">Edit Iklan</h1>
 
-    <form action="{{ route('iklan.update', $iklan->id) }}" method="POST" class="space-y-6">
+    <form action="#" method="POST" class="space-y-6">
         @csrf
         @method('PUT')
 

@@ -16,55 +16,5 @@ class IklanController extends Controller
         $iklans = Iklan::with('iklanData')->get();
         return view('Operator.box-office.Iklan.index', compact('iklans'));
     }
-
-    public function create()
-    {
-        return view('Operator.box-office.Iklan.create');
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nama' => 'required|string',
-            'slug' => 'required|string|unique:iklans,slug',
-        ]);
-
-        $iklan = Iklan::create($request->only('nama', 'slug'));
-
-        // contoh dummy iklan data
-        IklanData::create([
-            'iklan_id' => $iklan->id,
-            'gambar' => 'produk_image/dummy.jpg',
-            'link' => 'http://localhost:8000/produk_image/dummy.jpg',
-            'status' => 'active',
-            'expired_at' => Carbon::now()->addDays(7),
-        ]);
-
-        return redirect()->route('Operator.box-office.Iklan.index')->with('success', 'Iklan berhasil ditambahkan.');
-    }
-
-    public function edit(Iklan $iklan)
-    {
-        return view('Operator.box-office.Iklan.edit', compact('iklan'));
-    }
-
-    public function update(Request $request, Iklan $iklan)
-    {
-        $request->validate([
-            'nama' => 'required|string',
-            'slug' => 'required|string|unique:iklans,slug,' . $iklan->id,
-        ]);
-
-        $iklan->update($request->only('nama', 'slug'));
-
-        return redirect()->route('Operator.box-office.Iklan.index')->with('success', 'Iklan berhasil diperbarui.');
-    }
-
-    public function destroy(Iklan $iklan)
-    {
-        $iklan->data()->delete();
-        $iklan->delete();
-        return redirect()->route('Operator.box-office.Iklan.index')->with('success', 'Iklan berhasil dihapus.');
-    }
     
 }
