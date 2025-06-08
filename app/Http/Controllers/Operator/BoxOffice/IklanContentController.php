@@ -17,7 +17,7 @@ class IklanContentController extends Controller
 
 
         $iklanData = IklanData::where('iklan_id',$iklan->id)->get();
-        return view('Operator.box-office.Iklan.content.index', compact('iklanData','iklan'));
+        return view('Operator.box-office.iklan.content.index', compact('iklanData','iklan'));
     }
 
     public function create(Request $request)
@@ -25,7 +25,7 @@ class IklanContentController extends Controller
         $slug = $request->query('q'); // Default slug, bisa diubah sesuai kebutuhan
         $iklan = Iklan::where('slug', $slug)->firstOrFail();
         
-        return view('Operator.box-office.Iklan.content.create',compact('iklan'));
+        return view('Operator.box-office.iklan.content.create',compact('iklan'));
     }
 
     public function store(Request $request)
@@ -62,7 +62,7 @@ class IklanContentController extends Controller
     {
         $iklandata = IklanData::findOrFail($id);
         $iklan = Iklan::findOrFail($iklandata->iklan_id);
-        return view('Operator.box-office.Iklan.content.edit', compact('iklandata', 'iklan'));
+        return view('Operator.box-office.iklan.content.edit', compact('iklandata', 'iklan'));
     }
 
 

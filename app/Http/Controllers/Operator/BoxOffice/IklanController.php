@@ -14,7 +14,7 @@ class IklanController extends Controller
     public function index()
     {
         $iklans = Iklan::with('iklanData')->get();
-        return view('Operator.box-office.Iklan.index', compact('iklans'));
+        return view('Operator.box-office.iklan.index', compact('iklans'));
     }
     
 }
