@@ -145,7 +145,7 @@
                     <div class="collapse" id="navIklan" data-bs-parent="#sideNavbar">
                         <ul class="pl-10 py-2 text-sm space-y-1">
                             
-                            <li><a href="{{ route('iklan.index') }}" class="block text-gray-300 hover:text-white">Halaman Iklan</a></li>
+                            <li><a href="{{ route('iklan.index') }}" class="block text-gray-300 hover:text-white">Informasi Data Iklan</a></li>
                             <li><a href="{{ route('iklandata.index', ['q' => 'home-1']) }}" class="block text-gray-300 hover:text-white">Halaman Home</a></li>
                             <li><a href="{{ route('iklandata.index', ['q' => 'umkm-1']) }}" class="block text-gray-300 hover:text-white">Halaman UMKM</a></li>
                             <li><a href="{{ route('iklandata.index', ['q' => 'pariwisata-1']) }}" class="block text-gray-300 hover:text-white">Halaman Pariwisata</a></li>
