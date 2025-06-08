@@ -67,37 +67,4 @@ class IklanController extends Controller
         return redirect()->route('Operator.box-office.Iklan.index')->with('success', 'Iklan berhasil dihapus.');
     }
     
-
-
-
-    // public function index($jenis,$slug)
-    // {   
-    //     $iklan = Iklan::where('slug',$slug)->with('iklanData')->first();
-
-    //     if(!$iklan){
-    //         return redirect()->route('dashboard')->with('error', 'Iklan not found.');
-    //     }
-    //     return view('Operator.box-office.Iklan.index',[
-    //         'iklan' => $iklan,
-    //         'jenis' => $jenis,
-    //     ]);
-    // }
-
-    // public function create($slug)
-    // {
-    //     $iklan = Iklan::where('slug',$slug)->with('iklanData')->first();
-
-    //     if(!$iklan){
-    //         return redirect()->route('dashboard')->with('error', 'Iklan not found.');
-    //     }
-    //     return view('Operator.box-office.Iklan.create',[
-    //         'iklan' => $iklan,
-    //     ]);
-    // }
-    // public function store(Request $request)
-    // {
-    //     // Logic to store the iklan
-    //     dd("hello");
-    //     return redirect()->route('Operator.BoxOffice.Iklan.index')->with('success', 'Iklan created successfully.');
-    // }
 }
