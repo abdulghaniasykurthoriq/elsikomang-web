@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Operator\Umkm;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProdukUmkm;
+use App\Models\TransaksiDetail;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Phpml\Regression\LeastSquares;
@@ -124,6 +126,120 @@ class LaporanTransaksiUmkmController extends Controller
             compact('year', 'months', 'dataView', 'labels', 'actual', 'prediction'));
     }
 
+
+
+    
+    public function proses(Request $request)
+{
+    $request->validate([
+        'barang_id' => 'required|exists:produk_umkm,id',
+        'bulan' => 'required|integer|min:1|max:12',
+        'tahun' => 'required|integer',
+    ]);
+
+    $barang_id = (int) $request->barang_id;
+    $bulan = (int) $request->bulan;
+    $tahun = (int) $request->tahun;
+
+    $barang = ProdukUmkm::find($barang_id);
+    if (!$barang) {
+        return back()->with('error', 'Barang tidak ditemukan.');
+    }
+
+    // Ambil data historis transaksi
+    $historis = TransaksiDetail::where('produk_id', $barang_id)
+                ->orderBy('created_at')
+                ->get();
+
+    if ($historis->count() < 2) {
+        return back()->with('error', 'Data historis tidak cukup untuk prediksi.');
+    }
+
+    // Hitung total pendapatan per bulan (Y)
+    $data = [];
+    foreach ($historis as $item) {
+        $periode = Carbon::parse($item->created_at)->format('Y-m');
+        $pendapatan = $item->qty * $item->harga;
+        if (!isset($data[$periode])) {
+            $data[$periode] = 0;
+        }
+        $data[$periode] += $pendapatan;
+    }
+
+    // Re-index untuk Least Square (X)
+    $periodeList = array_values($data);
+    $n = count($periodeList);
+    $mid = floor($n / 2);
+    $sumX = $sumY = $sumXY = $sumXX = 0;
+
+    $indexed = [];
+    foreach ($periodeList as $i => $y) {
+        $x = $i - $mid;
+        $xy = $x * $y;
+        $xx = $x * $x;
+
+        $sumX += $x;
+        $sumY += $y;
+        $sumXY += $xy;
+        $sumXX += $xx;
+
+        $indexed[] = compact('x', 'y', 'xy', 'xx');
+    }
+
+    $nilaiA = $sumY / $n;
+    $nilaiB = $sumXX !== 0 ? $sumXY / $sumXX : 0;
+
+    // === Evaluasi terhadap data historis ===
+    $evaluasi = [];
+    foreach (array_keys($data) as $i => $periodeKey) {
+        $x = $i - $mid;
+        $prediksi = $nilaiA + ($nilaiB * $x);
+        $aktual = $data[$periodeKey];
+
+        $mad = abs($aktual - $prediksi);
+        $mse = pow($aktual - $prediksi, 2);
+
+        $evaluasi[] = [
+            'bulan' => Carbon::parse($periodeKey . '-01')->translatedFormat('F'),
+            'tahun' => Carbon::parse($periodeKey . '-01')->year,
+            'prediksi' => $prediksi,
+            'aktual' => $aktual,
+            'mad' => $mad,
+            'mse' => $mse,
+        ];
+    }
+
+    // === Prediksi 12 bulan ke depan ===
+    $prediksiKeDepan = [];
+    $bulanSekarang = Carbon::createFromDate($tahun, $bulan, 1);
+    for ($i = 0; $i < 12; $i++) {
+        $target = $bulanSekarang->copy()->addMonths($i);
+        $x = $n + $i - $mid; // lanjut dari index historis terakhir
+        $prediksi = $nilaiA + ($nilaiB * $x);
+
+        $prediksiKeDepan[] = [
+            'bulan' => $target->translatedFormat('F'),
+            'tahun' => $target->year,
+            'prediksi' => $prediksi,
+            'mad' => '-', // Belum tersedia data aktual
+            'mse' => '-',
+        ];
+    }
+
+    return view('Operator.umkm.LeastSquares.hasil', [
+        'barang' => $barang,
+        'nilaiX' => $sumX,
+        'nilaiY' => $sumY,
+        'nilaiXY' => $sumXY,
+        'nilaiXX' => $sumXX,
+        'nilaiA' => $nilaiA,
+        'nilaiB' => $nilaiB,
+        'evaluasi' => $evaluasi,
+        'prediksiKeDepan' => $prediksiKeDepan,
+    ]);
+}
+
+    
 
     // public function svr(Request $request)
     // {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pariwisata;
+use App\Models\PariwisataRating;
 use Illuminate\Http\Request;
 
 class PariwisataController extends Controller
@@ -97,5 +98,57 @@ class PariwisataController extends Controller
                 'data' => $pariwisata
                 ]); 
     }
+
+    public function rate(Request $request)
+{
+    $user = auth()->user();
+
+    if (!$user) {
+        return response()->json([
+            'message' => 'User belum login atau token tidak valid.'
+        ], 401);
+    }
+
+    $validated = $request->validate([
+        'pariwisata_id' => 'required|exists:pariwisatas,id',
+        'rating' => 'required|numeric|min:1|max:5',
+    ]);
+
+    try {
+        // Cek apakah user sudah memberikan rating sebelumnya
+        $existingRating = PariwisataRating::where('user_id', $user->id)
+                            ->where('pariwisata_id', $validated['pariwisata_id'])
+                            ->first();
+
+        if ($existingRating) {
+            $existingRating->update([
+                'rating' => $validated['rating']
+            ]);
+
+            return response()->json([
+                'message' => 'Rating berhasil diperbarui.',
+                'data' => $existingRating
+            ], 200);
+        }
+
+        // Tambahkan user_id ke data yang divalidasi
+        $validated['user_id'] = $user->id;
+
+        $rating = PariwisataRating::create($validated);
+
+        return response()->json([
+            'message' => 'Rating berhasil ditambahkan.',
+            'data' => $rating
+        ], 201);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Terjadi kesalahan saat menyimpan rating.',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
+
 
 }

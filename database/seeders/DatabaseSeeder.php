@@ -27,5 +27,10 @@ class DatabaseSeeder extends Seeder
         $this->call(TransaksiDumySeeder::class);
         $this->call(IklanSeeder::class);
         $this->call(SplashScreenSeeder::class);
+        $this->call([
+            InvestasiSeeder::class,
+            EventSeeder::class,
+            EntertainmentSeeder::class,
+        ]);
     }
 }

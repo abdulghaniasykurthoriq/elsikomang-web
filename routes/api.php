@@ -41,6 +41,7 @@ Route::middleware(['auth:api'])->group(function () {
 
 
     Route::post('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
+    Route::post('/pariwisata/rate', [PariwisataController::class, 'rate']);
 
 });
 

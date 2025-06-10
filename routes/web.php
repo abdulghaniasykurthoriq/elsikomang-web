@@ -85,6 +85,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/laporan-transaksi-produk-umkm', [UmkmLaporanTransaksiUmkmController::class, 'index'])->name('transaksi-produk-umkm.index');
 
 
+        Route::get('/peramalan/proses', [UmkmLaporanTransaksiUmkmController::class, 'proses'])->name('peramalan.proses');
+
+
     Route::get('/simulasi', [LeastSquaresController::class, 'index'])->name('simulasi.ls.index');
     Route::post('/simulasi', [LeastSquaresController::class, 'proses'])->name('simulasi.ls.proses');
 
