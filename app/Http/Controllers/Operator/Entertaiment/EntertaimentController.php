@@ -13,12 +13,12 @@ class EntertaimentController extends Controller
     public function index()
     {
         $entertaiments = Entertaiment::latest()->get();
-        return view('Operator.Entertaiment.index', compact('entertaiments'));
+        return view('Operator.entertaiment.index', compact('entertaiments'));
     }
 
     public function create()
     {
-        return view('Operator.Entertaiment.create');
+        return view('Operator.entertaiment.create');
     }
 
     public function store(Request $request)
@@ -51,7 +51,7 @@ class EntertaimentController extends Controller
     public function edit($id)
     {
         $entertaiments = Entertaiment::findOrFail($id);
-        return view('Operator.Entertaiment.edit', compact('entertaiments'));
+        return view('Operator.entertaiment.edit', compact('entertaiments'));
     }
 
     public function update(Request $request, $id)

@@ -13,12 +13,12 @@ class InvestasiController extends Controller
     public function index()
     {
         $investasis = Investasi::latest()->get();
-        return view('Operator.Investasi.index', compact('investasis'));
+        return view('Operator.investasi.index', compact('investasis'));
     }
 
     public function create()
     {
-        return view('Operator.Investasi.create');
+        return view('Operator.investasi.create');
     }
 
     public function store(Request $request)
@@ -50,7 +50,7 @@ class InvestasiController extends Controller
     public function edit( $id)
     {
         $investasi = Investasi::findOrFail($id);
-        return view('Operator.Investasi.edit', compact('investasi'));
+        return view('Operator.investasi.edit', compact('investasi'));
     }
 
     public function update(Request $request, $id)
