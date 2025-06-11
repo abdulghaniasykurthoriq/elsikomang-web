@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.app2')
 
 @section('content')
 <div class="container mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold text-gray-800 mb-6">Hasil Prediksi: {{ $barang->nama }}</h1>
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">Hasil Prediksi: {{ $barang->nama_produk }}</h1>
 
     {{-- Info Koefisien --}}
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -24,8 +24,9 @@
         </div>
     </div>
 
+    {{-- Tabel Evaluasi --}}
     <div class="mb-8">
-        <h2 class="text-xl font-bold mb-4 text-green-700">Evaluasi Data Historis</h2>
+        <h2 class="text-xl font-bold mb-4 text-green-700">Evaluasi Semua Data Historis</h2>
         <div class="overflow-x-auto bg-white rounded shadow">
             <table class="table-auto w-full text-sm text-left text-gray-700">
                 <thead class="bg-gray-100">
@@ -35,7 +36,7 @@
                         <th class="px-4 py-2">Aktual</th>
                         <th class="px-4 py-2">Prediksi</th>
                         <th class="px-4 py-2">MAD</th>
-                        <th class="px-4 py-2">MSE</th>
+                        <th class="px-4 py-2">MAPE</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,14 +47,34 @@
                             <td class="px-4 py-2">{{ number_format($item['aktual'], 2) }}</td>
                             <td class="px-4 py-2">{{ number_format($item['prediksi'], 2) }}</td>
                             <td class="px-4 py-2">{{ number_format($item['mad'], 2) }}</td>
-                            <td class="px-4 py-2">{{ number_format($item['mse'], 2) }}</td>
+                            <td class="px-4 py-2">{{ number_format($item['mape'], 2) }}%</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
+
+        {{-- Pagination --}}
+        <div class="mt-4 flex justify-end items-center">
+            @if ($evaluasi->onFirstPage())
+                <span class="text-gray-400 px-4 py-2">← Previous</span>
+            @else
+                <a href="{{ $evaluasi->previousPageUrl() }}" class="text-blue-600 hover:underline px-4 py-2">← Previous</a>
+            @endif
+
+            <span class="text-gray-600 text-sm">
+                Page {{ $evaluasi->currentPage() }} of {{ $evaluasi->lastPage() }}
+            </span>
+
+            @if ($evaluasi->hasMorePages())
+                <a href="{{ $evaluasi->nextPageUrl() }}" class="text-blue-600 hover:underline px-4 py-2">Next →</a>
+            @else
+                <span class="text-gray-400 px-4 py-2">Next →</span>
+            @endif
+        </div>
     </div>
 
+    {{-- Prediksi ke Depan --}}
     <div>
         <h2 class="text-xl font-bold mb-4 text-blue-700">Prediksi 12 Bulan ke Depan</h2>
         <div class="overflow-x-auto bg-white rounded shadow">
@@ -64,7 +85,7 @@
                         <th class="px-4 py-2">Tahun</th>
                         <th class="px-4 py-2">Prediksi</th>
                         <th class="px-4 py-2">MAD</th>
-                        <th class="px-4 py-2">MSE</th>
+                        <th class="px-4 py-2">MAPE</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,7 +95,7 @@
                             <td class="px-4 py-2">{{ $item['tahun'] }}</td>
                             <td class="px-4 py-2">{{ number_format($item['prediksi'], 2) }}</td>
                             <td class="px-4 py-2 text-gray-400 italic">{{ $item['mad'] }}</td>
-                            <td class="px-4 py-2 text-gray-400 italic">{{ $item['mse'] }}</td>
+                            <td class="px-4 py-2 text-gray-400 italic">{{ $item['mape'] }}</td>
                         </tr>
                     @endforeach
                 </tbody>

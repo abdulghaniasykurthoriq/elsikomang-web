@@ -5,10 +5,50 @@
 @section('content')
 
 <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
-    <h1 class="text-xl text-white">Prediksi Pendapatan Produk - Tahun {{ $year }}</h1>
+    <h1 class="text-xl text-white">Prediksi Pendapatan Produk Tahun {{ $year }}</h1>
+    <div>
+    <form action="{{ route('peramalan.proses') }}" method="GET" class="max-w-md mx-auto p-4 flex bg-white shadow-md rounded-lg space-y-4">
+    <div>
+        <label for="barang_id" class="block text-sm font-medium text-gray-700 mb-1 pr-1">Coba Detail Least Square</label>
+        <select class="js-example-basic-single w-full" name="barang_id" id="barang_id">
+            @foreach ($allProduk as $item)
+                <option value="{{ $item->id }}">
+                    {{ $item->nama_produk }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md">
+            Proses
+        </button>
+    </div>
+</form>
+
+
+    </div>
+        
+        @push('scripts')
+
+        <script>
+    $(document).ready(function() {
+        console.log('Document ready');
+        if ($('.js-example-basic-single').length) {
+            console.log('Select2 found');
+            $('.js-example-basic-single').select2();
+        } else {
+            console.log('Select2 NOT found');
+        }
+    });
+    </script>
+        @endpush
 </div>
 
+
+
 <div class="mx-2 px-6 -mt-24 relative z-10">
+    
     <div class="bg-white rounded-xl shadow-xl overflow-hidden w-full">
         <div class="p-4 border-b border-gray-100 flex justify-between items-center">
             <h2 class="text-lg font-semibold text-gray-800">Daftar Prediksi Pendapatan</h2>
