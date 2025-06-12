@@ -15,4 +15,13 @@ class Investasi extends Model
         'deskripsi',
         'created_by',
         'updated_by',
-    ];}
+    ];
+
+    protected $appends = ['gambar_url',];
+
+    public function getGambarUrlAttribute()
+    {
+        return $this->foto_investasi ? asset('storage/' . $this->foto_investasi) : null;
+    }
+
+}

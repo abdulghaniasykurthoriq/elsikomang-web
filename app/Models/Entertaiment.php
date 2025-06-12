@@ -16,4 +16,11 @@ class Entertaiment extends Model
         'created_by',
         'updated_by',
     ];
+
+    protected $appends = ['gambar_url',];
+
+    public function getGambarUrlAttribute()
+    {
+        return $this->foto_entertaiment ? asset('storage/' . $this->foto_entertaiment) : null;
+    }
 }
