@@ -33,6 +33,12 @@ class Pariwisata extends Model
     {
         return $this->hasMany(PariwisataRating::class);
     }
+    protected $appends = ['gambar_url',];
+
+    public function getGambarUrlAttribute()
+    {
+        return $this->gambar ? asset('storage/' . $this->gambar) : null;
+    }
 
     
     
