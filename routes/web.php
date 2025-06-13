@@ -14,16 +14,24 @@ use App\Http\Controllers\Operator\Pariwisata\RekomendasiWisataController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\Admin\SplashScreenController;
+use App\Http\Controllers\Operator\BoxOffice\DashboardBoxOfficeController;
 use App\Http\Controllers\Operator\BoxOffice\IklanContentController;
 use App\Http\Controllers\Operator\BoxOffice\IklanController as BoxOfficeIklanController;
+use App\Http\Controllers\Operator\Entertaiment\DashboardEntertaimentController;
 use App\Http\Controllers\Operator\Entertaiment\EntertaimentController;
+use App\Http\Controllers\Operator\Event\DashboardEventController;
 use App\Http\Controllers\Operator\Event\OperatorEventController as EventOperatorEventController;
+use App\Http\Controllers\Operator\Investasi\DashboardInvestasiController;
 use App\Http\Controllers\Operator\Investasi\InvestasiController;
+use App\Http\Controllers\Operator\Pariwisata\DashboardPariwisataController;
+use App\Http\Controllers\Operator\Umkm\DashboardUmkmController;
 use App\Http\Controllers\Operator\Umkm\LaporanKlasterProdukController as UmkmLaporanKlasterProdukController;
 use App\Http\Controllers\Operator\Umkm\LaporanTransaksiUmkmController as UmkmLaporanTransaksiUmkmController;
 use App\Http\Controllers\Operator\Umkm\MemberUmkmController as UmkmMemberUmkmController;
 use App\Http\Controllers\Operator\Umkm\ProdukUmkmController as UmkmProdukUmkmController;
 use App\Http\Middleware\CheckUserRoleMiddleware;
+use App\Http\Controllers\Operator\Entertaiment;
+
 
 // Halaman login
 Route::get('/', function () {
@@ -36,7 +44,7 @@ Route::get('auth/google/callback', [AuthenticatedSessionController::class, 'hand
 // ADMIN ROUTE
 // ===========================
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/cover-menu', [CoverMenuController::class, 'index'])->name('cover-menu.index');
     Route::get('/cover-menu/data', [CoverMenuController::class, 'data'])->name('cover-menu.data');
     Route::get('/cover-menu/{id}/edit', [CoverMenuController::class, 'edit'])->name('cover-menu.edit');
@@ -51,36 +59,42 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
 // OPERATOR ROUTE
 // ===========================
 Route::middleware(['auth'])->group(function () {
-    Route::get('/{jenis}/dashboard', [OperatorDashboardController::class, 'index'])->name('operator.dashboard');
 
     Route::middleware(CheckUserRoleMiddleware::class.':Operator investasi')->group(function () {
+        Route::get('/investasi/dashboard', [DashboardInvestasiController::class, 'index'])->name('investasi.dashboard');
         Route::resource('/investasi', InvestasiController::class)->except(['show']);
     });
-    Route::middleware(CheckUserRoleMiddleware::class.':Operator entertaiment')->group(function () {
+    Route::middleware(CheckUserRoleMiddleware::class.':Operator entertainment')->group(function () {
+        Route::get('/entertaiment/dashboard', [DashboardEntertaimentController::class, 'index'])->name('entertaiment.dashboard');
         Route::resource('/entertaiment', EntertaimentController::class)->except(['show']);
     });
     Route::middleware(CheckUserRoleMiddleware::class.':Operator event')->group(function () {
+        Route::get('/event/dashboard', [DashboardEventController::class, 'index'])->name('event.dashboard');
         Route::resource('/event', EventOperatorEventController::class)->except(['show']);
     });
     Route::middleware(CheckUserRoleMiddleware::class.':Operator pariwisata')->group(function () {
+        Route::get('/pariwisata/dashboard', [DashboardPariwisataController::class, 'index'])->name('pariwisata.dashboard');
         Route::resource('/pariwisata', PariwisataController::class)
             ->names('operator.pariwisata.data')
             ->parameters(['pariwisata' => 'id']);
-        Route::resource('/laporan', LaporanPariwisataController::class)
+            Route::resource('/laporan', LaporanPariwisataController::class)
             ->names('operator.pariwisata.laporan');
-        Route::get('/rekomendasi', [RekomendasiWisataController::class, 'index'])->name('operator.pariwisata.rekomendasi');
+            Route::get('/rekomendasi', [RekomendasiWisataController::class, 'index'])->name('operator.pariwisata.rekomendasi');
 
     });
     Route::middleware(CheckUserRoleMiddleware::class.':Operator box office')->group(function () {
-
+        Route::get('/box-office/dashboard', [DashboardBoxOfficeController::class, 'index'])->name('box-office.dashboard');
         Route::resource('/iklan', BoxOfficeIklanController::class)->except(['show']);
         Route::resource('iklandata', IklanContentController::class)->except(['show']);
 
     });
     Route::middleware(CheckUserRoleMiddleware::class.':Operator umkm')->group(function () {
+        Route::get('/dashboard', [DashboardUmkmController::class, 'index'])->name('ProdukUmkm.dashboard');
         Route::resource('/produk_umkm', UmkmProdukUmkmController::class)->except(['show']);
         Route::resource('/member_umkm', UmkmMemberUmkmController::class)->except(['show']);
         Route::get('/klasterisasi_umkm', [UmkmLaporanKlasterProdukController::class, 'index'])->name('klasterisasi-produk.index');
+        Route::post('/klasterisasi_umkm/process', [UmkmLaporanKlasterProdukController::class, 'process'])->name('klasterisasi-produk.process');
+
         Route::get('/laporan-transaksi-produk-umkm', [UmkmLaporanTransaksiUmkmController::class, 'index'])->name('transaksi-produk-umkm.index');
         
     });

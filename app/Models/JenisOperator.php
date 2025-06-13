@@ -9,6 +9,7 @@ class JenisOperator extends Model
     public function users()
     {
         return $this->hasMany(User::class);
+        return $this->belongsTo(JenisOperator::class, 'jenis_operator_id');
     }
 
     protected $fillable = [

@@ -37,13 +37,13 @@ class JenisOperatorSeeder extends Seeder
 
         JenisOperator::create([
             'name' => 'Entertiment',
-            'url' => 'operator?role=entertaiment',
-            'url_parameter' => 'entertaiment',
+            'url' => 'operator?role=entertaniment',
+            'url_parameter' => 'entertainment',
         ]);
         JenisOperator::create([
             'name' => 'Box Office',
-            'url' => 'operator?role=box-office',
-            'url_parameter' => 'box-office',
+            'url' => 'operator?role=box office',
+            'url_parameter' => 'box office',
         ]);
     }
 }

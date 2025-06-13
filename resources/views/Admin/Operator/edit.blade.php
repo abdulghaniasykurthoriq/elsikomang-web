@@ -42,7 +42,6 @@
                 
 
                 <div class="pt-4 flex justify-end gap-2">
-                    <a href="{{ route('operator.index', ['role' => strtolower($role)]) }}" class="btn btn-secondary">Batal</a>
                     <button type="submit" class="btn bg-indigo-600 text-white hover:bg-indigo-700">Perbarui</button>
                 </div>
             </form>

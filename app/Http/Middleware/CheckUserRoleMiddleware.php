@@ -19,6 +19,6 @@ class CheckUserRoleMiddleware
             return $next($request);
         }
 
-        abort(403, 'Akses Dilarang coy');
+        abort(403, 'akses Dilarang');
     }
 }

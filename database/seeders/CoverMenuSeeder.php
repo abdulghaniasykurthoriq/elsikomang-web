@@ -30,7 +30,7 @@ class CoverMenuSeeder extends Seeder
         ]);
         CoverMenu::create([
             'id' => 4,
-            'nama' => 'Entertaintment',
+            'nama' => 'Entertainment',
             'foto' => 'cover-menu/dumy.jpg',
         ]);
         CoverMenu::create([

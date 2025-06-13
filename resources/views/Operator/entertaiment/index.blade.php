@@ -1,19 +1,19 @@
 @extends('layouts.app2')
 
-@section('title', 'Data Entertaiment')
+@section('title', 'Data Entertainment')
 
 @section('content')
 
 
 <div class="bg-indigo-600 px-8 pt-10 pb-28 flex justify-between items-center">
-    <h1 class="text-xl text-white">Data Entertaiment</h1>
-    <a href="{{ route('entertaiment.create') }}" class="btn bg-white text-gray-800"> + Tambah Entertaiment</a>
+    <h1 class="text-xl text-white">Data Entertainment</h1>
+    <a href="{{ route('entertaiment.create') }}" class="btn bg-white text-gray-800"> + Tambah Entertainment</a>
 </div>
 
 <div class="m-2 px-6 -mt-24">
     <div class="bg-white rounded-xl shadow-xl overflow-hidden w-full">
         <div class="p-4 border-b border-gray-100">
-            <h2 class="text-lg font-semibold text-gray-800">Daftar Entertaiment</h2>
+            <h2 class="text-lg font-semibold text-gray-800">Daftar Entertainment</h2>
         </div>
 
         <div class="overflow-x-auto">
@@ -58,7 +58,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center py-4 text-gray-500">Tidak ada data entertaiment.</td>
+                            <td colspan="5" class="text-center py-4 text-gray-500">Tidak ada data entertainment.</td>
                         </tr>
                     @endforelse
                 </tbody>

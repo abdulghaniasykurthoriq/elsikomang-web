@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Operator;
 
-use App\Models\Operator;
+use App\Models\User;
+use App\Models\JenisOperator;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\JenisOperator;
-use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class OperatorController extends Controller
 {
@@ -21,6 +21,7 @@ class OperatorController extends Controller
         } else {
             $operators = User::all();
         }
+
         return view('Admin.Operator.index', compact('operators', 'role'));
     }
 
@@ -28,34 +29,43 @@ class OperatorController extends Controller
     {
         $jenisOperator = JenisOperator::all();
         $role = $request->get('role');
-        $role == 'box-office' ? $role = 'Box Office' : $role; // kalau role box-office, formatkan ke 'Box Office'
+
         return view('Admin.Operator.create', compact('jenisOperator', 'role'));
     }
 
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
-            'name' => 'required',
+            'name'  => 'required',
             'email' => 'required|email|unique:users',
-            'role' => 'required'
+            'role'  => 'required'
         ]);
 
         DB::beginTransaction();
         try {
-            // $passwordRandom = Str::random(8); // generate password acak 8 karakter
+            $passwordRandom = Str::random(8);
 
-            User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                // 'password' => bcrypt($passwordRandom), // pakai input kalau ada, atau password random
-                'password' => bcrypt($request->password), 
-                'role' => 'Operator ' . $request->role, // role ditambahkan prefix "Operator"
+            $user = User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => bcrypt($passwordRandom),
+                'role'     => 'Operator ' . $request->role,
             ]);
+
+            // Kirim email ke operator
+            Mail::send('emails.operator_account_created', [
+                'name'     => $user->name,
+                'email'    => $user->email,
+                'password' => $passwordRandom,
+                'role'     => $request->role
+            ], function ($message) use ($user) {
+                $message->to($user->email)
+                        ->subject('Akun Operator Anda Telah Dibuat');
+            });
 
             DB::commit();
             return redirect()->route('operator.index', ['role' => $request->role])
-                ->with('success', 'Operator berhasil ditambahkan.');
+                ->with('success', 'Operator berhasil ditambahkan. Password telah dikirim ke email operator.');
         } catch (\Throwable $th) {
             DB::rollBack();
             return back()->withErrors('Gagal menambahkan operator: ' . $th->getMessage());
@@ -64,30 +74,28 @@ class OperatorController extends Controller
 
     public function edit(Request $request, $id)
     {
-        // dd('jjj');
         $user = User::findOrFail($id);
         $jenisOperator = JenisOperator::all();
         $role = $request->get('role');
-        $role == 'box-office' ? $role = 'Box Office' : $role; // format role jika perlu
         return view('Admin.Operator.edit', compact('jenisOperator', 'user', 'role'));
     }
-    
+
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'required',
+            'name'  => 'required',
             'email' => 'required|email|unique:users,email,' . $id,
-            'role' => 'required',
+            'role'  => 'required',
         ]);
 
         DB::beginTransaction();
         try {
             $user->update([
-                'name' => $request->name,
+                'name'  => $request->name,
                 'email' => $request->email,
-                'role' => 'Operator ' . $request->role, // update role dengan prefix "Operator"
+                'role'  => 'Operator ' . $request->role,
             ]);
 
             DB::commit();

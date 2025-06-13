@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Entertaiment;
 use Illuminate\Http\Request;
 
-class EntertaintmentController extends Controller
+class EntertaitmentController extends Controller
 {
     public function index(Request $request)
     {

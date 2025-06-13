@@ -6,7 +6,6 @@
 
     <!-- Header Section -->
     <div class=" bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
-        <h1 class="text-xl text-white">Data Operator {{ $role == 'box-office' ? 'Box Office' : ucfirst($role) }}
         </h1>
 
         <a href="{{ route('operator.create', ['role' => $role]) }}"  class="btn btn-success">+ Tambah Operator</a>

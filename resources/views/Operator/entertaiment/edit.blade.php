@@ -1,12 +1,12 @@
 @extends('layouts.app2')
 
-@section('title', 'Edit Entertaiment')
+@section('title', 'Edit Entertainment')
 
 @section('content')
 
 
 <div class="bg-indigo-600 px-8 pt-10 pb-28 flex justify-between items-center">
-    <h1 class="text-xl text-white">Edit Data Entertaiment</h1>
+    <h1 class="text-xl text-white">Edit Data Entertainment</h1>
     <a href="{{ route('entertaiment.index') }}" class="btn bg-white text-gray-800">Kembali</a>
 </div>
 
@@ -30,7 +30,7 @@
             @method('PUT')
 
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Nama Entertaiment</label>
+                <label class="block text-sm font-medium text-gray-700">Nama Entertainment</label>
                 <input type="text" name="nama_entertaiment" class="input input-bordered w-full" value="{{ old('nama_entertaiment', $entertaiments->nama_entertaiment) }}" >
             </div>
 
@@ -40,7 +40,7 @@
             </div>
 
             <div class="mb-6">
-                <label class="block mb-1 text-sm font-medium text-gray-700">Foto Entertaiment</label>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Foto Entertainment</label>
                 @if ($entertaiments->foto_entertaiment)
                     <div class="mb-2">
                         <img src="{{ asset('storage/' . $entertaiments->foto_entertaiment) }}" alt="Foto Lama" width="100">
