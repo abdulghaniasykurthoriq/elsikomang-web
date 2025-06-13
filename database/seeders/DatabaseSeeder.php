@@ -32,6 +32,6 @@ class DatabaseSeeder extends Seeder
             EventSeeder::class,
             EntertainmentSeeder::class,
         ]);
-        $this->call(DesaSeeder::class);
+        // $this->call(DesaSeeder::class);
     }
 }

@@ -79,6 +79,11 @@ Route::post('/transaksi/callback', [TransaksiController::class, 'update']);
 
 
 
+Route::get('/wilayah/raga-ongkir', [WilayahController::class, 'importDestinasi']);
+
+
+
+
 
 
 
