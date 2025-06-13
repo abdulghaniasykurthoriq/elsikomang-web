@@ -1,12 +1,12 @@
 @extends('layouts.app2')
 
-@section('title', 'Tambah Entertaiment')
+@section('title', 'Tambah Entertainment')
 
 @section('content')
 
 
 <div class="bg-indigo-600 px-8 pt-10 pb-28 flex justify-between items-center">
-    <h1 class="text-xl text-white"> Tambah Data Entertaiment</h1>
+    <h1 class="text-xl text-white"> Tambah Data Entertainment</h1>
     <a href="{{ route('entertaiment.index') }}" class="btn bg-white text-gray-800">Kembali</a>
 </div>
 
@@ -29,7 +29,7 @@
             @csrf
 
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700">Nama Entertaiment</label>
+                <label class="block text-sm font-medium text-gray-700">Nama Entertainment</label>
                 <input type="text" name="nama_entertaiment" class="input input-bordered w-full" value="{{ old('nama_entertaiment') }}" required>
             </div>
 
@@ -39,7 +39,7 @@
             </div>
 
             <div class="mb-6">
-                <label class="block mb-1 text-sm font-medium text-gray-700">Foto Entertaiment</label>
+                <label class="block mb-1 text-sm font-medium text-gray-700">Foto Entertainment</label>
                 <input type="file" name="foto_entertaiment" class="w-full input input-bordered" accept=".jpg,.jpeg,.png" required>
                 <p class="text-xs text-gray-500 mt-1">Format: JPG, JPEG, PNG. Max 2MB.</p>
             </div>

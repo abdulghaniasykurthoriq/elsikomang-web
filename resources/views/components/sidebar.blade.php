@@ -1,7 +1,7 @@
 <nav class="navbar-vertical navbar">
     <div id="myScrollableElement" class="h-screen" data-simplebar>
         <!-- brand logo -->
-        <a href="{{ route('dashboard') }}" class="navbar-brand text-white text-xl font-bold">     
+        <a href="{{ route('admin.dashboard') }}" class="navbar-brand text-white text-xl font-bold">     
             Elsikomang <br/>    
         </a>
 
@@ -9,7 +9,7 @@
         <!-- navbar nav -->
         <ul class="navbar-nav flex-col" id="sideNavbar">
             <li class="nav-item">
-                <a class="nav-link  active " href="{{ route('dashboard') }}">
+                <a class="nav-link  active " href="{{ route('admin.dashboard') }}">
                     <i data-feather="home" class="w-4 h-4 mr-2"></i>
                     Dashboard
                 </a>
@@ -47,7 +47,7 @@
                             <a class="nav-link" href="{{ route('operator.index', ['role' => 'entertainment']) }}">OP Entertainment</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('operator.index', ['role' => 'box-office']) }}">OP Box Office</a>
+                            <a class="nav-link" href="{{ route('operator.index', ['role' => 'box office']) }}">OP Box Office</a>
                         </li>
                     </ul>
                 </div>

@@ -8,16 +8,17 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request, $jenis)
+    public function index($jenis)
     {
-        $jenisOperator = JenisOperator::where('url_parameter', $jenis)->first();
-
-        if (!$jenisOperator) {
-            abort(404); // Jika jenis_operator tidak ditemukan
+        $view = 'Operator.' . strtolower($jenis) . '.dashboard';
+    
+        if (view()->exists($view)) {
+            return view($view);
         }
-
-        return view("Operator.$jenis.dashboard", compact('jenis'));
+    
+        abort(404, 'Halaman dashboard untuk jenis operator ini tidak ditemukan.');
     }
+    
 
     }
 

@@ -2,78 +2,128 @@
 
 namespace App\Http\Controllers\Operator\Umkm;
 
-
 use App\Http\Controllers\Controller;
-use App\Models\ProdukUmkm;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Models\ProdukUmkm;
 use Phpml\Clustering\KMeans;
+use Carbon\Carbon;
 
 class LaporanKlasterProdukController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $year = $request->get('tahun', now()->year);
-        $months = [1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
-                   7 => 'Jul', 8 => 'Agu', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'];
+        $data = ProdukUmkm::with('produk_variant')->get();
+        return view('Operator.umkm.Laporan.KlasterisasiProduk.index', compact('data'));
+    }
 
-        $produkList = ProdukUmkm::all();
-        $produkTransaksi = [];
-        $produkNama = [];
+    public function process(Request $request)
+    {
+        $request->validate([
+            'cluster' => 'required|integer|min:2',
+            'max_iterasi' => 'required|integer|min:1',
+            'tahun' => 'nullable|integer|min:2000|max:' . date('Y'),
+        ]);
 
-        // Ambil jumlah transaksi per bulan
-        foreach ($produkList as $produk) {
-            $query = DB::table('transaksi_details')
-                ->selectRaw('MONTH(created_at) as bulan, SUM(qty) as total_qty')
-                ->where('produk_id', $produk->id)
-                ->whereYear('created_at', $year)
-                ->groupByRaw('MONTH(created_at)')
-                ->get();
+        $cluster = (int) $request->input('cluster');
+        $maxIterasi = (int) $request->input('max_iterasi');
+        $selectedYear = (int) $request->input('tahun', date('Y'));
 
-            $transaksi = array_fill(1, 12, 0);
-            foreach ($query as $row) {
-                $transaksi[$row->bulan] = (int) $row->total_qty;
-            }
+        $produk = ProdukUmkm::with('produk_variant')->get();
+        $dataset = [];
+        $produkMapping = [];
 
-            $produkTransaksi[$produk->id] = array_values($transaksi);
-            $produkNama[$produk->id] = $produk->nama_produk;
-        }
+        foreach ($produk as $item) {
+            foreach ($item->produk_variant as $variant) {
+                $harga = (int) round($variant->harga);
+                $created = $variant->created_at ?? $item->created_at;
 
-        // Klasterisasi
-        $samples = array_values($produkTransaksi);
-        $kmeans = new KMeans(3);
-        $clusters = $kmeans->cluster($samples);
-
-        $labels = ['Murah', 'Sedang', 'Mahal'];
-        $colors = ['#3b82f6', '#ef4444', '#22c55e'];
-
-        $clusterMonthly = [];
-        foreach ($labels as $label) {
-            for ($i = 1; $i <= 12; $i++) {
-                $clusterMonthly[$label][$i] = 0;
-            }
-        }
-
-        foreach ($clusters as $index => $produkCluster) {
-            $label = $labels[$index];
-            foreach ($produkCluster as $produkData) {
-                foreach ($produkTransaksi as $id => $data) {
-                    if ($data === $produkData) {
-                        for ($i = 1; $i <= 12; $i++) {
-                            $clusterMonthly[$label][$i] += $data[$i - 1];
-                        }
-                        break;
-                    }
+                if (!is_null($harga) && Carbon::parse($created)->year == $selectedYear) {
+                    $dataset[] = [$harga];
+                    $produkMapping[] = [
+                        'nama_produk' => $item->nama_produk . ' - ' . $variant->nama_varian,
+                        'harga' => $harga,
+                        'created_at' => $created,
+                    ];
                 }
             }
         }
 
-        return view('Operator.umkm.Laporan.KlasterisasiProduk.index', [
-            'year' => $year,
-            'months' => array_values($months),
-            'clusterMonthly' => $clusterMonthly,
+        if (count($dataset) < $cluster) {
+            return back()->with('error', 'Jumlah data harga untuk tahun ' . $selectedYear . ' harus lebih banyak dari jumlah cluster.');
+        }
+
+        // Jalankan clustering
+        $kmeans = new KMeans($cluster, KMeans::INIT_RANDOM, $maxIterasi);
+        $clusters = $kmeans->cluster($dataset);
+
+        // Hitung centroid manual
+        $centroids = [];
+        foreach ($clusters as $clusterPoints) {
+            $sum = array_sum(array_column($clusterPoints, 0));
+            $centroids[] = [round($sum / count($clusterPoints), 4)];
+        }
+
+        $euclideanTable = [];
+        $produkClustered = [];
+
+        foreach ($produkMapping as $index => $produk) {
+            $distances = array_map(fn($centroid) => round(abs($produk['harga'] - $centroid[0]), 4), $centroids);
+            $minIndex = array_keys($distances, min($distances))[0];
+
+            $euclideanTable[] = [
+                'nama_produk' => $produk['nama_produk'],
+                'harga' => $produk['harga'],
+                'distances' => $distances,
+            ];
+
+            $produkClustered[] = [
+                'nama_produk' => $produk['nama_produk'],
+                'harga' => $produk['harga'],
+                'cluster' => 'Cluster ' . ($minIndex + 1),
+                'distance' => $distances[$minIndex],
+                'bulan' => Carbon::parse($produk['created_at'])->translatedFormat('F'),
+                'bulan_index' => Carbon::parse($produk['created_at'])->format('n') - 1,
+            ];
+        }
+
+        // Data tambahan untuk tampilan grafik dan tabel bulanan
+        $months = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+
+        $labels = [];
+        for ($i = 1; $i <= $cluster; $i++) {
+            $labels[] = 'Cluster ' . $i;
+        }
+
+        $clusterMonthly = [];
+        foreach ($labels as $label) {
+            $clusterMonthly[$label] = array_fill(0, 12, 0);
+        }
+
+        foreach ($produkClustered as $produk) {
+            if (isset($clusterMonthly[$produk['cluster']])) {
+                $clusterMonthly[$produk['cluster']][$produk['bulan_index']]++;
+            }
+        }
+
+        // Warna default
+        $colors = [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+            '#FF9F40', '#8BC34A', '#00ACC1', '#F44336', '#9E9D24'
+        ];
+
+        return view('Operator.umkm.Laporan.KlasterisasiProduk.hasil', [
+            'centroids' => $centroids,
+            'euclideanTable' => $euclideanTable,
+            'produkClustered' => $produkClustered,
             'labels' => $labels,
+            'months' => $months,
             'colors' => $colors,
+            'clusterMonthly' => $clusterMonthly,
+            'year' => now()->year,
+            'selectedYear' => $selectedYear
         ]);
     }
 }
