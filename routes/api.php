@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AlamatController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CoverMenuController;
 use App\Http\Controllers\API\EntertaintmentController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\API\PariwisataController;
 use App\Http\Controllers\API\ProdukController;
 use App\Http\Controllers\API\SplashScreenController;
 use App\Http\Controllers\API\TransaksiController;
+use App\Http\Controllers\API\WilayahController;
 use App\Http\Controllers\API\WishlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +31,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('auth/update', [AuthController::class, 'update']);
     Route::post('auth/update-password', [AuthController::class, 'updatePassword']);
     Route::post('auth/update-foto', [AuthController::class, 'updateFoto']);
+    Route::apiResource('alamats', AlamatController::class);
 
     Route::get('/keranjang-ku', [KeranjangController::class, 'index']);
     Route::post('/keranjang-ku/add', [KeranjangController::class, 'add']);
@@ -44,6 +47,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/pariwisata/rate', [PariwisataController::class, 'rate']);
 
 });
+
+Route::get('/provinsi', [WilayahController::class, 'provinsi']);
+Route::get('/kota/{id}', [WilayahController::class, 'kota']);
+Route::get('/kecamatan/{id}', [WilayahController::class, 'kecamatan']);
+Route::get('/desa/{id}', [WilayahController::class, 'desa']);
 
 Route::get('/produk', [ProdukController::class, 'index']);
 Route::get('/produk/{id}', [ProdukController::class, 'show']);
