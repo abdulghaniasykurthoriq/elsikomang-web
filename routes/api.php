@@ -11,6 +11,7 @@ use App\Http\Controllers\API\KeranjangController;
 use App\Http\Controllers\API\KritikDanSaranController;
 use App\Http\Controllers\API\PariwisataController;
 use App\Http\Controllers\API\ProdukController;
+use App\Http\Controllers\API\RajaOngkirController;
 use App\Http\Controllers\API\SplashScreenController;
 use App\Http\Controllers\API\TransaksiController;
 use App\Http\Controllers\API\WilayahController;
@@ -79,7 +80,8 @@ Route::post('/transaksi/callback', [TransaksiController::class, 'update']);
 
 
 
-Route::get('/wilayah/raga-ongkir', [WilayahController::class, 'importDestinasi']);
+// Route::get('/wilayah/raga-ongkir', [WilayahController::class, 'importDestinasi']);
+Route::post('/cek-ongkir', [RajaOngkirController::class, 'checkOngkir']);
 
 
 
