@@ -53,7 +53,7 @@ class OperatorController extends Controller
             ]);
 
             // Kirim email ke operator
-            Mail::send('emails.operator_account_created', [
+            Mail::send('Emails.operator_account_created', [
                 'name'     => $user->name,
                 'email'    => $user->email,
                 'password' => $passwordRandom,
