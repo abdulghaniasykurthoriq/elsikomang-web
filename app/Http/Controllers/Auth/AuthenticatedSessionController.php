@@ -42,7 +42,7 @@ class AuthenticatedSessionController extends Controller
             case 'operator investasi':
                 return redirect()->route('investasi.dashboard');
             case 'operator entertainment':
-                return redirect()->route('entertainment.dashboard');
+                return redirect()->route('entertaiment.dashboard');
             case 'operator event':
                 return redirect()->route('event.dashboard');
             case 'operator box office':
@@ -96,7 +96,7 @@ class AuthenticatedSessionController extends Controller
                 case 'operator investasi':
                     return redirect()->route('investasi.dashboard');
                 case 'operator entertainment':
-                    return redirect()->route('entertainment.dashboard');
+                    return redirect()->route('entertaiment.dashboard');
                 case 'operator event':
                     return redirect()->route('event.dashboard');
                 case 'operator box office':

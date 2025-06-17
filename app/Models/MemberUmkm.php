@@ -13,6 +13,7 @@ class MemberUmkm extends Model
         'alamat',
         'no_hp',
         'foto_toko',
+        'desa_id',
         'created_by',
         'updated_by',
     ];
@@ -20,6 +21,12 @@ class MemberUmkm extends Model
         'created_by',
         'updated_by',
     ];
+
+    public function desa()
+    {
+        return $this->belongsTo(Desa::class);
+    }
+
         // Relasi dengan ProdukUmkm
         public function produkUmkm()
         {

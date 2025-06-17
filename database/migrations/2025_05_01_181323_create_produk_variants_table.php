@@ -12,6 +12,7 @@ class CreateProdukVariantsTable extends Migration
             $table->id();
             $table->foreignId('produk_umkm_id')->constrained('produk_umkm')->onDelete('cascade');
             $table->string('varian');
+            $table->integer('berat')->default(0);
             $table->decimal('harga', 12, 2);
             $table->integer('stok')->default(0);
             $table->string('created_by')->nullable();

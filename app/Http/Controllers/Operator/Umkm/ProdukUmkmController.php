@@ -64,6 +64,7 @@ class ProdukUmkmController extends Controller
                 foreach ($request->produk_variant as $dataVarian) {
                     $produk_umkm->produk_variant()->create([
                         'varian' => $dataVarian['varian'],
+                        'berat' => $dataVarian['berat'],
                         'harga' => $dataVarian['harga'],
                         'stok' => $dataVarian['stok'],
                     ]);
@@ -135,6 +136,7 @@ class ProdukUmkmController extends Controller
                 foreach ($request->produk_variant as $dataVarian) {
                     $produk_umkm->produk_variant()->create([
                         'varian' => $dataVarian['varian'],
+                        'berat' => $dataVarian['berat'],
                         'harga' => $dataVarian['harga'],
                         'stok' => $dataVarian['stok'],
                     ]);

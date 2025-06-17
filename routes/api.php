@@ -3,7 +3,7 @@
 use App\Http\Controllers\API\AlamatController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CoverMenuController;
-use App\Http\Controllers\API\EntertaintmentController;
+use App\Http\Controllers\API\EntertainmentController;
 use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\IklanController;
 use App\Http\Controllers\API\InvestasiController;
@@ -11,6 +11,7 @@ use App\Http\Controllers\API\KeranjangController;
 use App\Http\Controllers\API\KritikDanSaranController;
 use App\Http\Controllers\API\PariwisataController;
 use App\Http\Controllers\API\ProdukController;
+use App\Http\Controllers\API\RajaOngkirController;
 use App\Http\Controllers\API\SplashScreenController;
 use App\Http\Controllers\API\TransaksiController;
 use App\Http\Controllers\API\WilayahController;
@@ -62,8 +63,9 @@ Route::get('/pariwisata/{id}', [PariwisataController::class, 'show']);
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{id}', [EventController::class, 'show']);
 
-Route::get('/entertaintments', [EntertaintmentController::class, 'index']);
-Route::get('/entertaintments/{id}', [EntertaintmentController::class, 'show']);
+Route::get('/entertaintments', [EntertainmentController::class, 'index']);
+Route::get('/entertaintments/{id}', [EntertainmentController::class, 'show']);
+
 Route::get('/investasi', [InvestasiController::class, 'index']);
 Route::get('/investasi/{id}', [InvestasiController::class, 'show']);
 
@@ -79,8 +81,8 @@ Route::post('/transaksi/callback', [TransaksiController::class, 'update']);
 
 
 
-Route::get('/wilayah/raga-ongkir', [WilayahController::class, 'importDestinasi']);
-
+// Route::get('/wilayah/raga-ongkir', [WilayahController::class, 'importDestinasi']);
+Route::post('/cek-ongkir', [RajaOngkirController::class, 'checkOngkir']);
 
 
 

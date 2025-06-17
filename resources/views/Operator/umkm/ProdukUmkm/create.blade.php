@@ -5,7 +5,7 @@
 
 
 <div class=" bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
-    <h1 class="text-xl text-white">+ Tambah Produk UMKM</h1>
+    <h1 class="text-xl text-white">Tambah Produk UMKM</h1>
 
     <a href="{{ route('produk_umkm.index') }}"
         class="btn bg-white text-gray-800 border-gray-600 hover:bg-gray-100 hover:text-gray-800 hover:border-gray-200 active:bg-gray-100 active:text-gray-800 active:border-gray-200 focus:outline-none focus:ring-4 focus:ring-indigo-300">
@@ -98,6 +98,7 @@
                 <div id="produk_variant">
                     <div class="produk_variant flex gap-2 mb-2">
                         <input type="text" name="produk_variant[0][varian]" placeholder="Varian" class="form-input w-1/3" required>
+                        <input type="number" name="produk_variant[0][berat]" placeholder="Berat (gram)" class="form-input w-1/3" required>
                         <input type="number" name="produk_variant[0][harga]" placeholder="Harga" class="form-input w-1/3" required>
                         <input type="number" name="produk_variant[0][stok]" placeholder="Stok" class="form-input w-1/3" required>
                         <button type="button" onclick="removeVariant(this)" class="bg-red-500 text-white px-2 rounded">X</button>
@@ -136,6 +137,7 @@
         div.className = 'variant-item flex gap-2 mb-2';
         div.innerHTML = `
             <input type="text" name="produk_variant[${variantIndex}][varian]" placeholder="Varian" class="form-input w-1/3" required>
+            <input type="number" name="produk_variant[${variantIndex}][berat]" placeholder="Berat" class="form-input w-1/3" required>
             <input type="number" name="produk_variant[${variantIndex}][harga]" placeholder="Harga" class="form-input w-1/3" required>
             <input type="number" name="produk_variant[${variantIndex}][stok]" placeholder="Stok" class="form-input w-1/3" required>
             <button type="button" onclick="removeVariant(this)" class="bg-red-500 text-white px-2 rounded">X</button>
