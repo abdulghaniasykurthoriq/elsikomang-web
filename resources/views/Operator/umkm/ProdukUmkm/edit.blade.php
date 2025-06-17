@@ -110,6 +110,7 @@
                     @foreach($variants as $index => $varian)
                         <div class="flex gap-2 items-center">
                             <input type="text" name="produk_variant[{{ $index }}][varian]" class="form-input w-1/3" placeholder="Varian" value="{{ is_array($varian) ? $varian['varian'] : $varian->varian }}" >
+                            <input type="number" name="produk_variant[{{ $index }}][berat]" class="form-input w-1/3" placeholder="Berat (gram)" value="{{ is_array($varian) ? $varian['berat'] : $varian->berat }}" >
                             <input type="number" name="produk_variant[{{ $index }}][harga]" class="form-input w-1/3" placeholder="Harga" value="{{ is_array($varian) ? $varian['harga'] : $varian->harga }}" >
                             <input type="number" name="produk_variant[{{ $index }}][stok]" class="form-input w-1/4" placeholder="Stok" value="{{ is_array($varian) ? $varian['stok'] : $varian->stok }}" >
                             <button type="button" class="btn bg-red-500 text-white hover:bg-red-600 remove-varian">X</button>
@@ -145,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
         items.forEach((item, index) => {
             const inputs = item.querySelectorAll('input');
             inputs[0].setAttribute('name', `produk_variant[${index}][varian]`);
+            inputs[1].setAttribute('name', `produk_variant[${index}][berat]`);
             inputs[1].setAttribute('name', `produk_variant[${index}][harga]`);
             inputs[2].setAttribute('name', `produk_variant[${index}][stok]`);
         });
@@ -155,6 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
         div.classList.add('flex', 'gap-2', 'items-center');
         div.innerHTML = `
             <input type="text" class="form-input w-1/3" placeholder="Varian" >
+            <input type="number" class="form-input w-1/3" placeholder="Berat (gram)" >
             <input type="number" class="form-input w-1/3" placeholder="Harga" >
             <input type="number" class="form-input w-1/4" placeholder="Stok" >
             <button type="button" class="btn bg-red-500 text-white hover:bg-red-600 remove-varian">X</button>

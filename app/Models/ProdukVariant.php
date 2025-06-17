@@ -12,6 +12,7 @@ class ProdukVariant extends Model
     protected $fillable = [
         'produk_umkm_id',
         'varian',
+        'berat',
         'harga',
         'stok',
         'created_by',

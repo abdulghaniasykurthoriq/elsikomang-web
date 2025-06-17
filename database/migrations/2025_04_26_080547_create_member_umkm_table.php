@@ -14,6 +14,7 @@ class CreateMemberUmkmTable extends Migration
             $table->string('alamat');
             $table->string('no_hp');
             $table->string('foto_toko')->nullable();
+            $table->unsignedBigInteger('desa_id');
             $table->string('created_by')->nullable();
             $table->string('updated_by')->nullable();
             $table->timestamps();

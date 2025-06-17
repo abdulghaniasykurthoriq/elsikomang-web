@@ -1,5 +1,29 @@
 @extends('layouts.app2')
 @section('title', 'Data Event')
+
+@push('styles')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<style>
+    div.dataTables_wrapper .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+    }
+            /* Atur dropdown agar tidak rusak */
+            .dataTables_length select {
+            padding-right: 1rem;        /* beri ruang untuk arrow */
+            background-position: right 0rem center; /* panah ke kanan */
+            background-repeat: no-repeat;
+            background-size: 1rem;
+            appearance: auto;           /* penting untuk tampilan default */
+        }
+</style>
+@endpush
+
 @section('content')
 
 
@@ -16,7 +40,7 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="table-auto w-full text-sm text-left text-gray-700">
+            <table id="event-table"class="table-auto w-full text-sm text-left text-gray-700">
                 <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
                         <th class="px-6 py-3">#</th>
@@ -64,5 +88,20 @@
         </div>
     </div>
 </div>
-
 @endsection
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#event-table').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
+            },
+            pageLength: 10,
+            dom: '<"top"f<"spacer">l>rt<"bottom"ip><"clear">'
+        });
+        feather.replace();
+    });
+</script>
+@endpush

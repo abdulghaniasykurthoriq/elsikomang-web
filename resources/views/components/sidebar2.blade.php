@@ -13,7 +13,7 @@
 
         <!-- Brand -->
         <div class="text-2xl font-bold mb-6">
-            <a href="{{ route('ProdukUmkm.dashboard') }}" class="hover:text-gray-300 transition">
+            <a class="hover:text-gray-300 transition">
                 Operator {{ $labelRole }}
             </a>
         </div>
@@ -158,7 +158,7 @@
             Data Entertainment
 
             <!-- Box Office -->
-            @elseif ($user->role == 'Operatr box office')
+            @elseif ($user->role == 'Operator box office')
             <a href="{{ route('box-office.dashboard') }}"
             class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/dashboard') ? 'bg-gray-800' : '' }}">
             <i data-feather="home" class="w-4 h-4 mr-3"></i>
