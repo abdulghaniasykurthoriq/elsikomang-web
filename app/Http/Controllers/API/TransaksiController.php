@@ -248,7 +248,7 @@ class TransaksiController extends Controller
 
         // Cek sisa detail keranjang dan hapus keranjang kalau kosong
         $keranjang = Keranjang::where('user_id', auth()->id())->first();
-        if ($keranjang && $keranjang->keranjangDetails()->count() === 0) {
+        if ($keranjang && $keranjang->keranjangDetail()->count() === 0) {
             $keranjang->delete();
         }
 
