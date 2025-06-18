@@ -142,7 +142,7 @@ class TransaksiController extends Controller
 
     public function index()
     {
-        $transaction = Transaksi::with(['transaksiDetail.produkVariant.produkUmkm'])
+        $transaction = Transaksi::with(['transaksiDetail.produkUmkm','transaksiDetail.produkVariant'])
             ->where('user_id', auth()->id())
             ->get();
 
