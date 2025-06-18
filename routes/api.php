@@ -42,6 +42,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle']);
 
     Route::post('/transaksi', [TransaksiController::class, 'store']);
+    Route::get('/transaksi', [TransaksiController::class, 'index']);
 
 
     Route::post('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
