@@ -139,24 +139,26 @@ class TransaksiController extends Controller
             ], 500);
         }
     }
-
-    public function index()
+    public function index(Request $request)
     {
-        $transaction = Transaksi::with(['transaksiDetail.produkUmkm','transaksiDetail.produkVariant'])
-            ->where('user_id', auth()->id())
-            ->get();
+        $status = $request->query('status');
 
-        if (!$transaction) {
-            return response()->json([
-                'message' => 'Transaksi tidak ditemukan',
-            ], 404);
+        $query = Transaksi::with(['transaksiDetail.produkUmkm', 'transaksiDetail.produkVariant'])
+            ->where('user_id', auth()->id());
+
+        if ($status) {
+            $query->where('status', $status);
         }
+
+        $transaction = $query->get();
 
         return response()->json([
             'message' => 'Transaksi ditemukan',
             'data' => $transaction,
         ]);
     }
+
+
 
     public function countByStatus()
     {
