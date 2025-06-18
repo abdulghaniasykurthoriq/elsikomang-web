@@ -15,95 +15,221 @@ use Illuminate\Support\Facades\Validator;
 class TransaksiController extends Controller
 {
 
+    // public function store(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         '*.produk_variant_id' => 'required|exists:produk_variants,id',
+    //         '*.qty' => 'required|integer|min:1',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'message' => 'Validasi gagal',
+    //             'errors' => $validator->errors(),
+    //         ], 422);
+    //     }
+
+    //     $validatedData = $validator->validated();
+
+    //     // Buat order ID unik
+    //     $orderId = 'TRX' . now()->format('YmdHis') . rand(1000, 9999);
+    //     $pay_method = 'bri_va'; // misalnya default VA
+
+    //     $amount = 0;
+
+    //     // Hitung total amount berdasarkan data produk dari DB
+    //     foreach ($validatedData as $item) {
+    //         $variant = ProdukVariant::with('produk_umkm')->find($item['produk_variant_id']);
+
+    //         if (!$variant || !$variant->produk_umkm) {
+    //             return response()->json([
+    //                 'message' => 'Produk atau varian tidak ditemukan.',
+    //                 'variant_id' => $item['produk_variant_id'],
+    //             ], 404);
+    //         }
+
+    //         if ($variant->harga < 0.01) {
+    //             return response()->json([
+    //                 'message' => 'Harga produk tidak valid (kurang dari 0.01)',
+    //                 'produk_id' => $variant->produk_umkm->id,
+    //                 'harga' => $variant->harga,
+    //             ], 422);
+    //         }
+
+    //         $amount += $variant->harga * $item['qty'];
+    //     }
+
+    //     // Validasi amount
+    //     if ($amount < 0.01) {
+    //         return response()->json([
+    //             'message' => 'Total transaksi tidak valid (kurang dari 0.01)',
+    //             'amount' => $amount,
+    //         ], 422);
+    //     }
+
+    //     // Kirim ke Midtrans
+    //     $params = $this->buildMidtransParams([
+    //         'order_id' => $orderId,
+    //         'amount' => $amount,
+    //         'payment_method' => $pay_method,
+    //     ]);
+    //     $midtrans = $this->callMidtrans($params);
+
+    //     // Simpan ke DB
+    //     DB::beginTransaction();
+    //     try {
+    //         $transaction = Transaksi::create([
+    //             'user_id' => auth()->id(),
+    //             'order_id' => $orderId,
+    //             'amount' => $amount,
+    //             'payment_method' => $pay_method,
+    //             'snap_token' => $midtrans['token'],
+    //             'snap_redirect_url' => $midtrans['redirect_url'],
+    //             'status' => 'pending',
+    //         ]);
+
+    //         foreach ($validatedData as $item) {
+    //             $variant = ProdukVariant::with('produk_umkm')->find($item['produk_variant_id']);
+
+    //             TransaksiDetail::create([
+    //                 'produk_id' => $variant->produk_umkm->id,
+    //                 'transaksi_id' => $transaction->id,
+    //                 'produk_variant_id' => $item['produk_variant_id'],
+    //                 'qty' => $item['qty'],
+    //                 'harga' => $variant->harga,
+    //             ]);
+    //         }
+
+    //         // tambhakan juga kalo ada user_id dan produk_variant_id di TransaksiDetail hapus di keranjang juga
+    //         // Hapus item dari keranjang mirip logika 'minus'
+    //         $keranjang = Keranjang::where('user_id', auth()->user()->id)->first();
+
+    //         if ($keranjang) {
+    //             $keranjangDetail = KeranjangDetail::where('keranjang_id', $keranjang->id)
+    //                 ->where('produk_variant_id', $item['produk_variant_id'])
+    //                 ->first();
+
+    //             if ($keranjangDetail) {
+    //                 if ($keranjangDetail->jumlah > $item['qty']) {
+    //                     $keranjangDetail->jumlah -= $item['qty'];
+    //                     $keranjangDetail->save();
+    //                 } else {
+    //                     $keranjangDetail->delete();
+    //                 }
+    //             }
+
+    //             // Cek sisa detail
+    //             $sisaDetail = KeranjangDetail::where('keranjang_id', $keranjang->id)->count();
+    //             if ($sisaDetail === 0) {
+    //                 $keranjang->delete();
+    //             }
+    //         }
+
+
+    //         DB::commit();
+
+    //         return response()->json([
+    //             'message' => 'Transaksi berhasil dibuat',
+    //             'snap_token' => $transaction->snap_token,
+    //             'redirect_url' => $transaction->snap_redirect_url,
+    //             'data' => $transaction,
+    //         ]);
+    //     } catch (\Throwable $th) {
+    //         DB::rollBack();
+    //         return response()->json([
+    //             'message' => 'Transaksi gagal dibuat',
+    //             'error' => $th->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+
+
+
     public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            '*.produk_variant_id' => 'required|exists:produk_variants,id',
-            '*.qty' => 'required|integer|min:1',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'items' => 'required|array|min:1',
+        'items.*.produk_variant_id' => 'required|exists:produk_variants,id',
+        'items.*.qty' => 'required|integer|min:1',
+    ]);
 
-        if ($validator->fails()) {
+    if ($validator->fails()) {
+        return response()->json([
+            'message' => 'Validasi gagal',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
+    $validatedData = $validator->validated();
+    $items = $validatedData['items'];
+
+    $orderId = 'TRX' . now()->format('YmdHis') . rand(1000, 9999);
+    $pay_method = 'bri_va';
+    $amount = 0;
+
+    $variants = [];
+
+    foreach ($items as $item) {
+        $variant = ProdukVariant::with('produk_umkm')->find($item['produk_variant_id']);
+
+        if (!$variant || !$variant->produk_umkm) {
             return response()->json([
-                'message' => 'Validasi gagal',
-                'errors' => $validator->errors(),
+                'message' => 'Produk atau varian tidak ditemukan.',
+                'variant_id' => $item['produk_variant_id'],
+            ], 404);
+        }
+
+        if ($variant->harga < 0.01) {
+            return response()->json([
+                'message' => 'Harga produk tidak valid (kurang dari 0.01)',
+                'produk_id' => $variant->produk_umkm->id,
+                'harga' => $variant->harga,
             ], 422);
         }
 
-        $validatedData = $validator->validated();
+        $variants[$item['produk_variant_id']] = $variant;
+        $amount += $variant->harga * $item['qty'];
+    }
 
-        // Buat order ID unik
-        $orderId = 'TRX' . now()->format('YmdHis') . rand(1000, 9999);
-        $pay_method = 'bri_va'; // misalnya default VA
+    if ($amount < 0.01) {
+        return response()->json([
+            'message' => 'Total transaksi tidak valid (kurang dari 0.01)',
+            'amount' => $amount,
+        ], 422);
+    }
 
-        $amount = 0;
+    $params = $this->buildMidtransParams([
+        'order_id' => $orderId,
+        'amount' => $amount,
+        'payment_method' => $pay_method,
+    ]);
+    $midtrans = $this->callMidtrans($params);
 
-        // Hitung total amount berdasarkan data produk dari DB
-        foreach ($validatedData as $item) {
-            $variant = ProdukVariant::with('produk_umkm')->find($item['produk_variant_id']);
-
-            if (!$variant || !$variant->produk_umkm) {
-                return response()->json([
-                    'message' => 'Produk atau varian tidak ditemukan.',
-                    'variant_id' => $item['produk_variant_id'],
-                ], 404);
-            }
-
-            if ($variant->harga < 0.01) {
-                return response()->json([
-                    'message' => 'Harga produk tidak valid (kurang dari 0.01)',
-                    'produk_id' => $variant->produk_umkm->id,
-                    'harga' => $variant->harga,
-                ], 422);
-            }
-
-            $amount += $variant->harga * $item['qty'];
-        }
-
-        // Validasi amount
-        if ($amount < 0.01) {
-            return response()->json([
-                'message' => 'Total transaksi tidak valid (kurang dari 0.01)',
-                'amount' => $amount,
-            ], 422);
-        }
-
-        // Kirim ke Midtrans
-        $params = $this->buildMidtransParams([
+    DB::beginTransaction();
+    try {
+        $transaction = Transaksi::create([
+            'user_id' => auth()->id(),
             'order_id' => $orderId,
             'amount' => $amount,
             'payment_method' => $pay_method,
+            'snap_token' => $midtrans['token'],
+            'snap_redirect_url' => $midtrans['redirect_url'],
+            'status' => 'pending',
         ]);
-        $midtrans = $this->callMidtrans($params);
 
-        // Simpan ke DB
-        DB::beginTransaction();
-        try {
-            $transaction = Transaksi::create([
-                'user_id' => auth()->id(),
-                'order_id' => $orderId,
-                'amount' => $amount,
-                'payment_method' => $pay_method,
-                'snap_token' => $midtrans['token'],
-                'snap_redirect_url' => $midtrans['redirect_url'],
-                'status' => 'pending',
+        foreach ($items as $item) {
+            $variant = $variants[$item['produk_variant_id']];
+
+            TransaksiDetail::create([
+                'produk_id' => $variant->produk_umkm->id,
+                'transaksi_id' => $transaction->id,
+                'produk_variant_id' => $item['produk_variant_id'],
+                'qty' => $item['qty'],
+                'harga' => $variant->harga,
             ]);
 
-            foreach ($validatedData as $item) {
-                $variant = ProdukVariant::with('produk_umkm')->find($item['produk_variant_id']);
-
-                TransaksiDetail::create([
-                    'produk_id' => $variant->produk_umkm->id,
-                    'transaksi_id' => $transaction->id,
-                    'produk_variant_id' => $item['produk_variant_id'],
-                    'qty' => $item['qty'],
-                    'harga' => $variant->harga,
-                ]);
-            }
-
-            // tambhakan juga kalo ada user_id dan produk_variant_id di TransaksiDetail hapus di keranjang juga
-            // Hapus item dari keranjang mirip logika 'minus'
-            $keranjang = Keranjang::where('user_id', auth()->user()->id)->first();
-
+            // Hapus dari keranjang
+            $keranjang = Keranjang::where('user_id', auth()->id())->first();
             if ($keranjang) {
                 $keranjangDetail = KeranjangDetail::where('keranjang_id', $keranjang->id)
                     ->where('produk_variant_id', $item['produk_variant_id'])
@@ -117,31 +243,32 @@ class TransaksiController extends Controller
                         $keranjangDetail->delete();
                     }
                 }
-
-                // Cek sisa detail
-                $sisaDetail = KeranjangDetail::where('keranjang_id', $keranjang->id)->count();
-                if ($sisaDetail === 0) {
-                    $keranjang->delete();
-                }
             }
-
-
-            DB::commit();
-
-            return response()->json([
-                'message' => 'Transaksi berhasil dibuat',
-                'snap_token' => $transaction->snap_token,
-                'redirect_url' => $transaction->snap_redirect_url,
-                'data' => $transaction,
-            ]);
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            return response()->json([
-                'message' => 'Transaksi gagal dibuat',
-                'error' => $th->getMessage(),
-            ], 500);
         }
+
+        // Cek sisa detail keranjang dan hapus keranjang kalau kosong
+        $keranjang = Keranjang::where('user_id', auth()->id())->first();
+        if ($keranjang && $keranjang->keranjangDetails()->count() === 0) {
+            $keranjang->delete();
+        }
+
+        DB::commit();
+
+        return response()->json([
+            'message' => 'Transaksi berhasil dibuat',
+            'snap_token' => $transaction->snap_token,
+            'redirect_url' => $transaction->snap_redirect_url,
+            'data' => $transaction,
+        ]);
+    } catch (\Throwable $th) {
+        DB::rollBack();
+        return response()->json([
+            'message' => 'Transaksi gagal dibuat',
+            'error' => $th->getMessage(),
+        ], 500);
     }
+}
+
 
 
 
