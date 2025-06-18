@@ -158,6 +158,19 @@ class TransaksiController extends Controller
         ]);
     }
 
+    public function countByStatus()
+    {
+        $counts = Transaksi::where('user_id', auth()->id())
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        return response()->json([
+            'message' => 'Statistik transaksi berhasil diambil',
+            'data' => $counts,
+        ]);
+    }
+
 
 
 

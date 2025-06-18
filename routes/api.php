@@ -43,6 +43,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('/transaksi', [TransaksiController::class, 'store']);
     Route::get('/transaksi', [TransaksiController::class, 'index']);
+    Route::get('/transaksi/status-count', [TransaksiController::class, 'countByStatus']);
 
 
     Route::post('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
