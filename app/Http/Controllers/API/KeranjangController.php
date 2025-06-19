@@ -98,5 +98,22 @@ class KeranjangController extends Controller
     }
 
 
+    public function countKeranjang()
+    {
+        $counts = Keranjang::select('status')
+            ->where('user_id', auth()->id())
+            ->join('keranjang_details', 'keranjang_details.keranjang_id', '=', 'keranjangs.id')
+            ->selectRaw('status, SUM(keranjang_details.qty) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        return response()->json([
+            'message' => 'Statistik keranjang berhasil diambil',
+            'data' => $counts,
+        ]);
+    }
+
+
+
 
 }

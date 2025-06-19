@@ -251,44 +251,54 @@ class TransaksiController extends Controller
 
     public function update(Request $request)
     {
-        \Log::info('Callback from Midtrans', $request->all());
+        // ✅ Logging awal callback
+        \Log::info('🔥 Callback HIT', ['request' => $request->all()]);
 
         \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        \Midtrans\Config::$isProduction = (bool) env('MIDTRANS_IS_PRODUCTION');
+        \Midtrans\Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false);
 
-        $notif = new \Midtrans\Notification();
-
-        $transactionStatus = $notif->transaction_status;
-        $fraudStatus = $notif->fraud_status;
-        $transactionCode = $notif->order_id;
-        $signatureKey = $notif->signature_key;
-
-        // Optional: Validasi Signature Key
-        $expectedSignature = hash('sha512',
-            $notif->order_id .
-            $notif->status_code .
-            $notif->gross_amount .
-            env('MIDTRANS_SERVER_KEY')
-        );
-
-        if ($signatureKey !== $expectedSignature) {
-            \Log::warning('Invalid Signature Key', ['expected' => $expectedSignature, 'got' => $signatureKey]);
-            return response()->json(['message' => 'Invalid signature key'], 403);
-        }
-
-        DB::beginTransaction();
         try {
-            $status = match($transactionStatus) {
-                'capture' => $fraudStatus === 'accept' ? 'success' : 'pending',
+            $notif = new \Midtrans\Notification();
+
+            // ✅ Logging isi notifikasi
+            \Log::info('🔥 Midtrans Notification Received', [
+                'order_id' => $notif->order_id,
+                'status_code' => $notif->status_code,
+                'gross_amount' => $notif->gross_amount,
+                'transaction_status' => $notif->transaction_status,
+                'fraud_status' => $notif->fraud_status,
+                'signature_key' => $notif->signature_key,
+            ]);
+
+            // Signature Validation
+            $expectedSignature = hash('sha512',
+                $notif->order_id .
+                $notif->status_code .
+                $notif->gross_amount .
+                env('MIDTRANS_SERVER_KEY')
+            );
+
+            if ($notif->signature_key !== $expectedSignature) {
+                \Log::warning('❌ Invalid Signature Key', [
+                    'expected' => $expectedSignature,
+                    'received' => $notif->signature_key,
+                ]);
+                return response()->json(['message' => 'Invalid signature key'], 403);
+            }
+
+            // Mapping status
+            $status = match ($notif->transaction_status) {
+                'capture' => $notif->fraud_status === 'accept' ? 'success' : 'pending',
                 'settlement' => 'success',
                 'pending' => 'pending',
                 'deny', 'cancel', 'expire' => 'failed',
                 default => 'unknown',
             };
 
-            $transaction = Transaksi::where('order_id', $transactionCode)->first();
+            $transaction = Transaksi::where('order_id', $notif->order_id)->first();
 
             if (!$transaction) {
+                \Log::warning('⚠️ Transaksi tidak ditemukan', ['order_id' => $notif->order_id]);
                 return response()->json(['message' => 'Transaction not found'], 404);
             }
 
@@ -296,14 +306,81 @@ class TransaksiController extends Controller
                 'status' => $status,
             ]);
 
-            DB::commit();
+            \Log::info('✅ Transaksi berhasil diupdate', [
+                'order_id' => $notif->order_id,
+                'status' => $status,
+            ]);
+
             return response()->json(['message' => 'Callback processed'], 200);
         } catch (\Throwable $th) {
-            DB::rollBack();
-            \Log::error('Callback error', ['exception' => $th]);
+            \Log::error('❌ Callback error', ['exception' => $th->getMessage()]);
             return response()->json(['message' => $th->getMessage()], 500);
         }
     }
+
+
+    // public function update(Request $request)
+    // {
+    //     \Log::info('🔥 Callback HIT', ['data' => $request->all()]);
+    //     \Log::info('Callback from Midtrans', $request->all());
+
+    //     \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+    //     \Midtrans\Config::$isProduction = (bool) env('MIDTRANS_IS_PRODUCTION');
+
+    //     $notif = new \Midtrans\Notification();
+    //     \Log::info('notif midtrans', $notif);
+    //     \Log::info('notif midtrans', $notif);
+    //     \Log::info('notif midtrans', $notif);
+    //     \Log::info('notif midtrans', $notif);
+
+    //     $transactionStatus = $notif->transaction_status;
+    //     $fraudStatus = $notif->fraud_status;
+    //     $transactionCode = $notif->order_id;
+    //     $signatureKey = $notif->signature_key;
+
+        
+
+    //     // Optional: Validasi Signature Key
+    //     $expectedSignature = hash('sha512',
+    //         $notif->order_id .
+    //         $notif->status_code .
+    //         $notif->gross_amount .
+    //         env('MIDTRANS_SERVER_KEY')
+    //     );
+
+    //     if ($signatureKey !== $expectedSignature) {
+    //         \Log::warning('Invalid Signature Key', ['expected' => $expectedSignature, 'got' => $signatureKey]);
+    //         return response()->json(['message' => 'Invalid signature key'], 403);
+    //     }
+
+    //     DB::beginTransaction();
+    //     try {
+    //         $status = match($transactionStatus) {
+    //             'capture' => $fraudStatus === 'accept' ? 'success' : 'pending',
+    //             'settlement' => 'success',
+    //             'pending' => 'pending',
+    //             'deny', 'cancel', 'expire' => 'failed',
+    //             default => 'unknown',
+    //         };
+
+    //         $transaction = Transaksi::where('order_id', $transactionCode)->first();
+
+    //         if (!$transaction) {
+    //             return response()->json(['message' => 'Transaction not found'], 404);
+    //         }
+
+    //         $transaction->update([
+    //             'status' => $status,
+    //         ]);
+
+    //         DB::commit();
+    //         return response()->json(['message' => 'Callback processed'], 200);
+    //     } catch (\Throwable $th) {
+    //         DB::rollBack();
+    //         \Log::error('Callback error', ['exception' => $th]);
+    //         return response()->json(['message' => $th->getMessage()], 500);
+    //     }
+    // }
 
     public function success()
     {
