@@ -26,14 +26,18 @@
                 </div>
             @endif
 
-            <form action="{{ route('operator.pariwisata.data.store') }}" method="POST"
-                enctype="multipart/form-data">
+            <form action="{{ route('operator.pariwisata.data.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="mb-4">
                     <label for="nama" class="block text-sm font-medium text-gray-700">Nama Wisata</label>
                     <input type="text" id="nama" name="nama" class="form-input mt-1 block w-full"
                         value="{{ old('nama') }}" required>
+                </div>
+                <div class="mb-4">
+                    <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat</label>
+                    <input type="text" id="alamat" name="alamat" class="form-input mt-1 block w-full"
+                        value="{{ old('alamat') }}" required>
                 </div>
 
                 <div class="mb-4">
@@ -51,6 +55,12 @@
                     <label for="harga_tiket" class="block text-sm font-medium text-gray-700">Harga Tiket</label>
                     <input type="number" name="harga_tiket" id="harga_tiket" class="form-input mt-1 block w-full"
                         value="{{ old('harga_tiket') }}" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="rating" class="block text-sm font-medium text-gray-700">Rating</label>
+                    <input type="number" step="0.01" name="rating" id="rating" class="form-input mt-1 block w-full"
+                        min="0" max="5" value="{{ old('rating') }}">
                 </div>
 
                 <div class="mb-4">
@@ -75,6 +85,19 @@
                         <label for="longitude" class="block text-sm font-medium text-gray-700">Longitude</label>
                         <input type="text" name="longitude" id="longitude" class="form-input mt-1 block w-full"
                             placeholder="108.1234567" value="{{ old('longitude') }}">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="jam_buka" class="block text-sm font-medium text-gray-700">Jam Buka</label>
+                        <input type="time" name="jam_buka" id="jam_buka" class="form-input mt-1 block w-full"
+                            value="{{ old('jam_buka') }}">
+                    </div>
+                    <div>
+                        <label for="jam_tutup" class="block text-sm font-medium text-gray-700">Jam Tutup</label>
+                        <input type="time" name="jam_tutup" id="jam_tutup" class="form-input mt-1 block w-full"
+                            value="{{ old('jam_tutup') }}">
                     </div>
                 </div>
 

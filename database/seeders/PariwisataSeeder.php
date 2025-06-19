@@ -42,6 +42,8 @@ class PariwisataSeeder extends Seeder
                 'harga_tiket' => $faker->randomElement([5000, 10000, 15000, 20000, 25000]),
                 'kategori' => $faker->randomElement($kategori),
                 'rating' => $faker->randomFloat(2, 3.0, 5.0),
+                'jam_buka' => '09:00:00',
+                'jam_tutup' => '18:00:00',
                 'latitude' => $faker->randomFloat(7, -6.40, -6.30),
                 'longitude' => $faker->randomFloat(7, 108.30, 108.40),
                 'created_at' => $now,

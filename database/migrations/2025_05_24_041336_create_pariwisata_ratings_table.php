@@ -13,7 +13,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('pariwisata_id');
-            $table->decimal('rating', 2, 1); // misal: 4.5, 3.0, dst.
+            $table->decimal('rating', 2, 1); 
 
             $table->timestamps();
 

@@ -33,7 +33,6 @@ use App\Http\Controllers\Operator\Umkm\ProdukUmkmController as UmkmProdukUmkmCon
 use App\Http\Middleware\CheckUserRoleMiddleware;
 use App\Http\Controllers\Operator\Entertaiment;
 
-
 // Halaman login
 Route::get('/', function () {
     return view('auth.login');
@@ -51,8 +50,8 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/cover-menu/{id}/edit', [CoverMenuController::class, 'edit'])->name('cover-menu.edit');
     Route::patch('/cover-menu/{coverMenu}', [CoverMenuController::class, 'update'])->name('cover-menu.update');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/data', [UserController::class, 'data'])->name('users.data');;
-    Route::resource('/splashscreen', SplashScreenController::class)->except(['show','create','store','destroy']);
+    Route::get('/users/data', [UserController::class, 'data'])->name('users.data');
+    Route::resource('/splashscreen', SplashScreenController::class)->except(['show', 'create', 'store', 'destroy']);
     Route::resource('/operator', OperatorController::class)->except(['show']);
 });
 
@@ -60,36 +59,56 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
 // OPERATOR ROUTE
 // ===========================
 Route::middleware(['auth'])->group(function () {
-
-    Route::middleware(CheckUserRoleMiddleware::class.':Operator investasi')->group(function () {
+    Route::middleware(CheckUserRoleMiddleware::class . ':Operator investasi')->group(function () {
         Route::get('/investasi/dashboard', [DashboardInvestasiController::class, 'index'])->name('investasi.dashboard');
         Route::resource('/investasi', InvestasiController::class)->except(['show']);
     });
-    Route::middleware(CheckUserRoleMiddleware::class.':Operator entertainment')->group(function () {
+    Route::middleware(CheckUserRoleMiddleware::class . ':Operator entertainment')->group(function () {
         Route::get('/entertaiment/dashboard', [DashboardEntertaimentController::class, 'index'])->name('entertaiment.dashboard');
         Route::resource('/entertaiment', EntertaimentController::class)->except(['show']);
     });
-    Route::middleware(CheckUserRoleMiddleware::class.':Operator event')->group(function () {
+    Route::middleware(CheckUserRoleMiddleware::class . ':Operator event')->group(function () {
         Route::get('/event/dashboard', [DashboardEventController::class, 'index'])->name('event.dashboard');
         Route::resource('/event', EventOperatorEventController::class)->except(['show']);
     });
-    Route::middleware(CheckUserRoleMiddleware::class.':Operator pariwisata')->group(function () {
+    Route::middleware(CheckUserRoleMiddleware::class . ':Operator pariwisata')->group(function () {
+        // Dashboard & Data
         Route::get('/pariwisata/dashboard', [DashboardPariwisataController::class, 'index'])->name('pariwisata.dashboard');
+
         Route::resource('/pariwisata', PariwisataController::class)
+            ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']) // ✅ Hindari route show()
             ->names('operator.pariwisata.data')
             ->parameters(['pariwisata' => 'id']);
-            Route::resource('/laporan', LaporanPariwisataController::class)
-            ->names('operator.pariwisata.laporan');
-            Route::get('/rekomendasi', [RekomendasiWisataController::class, 'index'])->name('operator.pariwisata.rekomendasi');
 
+        Route::resource('/laporan', LaporanPariwisataController::class)->names('operator.pariwisata.laporan');
+
+        // Rekomendasi Wisata - Breakdown SAW (Step 1–6)
+        Route::prefix('pariwisata/rekomendasi')->group(function () {
+            Route::get('/', [RekomendasiWisataController::class, 'step1Data'])->name('operator.pariwisata.rekomendasi.step1');
+
+            Route::get('/step2', [RekomendasiWisataController::class, 'step2Kriteria'])->name('operator.pariwisata.rekomendasi.step2');
+
+            Route::get('/step3', [RekomendasiWisataController::class, 'step3Normalisasi'])->name('operator.pariwisata.rekomendasi.step3');
+
+            Route::get('/step4', [RekomendasiWisataController::class, 'step4Bobot'])->name('operator.pariwisata.rekomendasi.step4');
+
+            Route::post('/step4', [RekomendasiWisataController::class, 'saveBobot'])->name('operator.pariwisata.rekomendasi.saveBobot');
+
+            Route::get('/step5', [RekomendasiWisataController::class, 'step5Skor'])->name('operator.pariwisata.rekomendasi.step5');
+
+            Route::get('/step6', [RekomendasiWisataController::class, 'step6Ranking'])->name('operator.pariwisata.rekomendasi.step6');
+            Route::get('/pariwisata/rekomendasi/input', [RekomendasiWisataController::class, 'inputPreferensi'])->name('operator.pariwisata.rekomendasi.input');
+
+            Route::post('/pariwisata/rekomendasi/result', [RekomendasiWisataController::class, 'hitungRekomendasi'])->name('operator.pariwisata.rekomendasi.result');
+        });
     });
-    Route::middleware(CheckUserRoleMiddleware::class.':Operator box office')->group(function () {
+
+    Route::middleware(CheckUserRoleMiddleware::class . ':Operator box office')->group(function () {
         Route::get('/box-office/dashboard', [DashboardBoxOfficeController::class, 'index'])->name('box-office.dashboard');
         Route::resource('/iklan', BoxOfficeIklanController::class)->except(['show']);
         Route::resource('iklandata', IklanContentController::class)->except(['show']);
-
     });
-    Route::middleware(CheckUserRoleMiddleware::class.':Operator umkm')->group(function () {
+    Route::middleware(CheckUserRoleMiddleware::class . ':Operator umkm')->group(function () {
         Route::get('/dashboard', [DashboardUmkmController::class, 'index'])->name('ProdukUmkm.dashboard');
         Route::resource('/produk_umkm', UmkmProdukUmkmController::class)->except(['show']);
         Route::resource('/member_umkm', UmkmMemberUmkmController::class)->except(['show']);
@@ -98,16 +117,12 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/laporan-transaksi-produk-umkm', [UmkmLaporanTransaksiUmkmController::class, 'index'])->name('transaksi-produk-umkm.index');
 
-
         Route::get('/peramalan/proses', [UmkmLaporanTransaksiUmkmController::class, 'proses'])->name('peramalan.proses');
 
-
-    Route::get('/simulasi', [LeastSquaresController::class, 'index'])->name('simulasi.ls.index');
-    Route::post('/simulasi', [LeastSquaresController::class, 'proses'])->name('simulasi.ls.proses');
-
+        Route::get('/simulasi', [LeastSquaresController::class, 'index'])->name('simulasi.ls.index');
+        Route::post('/simulasi', [LeastSquaresController::class, 'proses'])->name('simulasi.ls.proses');
     });
 });
-
 
 // ===========================
 // Profile (umum)

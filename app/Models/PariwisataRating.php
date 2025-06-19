@@ -21,4 +21,9 @@ class PariwisataRating extends Model
     {
         return $this->belongsTo(Pariwisata::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
