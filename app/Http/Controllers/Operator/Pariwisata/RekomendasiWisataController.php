@@ -167,19 +167,20 @@ class RekomendasiWisataController extends Controller
     }
 
     public function step6Ranking()
-{
-    if (!session()->has('saw_bobot')) {
-        return redirect()->route('operator.pariwisata.rekomendasi.step4')
-            ->withErrors(['msg' => 'Silakan isi bobot terlebih dahulu.']);
+    {
+        if (!session()->has('saw_bobot')) {
+            return redirect()
+                ->route('operator.pariwisata.rekomendasi.step4')
+                ->withErrors(['msg' => 'Silakan isi bobot terlebih dahulu.']);
+        }
+
+        $data = $this->step5Skor()->getData()['skorData'];
+        $sorted = collect($data)->sortByDesc('skor')->values();
+
+        return view('Operator.pariwisata.saw.step6_ranking', [
+            'ranking' => $sorted,
+        ]);
     }
-
-    $data = $this->step5Skor()->getData()['skorData'];
-    $sorted = collect($data)->sortByDesc('skor')->values();
-
-    return view('Operator.pariwisata.saw.step6_ranking', [
-        'ranking' => $sorted,
-    ]);
-}
 
     public function inputPreferensi()
     {
@@ -188,7 +189,7 @@ class RekomendasiWisataController extends Controller
 
     public function hitungRekomendasi(Request $request)
     {
-        // validasi inputan
+        // Validasi input
         $validated = $request->validate([
             'max_jarak' => 'nullable|numeric',
             'max_tiket' => 'nullable|numeric',
@@ -197,8 +198,8 @@ class RekomendasiWisataController extends Controller
             'kategori' => 'nullable|string',
         ]);
 
-        // filter pariwisata
-        $query = Pariwisata::with('fasilitas');
+        // Filter awal
+        $query = Pariwisata::withCount('fasilitas');
 
         if ($request->max_jarak) {
             $query->where('jarak_km', '<=', $request->max_jarak);
@@ -216,9 +217,62 @@ class RekomendasiWisataController extends Controller
             $query->where('kategori', $request->kategori);
         }
 
-        $filtered = $query->get();
+        $data = $query->get();
 
-        // selanjutnya: normalisasi dan hitung skor (re-use dari step 3–6)
-        return view('Operator.pariwisata.rekomendasi.result', compact('filtered'));
+        // Jika kosong
+        if ($data->isEmpty()) {
+            return back()->with('warning', 'Tidak ditemukan wisata dengan kriteria tersebut.');
+        }
+
+        // Ambil bobot default
+        $bobot = [
+            'harga_tiket' => 0.25,
+            'fasilitas' => 0.25,
+            'rating' => 0.25,
+            'waktu_operasional' => 0.25,
+        ];
+
+        // Cari nilai max/min
+        $minHarga = max([$data->min('harga_tiket') ?? 1, 1]);
+        $maxRating = max([$data->max('rating') ?? 1, 1]);
+        $maxFasilitas = max([$data->max('fasilitas_count') ?? 1, 1]);
+
+        $result = $data
+            ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot) {
+                $durasi = 0;
+                if ($item->jam_buka && $item->jam_tutup) {
+                    $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
+                }
+
+                $skorWaktu = match (true) {
+                    $durasi >= 24 => 5,
+                    $durasi >= 15 => 4,
+                    $durasi >= 10 => 3,
+                    $durasi >= 9 => 2,
+                    default => 1,
+                };
+
+                // Normalisasi
+                $normalisasi = [
+                    'harga_tiket' => round($minHarga / max($item->harga_tiket, 1), 4),
+                    'fasilitas' => round($item->fasilitas_count / max($maxFasilitas, 1), 4),
+                    'rating' => round($item->rating / max($maxRating, 1), 4),
+                    'waktu_operasional' => round($skorWaktu / 5, 4),
+                ];
+
+                $Vi = 0;
+                foreach ($normalisasi as $kriteria => $nilai) {
+                    $Vi += $nilai * ($bobot[$kriteria] ?? 0);
+                }
+
+                return [
+                    'wisata' => $item,
+                    'skor' => round($Vi, 4),
+                ];
+            })
+            ->sortByDesc('skor')
+            ->values();
+
+        return view('Operator.pariwisata.rekomendasi.result', compact('result'));
     }
 }
