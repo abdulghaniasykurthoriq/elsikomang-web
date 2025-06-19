@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreKeranjangRequest;
 use App\Models\Keranjang;
 use App\Models\KeranjangDetail;
+use Illuminate\Support\Facades\DB;
 
 class KeranjangController extends Controller
 {
@@ -100,16 +101,14 @@ class KeranjangController extends Controller
 
     public function countKeranjang()
     {
-        $counts = Keranjang::select('status')
-            ->where('user_id', auth()->id())
-            ->join('keranjang_details', 'keranjang_details.keranjang_id', '=', 'keranjangs.id')
-            ->selectRaw('status, SUM(keranjang_details.qty) as total')
-            ->groupBy('status')
-            ->pluck('total', 'status');
+        $total = DB::table('keranjang_details')
+            ->join('keranjangs', 'keranjang_details.keranjang_id', '=', 'keranjangs.id')
+            ->where('keranjangs.user_id', auth()->id())
+            ->count();
 
         return response()->json([
-            'message' => 'Statistik keranjang berhasil diambil',
-            'data' => $counts,
+            'message' => 'Total item keranjang berhasil dihitung',
+            'data' => ['total_items' => $total],
         ]);
     }
 
