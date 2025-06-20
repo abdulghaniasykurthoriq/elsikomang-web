@@ -34,6 +34,15 @@ class ProdukUmkm extends Model
     {
         return $this->hasMany(ProdukImage::class, 'produk_umkm_id');
     }
+    protected $appends = ['image_url']; // agar ikut saat di-convert ke JSON
+    public function getImageUrlAttribute()
+    {
+        $image = $this->images
+            ->where('type', 'image')
+            ->first();
+    
+        return $image ? $image->url : null;
+    }
     
 
     public function member()
