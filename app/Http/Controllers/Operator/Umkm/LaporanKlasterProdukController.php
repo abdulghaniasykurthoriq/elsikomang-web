@@ -5,16 +5,36 @@ namespace App\Http\Controllers\Operator\Umkm;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProdukUmkm;
-use Phpml\Clustering\KMeans;
 use Carbon\Carbon;
 
 class LaporanKlasterProdukController extends Controller
 {
+    // public function index()
+    // {
+    //     $data = ProdukUmkm::with('produk_variant')->get();
+    //     return view('Operator.umkm.Laporan.KlasterisasiProduk.index', compact('data'));
+    // }
     public function index()
-    {
-        $data = ProdukUmkm::with('produk_variant')->get();
-        return view('Operator.umkm.Laporan.KlasterisasiProduk.index', compact('data'));
+{
+    $data = ProdukUmkm::with('produk_variant')->get();
+
+    // Ambil tahun unik dari semua produk_variant / produk
+    $tahunList = [];
+
+    foreach ($data as $item) {
+        foreach ($item->produk_variant as $variant) {
+            $createdAt = $variant->created_at ?? $item->created_at;
+            $year = Carbon::parse($createdAt)->format('Y');
+            $tahunList[] = $year;
+        }
     }
+
+    // Buat list tahun unik dan urut menurun
+    $tahunList = collect($tahunList)->unique()->sortDesc()->values()->all();
+
+    return view('Operator.umkm.Laporan.KlasterisasiProduk.index', compact('data', 'tahunList'));
+}
+
 
     public function process(Request $request)
     {
@@ -37,10 +57,10 @@ class LaporanKlasterProdukController extends Controller
                 $harga = (int) round($variant->harga);
                 $created = $variant->created_at ?? $item->created_at;
 
-                if (!is_null($harga) && Carbon::parse($created)->year == $selectedYear) {
+                if (!is_null($harga) && $created && Carbon::parse($created)->year == $selectedYear) {
                     $dataset[] = [$harga];
                     $produkMapping[] = [
-                        'nama_produk' => $item->nama_produk . ' - ' . $variant->nama_varian,
+                        'nama_produk' => $item->nama_produk . ' - ' . $variant->varian,
                         'harga' => $harga,
                         'created_at' => $created,
                     ];
@@ -52,21 +72,51 @@ class LaporanKlasterProdukController extends Controller
             return back()->with('error', 'Jumlah data harga untuk tahun ' . $selectedYear . ' harus lebih banyak dari jumlah cluster.');
         }
 
-        // Jalankan clustering
-        $kmeans = new KMeans($cluster, KMeans::INIT_RANDOM, $maxIterasi);
-        $clusters = $kmeans->cluster($dataset);
+        // -----------------------------
+        // Manual KMeans Clustering
+        // -----------------------------
 
-        // Hitung centroid manual
-        $centroids = [];
-        foreach ($clusters as $clusterPoints) {
-            $sum = array_sum(array_column($clusterPoints, 0));
-            $centroids[] = [round($sum / count($clusterPoints), 4)];
+        // Inisialisasi centroid awal secara acak
+        shuffle($dataset);
+        $centroids = array_slice($dataset, 0, $cluster);
+        $lastCentroids = [];
+        $produkClustered = [];
+        $euclideanTable = [];
+        $iterasiAktual = 0;
+
+        for ($iterasi = 1; $iterasi <= $maxIterasi; $iterasi++) {
+            $clusters = array_fill(0, $cluster, []);
+
+            // Assign data ke cluster berdasarkan jarak terdekat
+            foreach ($dataset as $i => $data) {
+                $distances = array_map(fn($centroid) => abs($data[0] - $centroid[0]), $centroids);
+                $minIndex = array_keys($distances, min($distances))[0];
+                $clusters[$minIndex][] = $data;
+            }
+
+            // Hitung centroid baru
+            $newCentroids = [];
+            foreach ($clusters as $clusterPoints) {
+                if (count($clusterPoints) === 0) {
+                    $newCentroids[] = [0];
+                } else {
+                    $sum = array_sum(array_column($clusterPoints, 0));
+                    $newCentroids[] = [round($sum / count($clusterPoints), 4)];
+                }
+            }
+
+            // Cek apakah centroid tidak berubah -> selesai
+            if ($newCentroids == $centroids) {
+                $iterasiAktual = $iterasi;
+                break;
+            }
+
+            $centroids = $newCentroids;
+            $iterasiAktual = $iterasi;
         }
 
-        $euclideanTable = [];
-        $produkClustered = [];
-
-        foreach ($produkMapping as $index => $produk) {
+        // Hitung hasil akhir
+        foreach ($produkMapping as $produk) {
             $distances = array_map(fn($centroid) => round(abs($produk['harga'] - $centroid[0]), 4), $centroids);
             $minIndex = array_keys($distances, min($distances))[0];
 
@@ -86,16 +136,15 @@ class LaporanKlasterProdukController extends Controller
             ];
         }
 
-        // Data tambahan untuk tampilan grafik dan tabel bulanan
-        $months = [
-            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-        ];
-
         $labels = [];
         for ($i = 1; $i <= $cluster; $i++) {
             $labels[] = 'Cluster ' . $i;
         }
+
+        $months = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
 
         $clusterMonthly = [];
         foreach ($labels as $label) {
@@ -108,7 +157,6 @@ class LaporanKlasterProdukController extends Controller
             }
         }
 
-        // Warna default
         $colors = [
             '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
             '#FF9F40', '#8BC34A', '#00ACC1', '#F44336', '#9E9D24'
@@ -123,7 +171,9 @@ class LaporanKlasterProdukController extends Controller
             'colors' => $colors,
             'clusterMonthly' => $clusterMonthly,
             'year' => now()->year,
-            'selectedYear' => $selectedYear
+            'selectedYear' => $selectedYear,
+            'maxIterasi' => $maxIterasi,
+            'realIterasi' => $iterasiAktual
         ]);
     }
 }

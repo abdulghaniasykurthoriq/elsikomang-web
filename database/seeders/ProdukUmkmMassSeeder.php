@@ -7,94 +7,85 @@ use App\Models\MemberUmkm;
 use App\Models\ProdukImage;
 use App\Models\ProdukUmkm;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Faker\Factory as Faker;
 
 class ProdukUmkmMassSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ambil kategori dari yang sudah di-seed sebelumnya
-        $kategoriMakanan     = KategoriProduk::where('name', 'Makanan')->first();
-        $kategoriMinuman     = KategoriProduk::where('name', 'Minuman')->first();
-        $kategoriFashion     = KategoriProduk::where('name', 'Fashion')->first();
-        $kategoriKerajinan   = KategoriProduk::where('name', 'Kerajinan Tangan')->first();
-        $kategoriElektronik  = KategoriProduk::where('name', 'Elektronik')->first();
+        $faker = Faker::create('id_ID');
 
-        // Validasi kategori
-        if (!$kategoriMakanan || !$kategoriMinuman || !$kategoriFashion || !$kategoriKerajinan || !$kategoriElektronik) {
-            throw new \Exception("Pastikan semua kategori tersedia di tabel kategori_produk");
+        // Ambil kategori yang tersedia
+        $kategoriList = collect([
+            'Makanan'     => KategoriProduk::where('name', 'Makanan')->first(),
+            'Minuman'     => KategoriProduk::where('name', 'Minuman')->first(),
+            'Fashion'     => KategoriProduk::where('name', 'Fashion')->first(),
+            'Kerajinan'   => KategoriProduk::where('name', 'Kerajinan Tangan')->first(),
+            'Elektronik'  => KategoriProduk::where('name', 'Elektronik')->first(),
+        ])->filter(); // Hapus kategori yang null
+
+        if ($kategoriList->isEmpty()) {
+            throw new \Exception("Tidak ada kategori yang tersedia di tabel `kategori_produk`.");
         }
 
-        // Buat 1 member UMKM (dummy)
+        // Ambil satu data desa
+        $desaId = DB::table('desas')->value('id');
+        if (!$desaId) {
+            throw ValidationException::withMessages([
+                'desa_id' => 'Minimal 1 data desas harus tersedia di tabel `desas`',
+            ]);
+        }
+
+        // Buat member dummy
         $member = MemberUmkm::firstOrCreate(
             ['no_hp' => '081234567890'],
             [
                 'nama_toko' => 'Toko Admin Pusat',
                 'alamat' => 'Jl. Melati No. 123, Bandung',
+                'desa_id' => $desaId,
                 'foto_toko' => 'foto_toko/toko-dumy.png',
                 'created_by' => 'Seeder',
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         );
 
-        // ===============================
-        // Produk 1
-        $produk1 = ProdukUmkm::create([
-            'member_id' => $member->id,
-            'nama_produk' => 'Keripik Pisang Manis',
-            'kategori_id' => $kategoriMakanan->id,
-            'deskripsi' => 'Keripik pisang renyah dan manis, cocok untuk camilan.',
-            'created_by' => 'Seeder',
-        ]);
-        ProdukImage::create([
-            'produk_umkm_id' => $produk1->id,
-            'file_path' => 'produk_image/keripik-pisang.jpg',
-            'type' => 'image',
-        ]);
-        $produk1->produk_variant()->createMany([
-            ['varian' => '100g', 'harga' => 10000, 'stok' => 20],
-            ['varian' => '200g', 'harga' => 18000, 'stok' => 15],
-        ]);
+        // Tambahkan 10 produk acak
+        for ($i = 1; $i <= 10; $i++) {
+            $kategoriNama = $kategoriList->keys()->random();
+            $kategori = $kategoriList[$kategoriNama];
 
-        // ===============================
-        // Produk 2
-        $produk2 = ProdukUmkm::create([
-            'member_id' => $member->id,
-            'nama_produk' => 'Kopi Arabika Asli',
-            'kategori_id' => $kategoriMinuman->id,
-            'deskripsi' => 'Kopi arabika dari pegunungan Jawa Barat.',
-            'created_by' => 'Seeder',
-        ]);
-        ProdukImage::create([
-            'produk_umkm_id' => $produk2->id,
-            'file_path' => 'produk_image/kopi-arabika.jpg',
-            'type' => 'image',
-        ]);
-        $produk2->produk_variant()->create([
-            'varian' => '250g',
-            'harga' => 45000,
-            'stok' => 10,
-        ]);
+            $produk = ProdukUmkm::create([
+                'member_id' => $member->id,
+                'nama_produk' => ucfirst($faker->word) . ' ' . $faker->randomElement(['Premium', 'Asli', 'Terbaik']),
+                'kategori_id' => $kategori->id,
+                'deskripsi' => $faker->sentence(),
+                'created_by' => 'Seeder',
+                'created_at' => now()->subDays(rand(1, 365)), // biar datanya acak
+                'updated_at' => now(),
+            ]);
 
-        // ===============================
-        // Produk 3
-        $produk3 = ProdukUmkm::create([
-            'member_id' => $member->id,
-            'nama_produk' => 'Tas Tenun Etnik',
-            'kategori_id' => $kategoriFashion->id,
-            'deskripsi' => 'Tas modis berbahan tenun khas Indonesia.',
-            'created_by' => 'Seeder',
-        ]);
-        ProdukImage::create([
-            'produk_umkm_id' => $produk3->id,
-            'file_path' => 'produk_image/tas-tenun.jpg',
-            'type' => 'image',
-        ]);
-        $produk3->produk_variant()->create([
-            'varian' => 'All Size',
-            'harga' => 125000,
-            'stok' => 5,
-        ]);
+            ProdukImage::create([
+                'produk_umkm_id' => $produk->id,
+                'file_path' => 'produk_image/sample-' . $i . '.jpg',
+                'type' => 'image',
+            ]);
 
-        // ===============================
-        // Lanjutkan dengan produk 4 - 100 sesuai pola di atas...
+            // Tambahkan 1-3 varian
+            for ($v = 0; $v < rand(1, 3); $v++) {
+                $produk->produk_variant()->create([
+                    'varian' => $faker->randomElement(['100g', '250g', '500g', 'All Size', 'Botol']) . ' ' . strtoupper($faker->randomLetter),
+                    'berat' => $faker->numberBetween(100, 1000),
+                    'harga' => $faker->numberBetween(5000, 750000),
+                    'stok' => $faker->numberBetween(1, 100),
+                    'created_by' => 'Seeder',
+                    'updated_by' => 'Seeder',
+                    'created_at' => now()->subDays(rand(1, 365)),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
     }
 }

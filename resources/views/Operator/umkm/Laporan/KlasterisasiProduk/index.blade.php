@@ -11,11 +11,58 @@
 <div class="mx-2 px-6 -mt-24 relative z-10">
     <div class="bg-white rounded-xl shadow-xl overflow-hidden w-full">
         <div class="p-4 border-b border-gray-100 flex justify-between items-center">
-            <h2 class="text-lg font-semibold text-gray-800">Data Produk & Parameter Klasterisasi</h2>
+            <h2 class="text-lg font-semibold text-gray-800">Parameter Klasterisasi & Data Produk </h2>
         </div>
 
         <div class="p-4">
-            <!-- Tabel Produk -->
+            {{-- Tampilkan Error Validasi --}}
+            @if ($errors->any())
+                <div class="mb-4">
+                    <div class="bg-red-100 text-red-700 px-4 py-2 rounded">
+                        <ul class="list-disc pl-5 text-sm">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            @endif
+                        {{-- Form Parameter --}}
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Parameter Klasterisasi</h3>
+                        <form action="{{ route('klasterisasi-produk.process') }}" method="POST" class="mb-4">
+                            @csrf
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-1">Jumlah Cluster:</label>
+                                    <input type="number" name="cluster" min="2" value="{{ old('cluster', 3) }}"
+                                        class="w-full border-gray-300 rounded-md shadow-sm px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-1">Maksimal Iterasi:</label>
+                                    <input type="number" name="max_iterasi" min="1" value="{{ old('max_iterasi', 10) }}"
+                                        class="w-full border-gray-300 rounded-md shadow-sm px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-1">Pilih Tahun:</label>
+                                    <select name="tahun"
+                                        class="w-full border-gray-300 rounded-md shadow-sm px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                        @foreach ($tahunList as $tahun)
+                                            <option value="{{ $tahun }}" {{ old('tahun') == $tahun ? 'selected' : '' }}>{{ $tahun }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                            </div>
+                            <div class="mt-4">
+                                <button type="submit"
+                                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-md text-sm font-medium shadow">
+                                    Proses Klasterisasi
+                                </button>
+                            </div>
+                        </form>
+
+            {{-- Tabel Produk --}}
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">Data Produk</h3>
             <div class="overflow-x-auto mb-6">
                 <table class="table-auto w-full text-sm text-left text-gray-700">
                     <thead class="bg-gray-50 border-b border-gray-200">
@@ -43,29 +90,7 @@
                 </table>
             </div>
 
-            <!-- Form Parameter -->
-            <h3 class="text-lg font-semibold text-gray-800 mb-3">Parameter Klasterisasi</h3>
-            <form action="{{ route('klasterisasi-produk.process') }}" method="POST" class="mb-4">
-                @csrf
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm text-gray-600 mb-1">Jumlah Cluster:</label>
-                        <input type="number" name="cluster" min="2" value="3"
-                            class="w-full border-gray-300 rounded-md shadow-sm px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-sm text-gray-600 mb-1">Maksimal Iterasi:</label>
-                        <input type="number" name="max_iterasi" min="1" value="10"
-                            class="w-full border-gray-300 rounded-md shadow-sm px-3 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <button type="submit"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-md text-sm font-medium shadow">
-                        Proses Klasterisasi
-                    </button>
-                </div>
-            </form>
+
         </div>
     </div>
 </div>

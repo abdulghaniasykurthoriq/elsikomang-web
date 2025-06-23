@@ -6,15 +6,57 @@
 
 <!-- Header -->
 <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
-    <h1 class="text-xl text-white">Hasil Klasterisasi Harga Produk </h1>
+    <h1 class="text-xl text-white">Hasil Klasterisasi Harga Produk - Tahun {{ $selectedYear }}</h1>
 </div>
 
-<!-- Main Container -->
-<div class="mx-2 px-6 -mt-24 relative z-10">
+<div class="mx-2 px-6 -mt-24 relative z-10" x-data="{ tab: 'centroid' }">
     <div class="bg-white rounded-xl shadow-xl overflow-hidden w-full">
 
-        <!-- Tabel Klaster Produk -->
-        <div class="p-4">
+        <!-- Tab Navigation -->
+        <div class="p-4 border-b border-gray-200 bg-gray-50 flex space-x-4 overflow-x-auto">
+            <button @click="tab = 'centroid'" class="px-4 py-2 rounded font-semibold"
+                :class="tab === 'centroid' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 border'">
+                Centroid
+            </button>
+            <button @click="tab = 'klaster'" class="px-4 py-2 rounded font-semibold"
+                :class="tab === 'klaster' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 border'">
+                Hasil Klaster
+            </button>
+            <button @click="tab = 'euclidean'" class="px-4 py-2 rounded font-semibold"
+                :class="tab === 'euclidean' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 border'">
+                Euclidean Distance
+            </button>
+            <button @click="tab = 'grafik'" class="px-4 py-2 rounded font-semibold"
+                :class="tab === 'grafik' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 border'">
+                Grafik
+            </button>
+        </div>
+
+        <!-- CENTROID -->
+        <div class="p-4" x-show="tab === 'centroid'">
+            <h3 class="text-md font-bold text-gray-800 mb-2">Centroid Tiap Cluster</h3>
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full text-sm text-center text-gray-700 border border-gray-200 rounded">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            @foreach ($centroids as $i => $centroid)
+                                <th class="px-4 py-2">Centroid {{ $i + 1 }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            @foreach ($centroids as $centroid)
+                                <td>{{ is_null($centroid[0]) ? 'Kosong' : number_format($centroid[0], 2) }}</td>
+                            @endforeach
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- HASIL KLASTERISASI -->
+        <div class="p-4" x-show="tab === 'klaster'">
             <h3 class="text-md font-bold text-gray-800 mb-2">Hasil Klasterisasi Produk</h3>
             <div class="overflow-x-auto">
                 <table class="table-auto w-full text-sm text-gray-700 border border-gray-200 rounded">
@@ -38,31 +80,8 @@
             </div>
         </div>
 
-        <!-- Centroid -->
-        <div class="p-4">
-            <h3 class="text-md font-bold text-gray-800 mb-2">Centroid Tiap Cluster</h3>
-            <div class="overflow-x-auto">
-                <table class="table-auto w-full text-sm text-center text-gray-700 border border-gray-200 rounded">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            @foreach ($centroids as $i => $centroid)
-                                <th class="px-4 py-2">Centroid {{ $i + 1 }}</th>
-                            @endforeach
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            @foreach ($centroids as $centroid)
-                                <td class="px-4 py-2">{{ round($centroid[0], 2) }}</td>
-                            @endforeach
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Euclidean Distance -->
-        <div class="p-4">
+        <!-- EUCLIDEAN DISTANCE -->
+        <div class="p-4" x-show="tab === 'euclidean'">
             <h3 class="text-md font-bold text-gray-800 mb-2">Perhitungan Euclidean Distance</h3>
             <div class="overflow-x-auto">
                 <table class="table-auto w-full text-sm text-center text-gray-700 border border-gray-200 rounded">
@@ -90,24 +109,40 @@
             </div>
         </div>
 
-        <!-- Hasil Akhir -->
-        <div class="p-4">
-            <h3 class="text-md font-bold text-gray-800 mb-2">Hasil Akhir Klasterisasi</h3>
+        <!-- INFO CLUSTER -->
+        <div class="p-4" x-show="tab === 'grafik'">
+            <h3 class="text-md font-bold text-gray-800 mb-2">Informasi Detail Tiap Cluster</h3>
             <div class="overflow-x-auto">
-                <table class="table-auto w-full text-sm text-center text-gray-700 border border-gray-200 rounded">
+                <table class="table-auto w-full text-sm text-left text-gray-700 border border-gray-200 rounded">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-4 py-2">Nama Produk</th>
-                            <th class="px-4 py-2">Harga</th>
                             <th class="px-4 py-2">Cluster</th>
+                            <th class="px-4 py-2">Rentang Harga (Rp)</th>
+                            <th class="px-4 py-2">Rata-rata Harga</th>
+                            <th class="px-4 py-2">Jumlah Produk</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($produkClustered as $item)
+                        @php
+                            $clusterInfo = [];
+                            foreach ($produkClustered as $item) {
+                                $cluster = $item['cluster'];
+                                $clusterInfo[$cluster][] = $item;
+                            }
+                        @endphp
+                        @foreach ($clusterInfo as $clusterName => $items)
+                            @php
+                                $hargas = array_column($items, 'harga');
+                                $min = min($hargas);
+                                $max = max($hargas);
+                                $avg = round(array_sum($hargas) / count($hargas), 2);
+                                $jumlah = count($hargas);
+                            @endphp
                             <tr>
-                                <td class="px-4 py-1">{{ $item['nama_produk'] }}</td>
-                                <td class="px-4 py-1">Rp {{ number_format($item['harga'], 0, ',', '.') }}</td>
-                                <td class="px-4 py-1 font-semibold text-blue-700">{{ $item['cluster'] }}</td>
+                                <td class="px-4 py-2 font-semibold">{{ $clusterName }}</td>
+                                <td class="px-4 py-2">Rp {{ number_format($min, 0, ',', '.') }} - Rp {{ number_format($max, 0, ',', '.') }}</td>
+                                <td class="px-4 py-2">Rp {{ number_format($avg, 2, ',', '.') }}</td>
+                                <td class="px-4 py-2">{{ $jumlah }} produk</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -115,63 +150,44 @@
             </div>
         </div>
 
-                <!-- Chart -->
-                <div class="p-4 border-b border-gray-100">
-                    <div class="flex items-center justify-between mb-2">
-                        <h2 class="text-lg font-semibold text-gray-800">Laporan Klasterisasi Produk - Tahun {{ $year }}</h2>
-        
-                        <form method="GET" action="{{ route('klasterisasi-produk.process') }}" class="flex items-center space-x-2">
-                            <label for="tahun" class="text-sm text-gray-800">Pilih Tahun:</label>
-                            <select id="tahun" name="tahun" onchange="this.form.submit()" class="text-sm border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-300">
-                                @for ($yearOption = 2023; $yearOption <= 2026; $yearOption++)
-                                    <option value="{{ $yearOption }}" {{ $selectedYear == $yearOption ? 'selected' : '' }}>{{ $yearOption }}</option>
-                                @endfor
-                            </select>
-                        </form>
-                    </div>
-        
-                    <div class="mb-6">
-                        <canvas id="clusterChart" height="100"></canvas>
-                    </div>
-                </div>
-        
-        
-                <!-- Tabel Jumlah Transaksi -->
-                <div class="p-4">
-                    <h3 class="text-md font-bold text-gray-800 mb-2">Jumlah Transaksi per Bulan per Klaster</h3>
-                    <div class="overflow-x-auto">
-                        <table class="table-auto w-full text-sm text-gray-700 border border-gray-200 rounded">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-2 text-left">Bulan</th>
-                                    @foreach ($labels as $label)
-                                        <th class="px-4 py-2 text-left">{{ $label }}</th>
-                                    @endforeach
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100">
-                                @foreach ($months as $i => $bulan)
-                                    <tr>
-                                        <td class="px-4 py-2">{{ $bulan }}</td>
-                                        @foreach ($labels as $label)
-                                            <td class="px-4 py-2">{{ $clusterMonthly[$label][$i] ?? 0 }}</td>
-                                        @endforeach
-                                    </tr>
+        <!-- GRAFIK -->
+        <div class="p-4 border-b border-gray-100" x-show="tab === 'grafik'">
+            <h2 class="text-lg font-semibold text-gray-800 mb-2">Grafik Jumlah Produk per Bulan per Klaster</h2>
+            <canvas id="clusterChart" height="100"></canvas>
+        </div>
+
+        <!-- TABEL JUMLAH PRODUK BULANAN -->
+        <div class="p-4" x-show="tab === 'grafik'">
+            <h3 class="text-md font-bold text-gray-800 mb-2">Jumlah Produk per Bulan per Klaster</h3>
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full text-sm text-gray-700 border border-gray-200 rounded">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Bulan</th>
+                            @foreach ($labels as $label)
+                                <th class="px-4 py-2 text-left">{{ $label }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @foreach ($months as $i => $bulan)
+                            <tr>
+                                <td class="px-4 py-2">{{ $bulan }}</td>
+                                @foreach ($labels as $label)
+                                    <td class="px-4 py-2">{{ $clusterMonthly[$label][$i] ?? 0 }}</td>
                                 @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-        
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
     </div>
 </div>
 
-
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- Script Chart -->
 <script>
     const ctx = document.getElementById('clusterChart').getContext('2d');
     const clusterChart = new Chart(ctx, {
@@ -208,5 +224,4 @@
         }
     });
 </script>
-
 @endsection

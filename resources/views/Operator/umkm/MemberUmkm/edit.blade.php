@@ -26,72 +26,62 @@
             </div>
         @endif
 
-        @isset($member)
-        <form action="{{ route('member_umkm.update', $member->id) }}" method="POST" enctype="multipart/form-data" id="memberForm" class="space-y-4">
+        @isset($memberUmkm)
+        <form action="{{ route('member_umkm.update', $memberUmkm->id) }}" method="POST" enctype="multipart/form-data" id="memberForm" class="space-y-4">
             @csrf
             @method('PUT')
 
             <div>
                 <label class="block mb-1 text-sm font-medium text-gray-700">Nama Toko</label>
-                <input type="text" name="nama_toko" class="w-full input input-bordered" value="{{ old('nama_toko', $member->nama_toko) }}" required>
+                <input type="text" name="nama_toko" class="w-full input input-bordered" value="{{ old('nama_toko', $memberUmkm->nama_toko) }}" required>
             </div>
 
             <div>
                 <label class="block mb-1 text-sm font-medium text-gray-700">Alamat</label>
-                <textarea name="alamat" class="w-full input input-bordered" rows="3" required>{{ old('alamat', $member->alamat) }}</textarea>
+                <textarea name="alamat" class="w-full input input-bordered" rows="3" required>{{ old('alamat', $memberUmkm->alamat) }}</textarea>
             </div>
 
             <div>
                 <label class="block mb-1 text-sm font-medium text-gray-700">No HP</label>
-                <input type="text" name="no_hp" class="w-full input input-bordered" value="{{ old('no_hp', $member->no_hp) }}" required>
+                <input type="text" name="no_hp" class="w-full input input-bordered" value="{{ old('no_hp', $memberUmkm->no_hp) }}" required>
             </div>
 
             <div>
                 <label class="block mb-1 text-sm font-medium text-gray-700">Foto</label>
                 <input type="file" name="foto_toko" class="w-full input input-bordered" accept=".jpg,.jpeg,.png">
-                @if ($member->foto_toko)
+                @if ($memberUmkm->foto_toko)
                     <p class="text-sm mt-2">Foto saat ini:</p>
-                    <img src="{{ asset('storage/' . $member->foto_toko) }}" alt="Foto Toko" class="w-20 h-20 object-cover rounded">
+                    <img src="{{ asset('storage/' . $memberUmkm->foto_toko) }}" alt="Foto Toko" class="w-20 h-20 object-cover rounded">
                 @endif
             </div>
 
             <!-- Dropdown Wilayah -->
             <div>
                 <label class="block mb-1 text-sm font-medium text-gray-700">Provinsi</label>
-                <select id="provinsi" name="provinsi_id" class="w-full input input-bordered" required>
-                    <option value="">Pilih Provinsi</option>
-                </select>
+                <select id="provinsi" name="provinsi_id" class="w-full input input-bordered" required></select>
             </div>
 
             <div>
                 <label class="block mb-1 text-sm font-medium text-gray-700">Kota/Kabupaten</label>
-                <select id="kota" name="kota_id" class="w-full input input-bordered" required>
-                    <option value="">Pilih Kota/Kabupaten</option>
-                </select>
+                <select id="kota" name="kota_id" class="w-full input input-bordered" required></select>
             </div>
 
             <div>
                 <label class="block mb-1 text-sm font-medium text-gray-700">Kecamatan</label>
-                <select id="kecamatan" name="kecamatan_id" class="w-full input input-bordered" required>
-                    <option value="">Pilih Kecamatan</option>
-                </select>
+                <select id="kecamatan" name="kecamatan_id" class="w-full input input-bordered" required></select>
             </div>
 
             <div>
                 <label class="block mb-1 text-sm font-medium text-gray-700">Desa</label>
-                <select name="desa_id" id="desa" class="w-full input input-bordered" required>
-                    <option value="">Pilih Desa</option>
-                </select>
+                <select name="desa_id" id="desa" class="w-full input input-bordered" required></select>
             </div>
 
             <div class="pt-4 flex justify-end gap-2">
                 <button type="submit" id="submitBtn"
                     class="btn bg-indigo-600 text-white hover:bg-indigo-700 flex items-center justify-center">
                     <span id="btnText">Update</span>
-                    <svg id="btnSpinner" class="hidden animate-spin ml-2 h-4 w-4 text-white"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                            stroke-width="4"></circle>
+                    <svg id="btnSpinner" class="hidden animate-spin ml-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                     </svg>
                 </button>
@@ -104,10 +94,10 @@
 </div>
 
 <script>
-    const oldProvinsiId = "{{ old('provinsi_id', $member->desa->kecamatan->kota->provinsi->id ?? '') }}";
-    const oldKotaId = "{{ old('kota_id', $member->desa->kecamatan->kota->id ?? '') }}";
-    const oldKecamatanId = "{{ old('kecamatan_id', $member->desa->kecamatan->id ?? '') }}";
-    const oldDesaId = "{{ old('desa_id', $member->desa->id ?? '') }}";
+    const oldProvinsiId = "{{ old('provinsi_id', $memberUmkm->desa->kecamatan->kota->provinsi->id ?? '') }}";
+    const oldKotaId = "{{ old('kota_id', $memberUmkm->desa->kecamatan->kota->id ?? '') }}";
+    const oldKecamatanId = "{{ old('kecamatan_id', $memberUmkm->desa->kecamatan->id ?? '') }}";
+    const oldDesaId = "{{ old('desa_id', $memberUmkm->desa->id ?? '') }}";
 
     document.addEventListener('DOMContentLoaded', () => {
         const provinsiSelect = document.getElementById('provinsi');

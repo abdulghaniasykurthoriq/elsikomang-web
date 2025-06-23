@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class ProdukVarianDumy extends Model
+{
+    use HasFactory;
+
+    protected $table = 'produk_varian_dumy'; // pastikan sesuai dengan nama tabelmu
+
+    protected $fillable = [
+        'produk_id',
+        'nama_varian',
+        'berat',
+        'harga',
+        'stok',
+    ];
+
+    /**
+     * Relasi ke ProdukDumy
+     */
+    public function produk()
+    {
+        return $this->belongsTo(ProdukDumy::class, 'produk_id');
+    }
+
+    /**
+     * Relasi ke Keranjang (jika dibutuhkan)
+     */
+    public function keranjang()
+    {
+        return $this->hasMany(KeranjangKuDumy::class, 'varian_id');
+    }
+}

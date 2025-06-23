@@ -2,13 +2,35 @@
 
 @section('title', 'Data Member UMKM')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<style>
+    div.dataTables_wrapper .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+            /* Atur dropdown agar tidak rusak */
+            .dataTables_length select {
+            padding-right: 1rem;        /* beri ruang untuk arrow */
+            background-position: right 0rem center; /* panah ke kanan */
+            background-repeat: no-repeat;
+            background-size: 1rem;
+            appearance: auto;           /* penting untuk tampilan default */
+        }
+</style>
+@endpush
+
 @section('content')
 <!-- Header -->
 <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-24 flex justify-between items-center relative z-0">
     <h1 class="text-xl text-white">Data Member UMKM</h1>
     <a href="{{ route('member_umkm.create') }}"
         class="btn bg-white text-gray-800 border-gray-600 hover:bg-gray-100 hover:text-gray-800">
-        Tambah Member
+        + Tambah Member
     </a>
 </div>
 
@@ -21,7 +43,7 @@
             </div>
         @endif
 
-        <table class="min-w-full divide-y divide-gray-200 text-sm">
+        <table id="member-umkm-table" class="min-w-full divide-y divide-gray-200 text-sm">
             <thead class="bg-gray-100 text-left text-gray-600 uppercase tracking-wider">
                 <tr>
                     <th class="px-4 py-2">No</th>
@@ -53,20 +75,20 @@
                                 <span class="text-gray-400 italic">Belum ada</span>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-center flex justify-center gap-2">
-                            <a href="{{ route('member_umkm.edit', $member->id) }}"
-                                class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-sm">
-                                Edit
-                            </a>
-                        
-                            <form action="{{ route('member_umkm.destroy', $member->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
-                                    Hapus
-                                </button>
-                            </form>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('member_umkm.edit', $member->id) }}"
+                                        class="inline-flex items-center justify-center w-8 h-8 text-white bg-yellow-500 hover:bg-yellow-600 rounded shadow">
+                                    <i data-feather="edit" class="w-4 h-4"></i>
+                                </a>
+                        <form action="{{ route('member_umkm.destroy', $member->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    class="inline-flex items-center justify-center w-8 h-8 text-white bg-red-500 hover:bg-red-600 rounded shadow">
+                                <i data-feather="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </form>
                         </td>
                         
                     </tr>
@@ -84,3 +106,19 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#member-umkm-table').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
+            },
+            pageLength: 10,
+            dom: '<"top"f<"spacer">l>rt<"bottom"ip><"clear">'
+        });
+        feather.replace();
+    });
+</script>
+@endpush
