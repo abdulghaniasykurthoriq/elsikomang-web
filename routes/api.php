@@ -35,6 +35,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('alamats', AlamatController::class);
 
     Route::get('/keranjang-ku', [KeranjangController::class, 'index']);
+    Route::get('/keranjang-ku/total', [KeranjangController::class, 'countKeranjang']);
     Route::post('/keranjang-ku/add', [KeranjangController::class, 'add']);
     Route::post('/keranjang-ku/minus', [KeranjangController::class, 'minus']);
 
@@ -42,6 +43,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/wishlist/toggle', [WishlistController::class, 'toggle']);
 
     Route::post('/transaksi', [TransaksiController::class, 'store']);
+    Route::get('/transaksi', [TransaksiController::class, 'index']);
+    Route::get('/transaksi/status-count', [TransaksiController::class, 'countByStatus']);
 
 
     Route::post('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
@@ -83,6 +86,8 @@ Route::post('/transaksi/callback', [TransaksiController::class, 'update']);
 
 // Route::get('/wilayah/raga-ongkir', [WilayahController::class, 'importDestinasi']);
 Route::post('/cek-ongkir', [RajaOngkirController::class, 'checkOngkir']);
+
+ 
 
 
 

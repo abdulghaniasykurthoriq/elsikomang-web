@@ -17,7 +17,7 @@ class TransaksiDumySeeder extends Seeder
         $produkVariantId = 1;
         $transaksiId = 1;
 
-        for ($tahun = 2021; $tahun <= 2025; $tahun++) {
+        for ($tahun = 2025; $tahun <= 2025; $tahun++) {
             for ($bulan = 1; $bulan <= 12; $bulan++) {
                 // 8–12 transaksi per bulan biar variasi
                 $jumlahTransaksi = rand(8, 12);

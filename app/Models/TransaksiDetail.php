@@ -14,4 +14,13 @@ class TransaksiDetail extends Model
         'qty',
         'harga'
     ];
+
+    public function produkVariant()
+    {
+        return $this->belongsTo(ProdukVariant::class, 'produk_variant_id');
+    }
+    public function produkUmkm()
+    {
+        return $this->belongsTo(ProdukUmkm::class, 'produk_id');
+    }
 }

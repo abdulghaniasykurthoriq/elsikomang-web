@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreKeranjangRequest;
 use App\Models\Keranjang;
 use App\Models\KeranjangDetail;
+use Illuminate\Support\Facades\DB;
 
 class KeranjangController extends Controller
 {
@@ -96,6 +97,21 @@ class KeranjangController extends Controller
 
         return response()->json(['message' => 'Jumlah produk berhasil dikurangi / dihapus']);
     }
+
+
+    public function countKeranjang()
+    {
+        $total = DB::table('keranjang_details')
+            ->join('keranjangs', 'keranjang_details.keranjang_id', '=', 'keranjangs.id')
+            ->where('keranjangs.user_id', auth()->id())
+            ->count();
+
+        return response()->json([
+            'message' => 'Total item keranjang berhasil dihitung',
+            'data' => ['total_items' => $total],
+        ]);
+    }
+
 
 
 

@@ -15,11 +15,13 @@ use Illuminate\Support\Facades\Validator;
 class TransaksiController extends Controller
 {
 
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            '*.produk_variant_id' => 'required|exists:produk_variants,id',
-            '*.qty' => 'required|integer|min:1',
+            'items' => 'required|array|min:1',
+            'items.*.produk_variant_id' => 'required|exists:produk_variants,id',
+            'items.*.qty' => 'required|integer|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -30,15 +32,15 @@ class TransaksiController extends Controller
         }
 
         $validatedData = $validator->validated();
+        $items = $validatedData['items'];
 
-        // Buat order ID unik
         $orderId = 'TRX' . now()->format('YmdHis') . rand(1000, 9999);
-        $pay_method = 'bri_va'; // misalnya default VA
-
+        $pay_method = 'bri_va';
         $amount = 0;
 
-        // Hitung total amount berdasarkan data produk dari DB
-        foreach ($validatedData as $item) {
+        $variants = [];
+
+        foreach ($items as $item) {
             $variant = ProdukVariant::with('produk_umkm')->find($item['produk_variant_id']);
 
             if (!$variant || !$variant->produk_umkm) {
@@ -56,10 +58,10 @@ class TransaksiController extends Controller
                 ], 422);
             }
 
+            $variants[$item['produk_variant_id']] = $variant;
             $amount += $variant->harga * $item['qty'];
         }
 
-        // Validasi amount
         if ($amount < 0.01) {
             return response()->json([
                 'message' => 'Total transaksi tidak valid (kurang dari 0.01)',
@@ -67,7 +69,6 @@ class TransaksiController extends Controller
             ], 422);
         }
 
-        // Kirim ke Midtrans
         $params = $this->buildMidtransParams([
             'order_id' => $orderId,
             'amount' => $amount,
@@ -75,7 +76,6 @@ class TransaksiController extends Controller
         ]);
         $midtrans = $this->callMidtrans($params);
 
-        // Simpan ke DB
         DB::beginTransaction();
         try {
             $transaction = Transaksi::create([
@@ -88,8 +88,8 @@ class TransaksiController extends Controller
                 'status' => 'pending',
             ]);
 
-            foreach ($validatedData as $item) {
-                $variant = ProdukVariant::with('produk_umkm')->find($item['produk_variant_id']);
+            foreach ($items as $item) {
+                $variant = $variants[$item['produk_variant_id']];
 
                 TransaksiDetail::create([
                     'produk_id' => $variant->produk_umkm->id,
@@ -98,33 +98,30 @@ class TransaksiController extends Controller
                     'qty' => $item['qty'],
                     'harga' => $variant->harga,
                 ]);
-            }
 
-            // tambhakan juga kalo ada user_id dan produk_variant_id di TransaksiDetail hapus di keranjang juga
-            // Hapus item dari keranjang mirip logika 'minus'
-            $keranjang = Keranjang::where('user_id', auth()->user()->id)->first();
+                // Hapus dari keranjang
+                $keranjang = Keranjang::where('user_id', auth()->id())->first();
+                if ($keranjang) {
+                    $keranjangDetail = KeranjangDetail::where('keranjang_id', $keranjang->id)
+                        ->where('produk_variant_id', $item['produk_variant_id'])
+                        ->first();
 
-            if ($keranjang) {
-                $keranjangDetail = KeranjangDetail::where('keranjang_id', $keranjang->id)
-                    ->where('produk_variant_id', $item['produk_variant_id'])
-                    ->first();
-
-                if ($keranjangDetail) {
-                    if ($keranjangDetail->jumlah > $item['qty']) {
-                        $keranjangDetail->jumlah -= $item['qty'];
-                        $keranjangDetail->save();
-                    } else {
-                        $keranjangDetail->delete();
+                    if ($keranjangDetail) {
+                        if ($keranjangDetail->jumlah > $item['qty']) {
+                            $keranjangDetail->jumlah -= $item['qty'];
+                            $keranjangDetail->save();
+                        } else {
+                            $keranjangDetail->delete();
+                        }
                     }
                 }
-
-                // Cek sisa detail
-                $sisaDetail = KeranjangDetail::where('keranjang_id', $keranjang->id)->count();
-                if ($sisaDetail === 0) {
-                    $keranjang->delete();
-                }
             }
 
+            // Cek sisa detail keranjang dan hapus keranjang kalau kosong
+            $keranjang = Keranjang::where('user_id', auth()->id())->first();
+            if ($keranjang && $keranjang->keranjangDetail()->count() === 0) {
+                $keranjang->delete();
+            }
 
             DB::commit();
 
@@ -142,6 +139,40 @@ class TransaksiController extends Controller
             ], 500);
         }
     }
+    public function index(Request $request)
+    {
+        $status = $request->query('status');
+
+        $query = Transaksi::with(['transaksiDetail.produkUmkm', 'transaksiDetail.produkVariant'])
+            ->where('user_id', auth()->id());
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $transaction = $query->get();
+
+        return response()->json([
+            'message' => 'Transaksi ditemukan',
+            'data' => $transaction,
+        ]);
+    }
+
+
+
+    public function countByStatus()
+    {
+        $counts = Transaksi::where('user_id', auth()->id())
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        return response()->json([
+            'message' => 'Statistik transaksi berhasil diambil',
+            'data' => $counts,
+        ]);
+    }
+
 
 
 
@@ -220,44 +251,54 @@ class TransaksiController extends Controller
 
     public function update(Request $request)
     {
-        \Log::info('Callback from Midtrans', $request->all());
+        // ✅ Logging awal callback
+        \Log::info('🔥 Callback HIT', ['request' => $request->all()]);
 
         \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        \Midtrans\Config::$isProduction = (bool) env('MIDTRANS_IS_PRODUCTION');
+        \Midtrans\Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false);
 
-        $notif = new \Midtrans\Notification();
-
-        $transactionStatus = $notif->transaction_status;
-        $fraudStatus = $notif->fraud_status;
-        $transactionCode = $notif->order_id;
-        $signatureKey = $notif->signature_key;
-
-        // Optional: Validasi Signature Key
-        $expectedSignature = hash('sha512',
-            $notif->order_id .
-            $notif->status_code .
-            $notif->gross_amount .
-            env('MIDTRANS_SERVER_KEY')
-        );
-
-        if ($signatureKey !== $expectedSignature) {
-            \Log::warning('Invalid Signature Key', ['expected' => $expectedSignature, 'got' => $signatureKey]);
-            return response()->json(['message' => 'Invalid signature key'], 403);
-        }
-
-        DB::beginTransaction();
         try {
-            $status = match($transactionStatus) {
-                'capture' => $fraudStatus === 'accept' ? 'success' : 'pending',
+            $notif = new \Midtrans\Notification();
+
+            // ✅ Logging isi notifikasi
+            \Log::info('🔥 Midtrans Notification Received', [
+                'order_id' => $notif->order_id,
+                'status_code' => $notif->status_code,
+                'gross_amount' => $notif->gross_amount,
+                'transaction_status' => $notif->transaction_status,
+                'fraud_status' => $notif->fraud_status,
+                'signature_key' => $notif->signature_key,
+            ]);
+
+            // Signature Validation
+            $expectedSignature = hash('sha512',
+                $notif->order_id .
+                $notif->status_code .
+                $notif->gross_amount .
+                env('MIDTRANS_SERVER_KEY')
+            );
+
+            if ($notif->signature_key !== $expectedSignature) {
+                \Log::warning('❌ Invalid Signature Key', [
+                    'expected' => $expectedSignature,
+                    'received' => $notif->signature_key,
+                ]);
+                return response()->json(['message' => 'Invalid signature key'], 403);
+            }
+
+            // Mapping status
+            $status = match ($notif->transaction_status) {
+                'capture' => $notif->fraud_status === 'accept' ? 'success' : 'pending',
                 'settlement' => 'success',
                 'pending' => 'pending',
                 'deny', 'cancel', 'expire' => 'failed',
                 default => 'unknown',
             };
 
-            $transaction = Transaksi::where('order_id', $transactionCode)->first();
+            $transaction = Transaksi::where('order_id', $notif->order_id)->first();
 
             if (!$transaction) {
+                \Log::warning('⚠️ Transaksi tidak ditemukan', ['order_id' => $notif->order_id]);
                 return response()->json(['message' => 'Transaction not found'], 404);
             }
 
@@ -265,14 +306,81 @@ class TransaksiController extends Controller
                 'status' => $status,
             ]);
 
-            DB::commit();
+            \Log::info('✅ Transaksi berhasil diupdate', [
+                'order_id' => $notif->order_id,
+                'status' => $status,
+            ]);
+
             return response()->json(['message' => 'Callback processed'], 200);
         } catch (\Throwable $th) {
-            DB::rollBack();
-            \Log::error('Callback error', ['exception' => $th]);
+            \Log::error('❌ Callback error', ['exception' => $th->getMessage()]);
             return response()->json(['message' => $th->getMessage()], 500);
         }
     }
+
+
+    // public function update(Request $request)
+    // {
+    //     \Log::info('🔥 Callback HIT', ['data' => $request->all()]);
+    //     \Log::info('Callback from Midtrans', $request->all());
+
+    //     \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+    //     \Midtrans\Config::$isProduction = (bool) env('MIDTRANS_IS_PRODUCTION');
+
+    //     $notif = new \Midtrans\Notification();
+    //     \Log::info('notif midtrans', $notif);
+    //     \Log::info('notif midtrans', $notif);
+    //     \Log::info('notif midtrans', $notif);
+    //     \Log::info('notif midtrans', $notif);
+
+    //     $transactionStatus = $notif->transaction_status;
+    //     $fraudStatus = $notif->fraud_status;
+    //     $transactionCode = $notif->order_id;
+    //     $signatureKey = $notif->signature_key;
+
+        
+
+    //     // Optional: Validasi Signature Key
+    //     $expectedSignature = hash('sha512',
+    //         $notif->order_id .
+    //         $notif->status_code .
+    //         $notif->gross_amount .
+    //         env('MIDTRANS_SERVER_KEY')
+    //     );
+
+    //     if ($signatureKey !== $expectedSignature) {
+    //         \Log::warning('Invalid Signature Key', ['expected' => $expectedSignature, 'got' => $signatureKey]);
+    //         return response()->json(['message' => 'Invalid signature key'], 403);
+    //     }
+
+    //     DB::beginTransaction();
+    //     try {
+    //         $status = match($transactionStatus) {
+    //             'capture' => $fraudStatus === 'accept' ? 'success' : 'pending',
+    //             'settlement' => 'success',
+    //             'pending' => 'pending',
+    //             'deny', 'cancel', 'expire' => 'failed',
+    //             default => 'unknown',
+    //         };
+
+    //         $transaction = Transaksi::where('order_id', $transactionCode)->first();
+
+    //         if (!$transaction) {
+    //             return response()->json(['message' => 'Transaction not found'], 404);
+    //         }
+
+    //         $transaction->update([
+    //             'status' => $status,
+    //         ]);
+
+    //         DB::commit();
+    //         return response()->json(['message' => 'Callback processed'], 200);
+    //     } catch (\Throwable $th) {
+    //         DB::rollBack();
+    //         \Log::error('Callback error', ['exception' => $th]);
+    //         return response()->json(['message' => $th->getMessage()], 500);
+    //     }
+    // }
 
     public function success()
     {
