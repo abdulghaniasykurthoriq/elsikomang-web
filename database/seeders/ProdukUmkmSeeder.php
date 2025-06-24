@@ -17,6 +17,7 @@ class ProdukUmkmSeeder extends Seeder
             'no_hp' => '081234567890',
             'foto_toko' => 'foto_toko/toko-dumy.png',
             'created_by' => '1',
+            'desa_id' => '15238'
         ]);
 
         $kategoriId = 2; // kategori makanan (pastikan sudah ada)
@@ -27,8 +28,8 @@ class ProdukUmkmSeeder extends Seeder
                 'nama_produk' => 'Kopi Gayo Premium',
                 'deskripsi' => 'Kopi asli dari dataran tinggi Gayo.',
                 'varian' => [
-                    ['varian' => '250g', 'harga' => 40000, 'stok' => 10],
-                    ['varian' => '500g', 'harga' => 75000, 'stok' => 5],
+                    ['varian' => '250g' , 'berat' =>800, 'harga' => 40000, 'stok' => 10],
+                    ['varian' => '500g', 'berat' =>800, 'harga' => 75000, 'stok' => 5],
                 ],
                 'gambar' => 'produk_image/dummy.jpg',
             ],
@@ -36,8 +37,8 @@ class ProdukUmkmSeeder extends Seeder
                 'nama_produk' => 'Teh Hijau Organik',
                 'deskripsi' => 'Teh hijau berkualitas dari kebun lokal.',
                 'varian' => [
-                    ['varian' => '100g', 'harga' => 25000, 'stok' => 20],
-                    ['varian' => '250g', 'harga' => 55000, 'stok' => 8],
+                    ['varian' => '100g', 'berat' =>800, 'harga' => 25000, 'stok' => 20],
+                    ['varian' => '250g', 'berat' =>800, 'harga' => 55000, 'stok' => 8],
                 ],
                 'gambar' => 'produk_image/teh-hijau.jpg',
             ],
@@ -45,8 +46,8 @@ class ProdukUmkmSeeder extends Seeder
                 'nama_produk' => 'Keripik Singkong Pedas',
                 'deskripsi' => 'Keripik singkong dengan rasa pedas mantap.',
                 'varian' => [
-                    ['varian' => '50g', 'harga' => 15000, 'stok' => 30],
-                    ['varian' => '100g', 'harga' => 28000, 'stok' => 15],
+                    ['varian' => '50g', 'berat' =>800, 'harga' => 15000, 'stok' => 30],
+                    ['varian' => '100g', 'berat' =>800, 'harga' => 28000, 'stok' => 15],
                 ],
                 'gambar' => 'produk_image/keripik-singkong.jpg',
             ],
@@ -54,7 +55,7 @@ class ProdukUmkmSeeder extends Seeder
                 'nama_produk' => 'Sambal Terasi Asli',
                 'deskripsi' => 'Sambal terasi dengan cita rasa tradisional.',
                 'varian' => [
-                    ['varian' => '150ml', 'harga' => 20000, 'stok' => 25],
+                    ['varian' => '150ml', 'berat' =>800, 'harga' => 20000, 'stok' => 25],
                 ],
                 'gambar' => 'produk_image/sambal-terasi.jpg',
             ],
@@ -62,8 +63,8 @@ class ProdukUmkmSeeder extends Seeder
                 'nama_produk' => 'Madu Hutan Sumbawa',
                 'deskripsi' => 'Madu asli dari hutan Sumbawa yang murni.',
                 'varian' => [
-                    ['varian' => '250ml', 'harga' => 90000, 'stok' => 7],
-                    ['varian' => '500ml', 'harga' => 170000, 'stok' => 4],
+                    ['varian' => '250ml', 'berat' =>800, 'harga' => 90000, 'stok' => 7],
+                    ['varian' => '500ml', 'berat' =>800, 'harga' => 170000, 'stok' => 4],
                 ],
                 'gambar' => 'produk_image/madu-hutan.jpg',
             ],
