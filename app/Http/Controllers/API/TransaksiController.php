@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Alamat;
 use App\Models\Keranjang;
 use App\Models\KeranjangDetail;
 use App\Models\ProdukVariant;
@@ -10,135 +11,312 @@ use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class TransaksiController extends Controller
 {
 
-
     public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'items' => 'required|array|min:1',
-            'items.*.produk_variant_id' => 'required|exists:produk_variants,id',
-            'items.*.qty' => 'required|integer|min:1',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'items' => 'required|array|min:1',
+        'items.*.produk_variant_id' => 'required|exists:produk_variants,id',
+        'items.*.qty' => 'required|integer|min:1',
+        'alamat_id' => 'required|exists:alamats,id',
+        'selected_couriers' => 'required|array|min:1',
+        'selected_couriers.*.member_id' => 'required|exists:member_umkm,id',
+        'selected_couriers.*.code' => 'required|string',
+        'selected_couriers.*.service' => 'required|string',
+    ]);
 
-        if ($validator->fails()) {
+    if ($validator->fails()) {
+        return response()->json([
+            'message' => 'Validasi gagal',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
+    $items = $request->items;
+    $alamat_id = $request->alamat_id;
+    $selectedCouriers = collect($request->selected_couriers)->keyBy('member_id');
+    $groupedItems = [];
+    $variants = [];
+
+    // Kelompokkan item per member dan simpan varian
+    foreach ($items as $item) {
+        $variant = ProdukVariant::with('produk_umkm')->find($item['produk_variant_id']);
+        if (!$variant || !$variant->produk_umkm) {
             return response()->json([
-                'message' => 'Validasi gagal',
-                'errors' => $validator->errors(),
-            ], 422);
+                'message' => 'Produk atau varian tidak ditemukan.',
+                'variant_id' => $item['produk_variant_id'],
+            ], 404);
         }
 
-        $validatedData = $validator->validated();
-        $items = $validatedData['items'];
+        $memberId = $variant->produk_umkm->member_id;
+        $variants[$item['produk_variant_id']] = $variant;
 
-        $orderId = 'TRX' . now()->format('YmdHis') . rand(1000, 9999);
-        $pay_method = 'bri_va';
-        $amount = 0;
+        $groupedItems[$memberId][] = [
+            'variant' => $variant,
+            'qty' => $item['qty'],
+        ];
+    }
 
-        $variants = [];
+    // Ambil detail alamat tujuan user
+    $alamat = Alamat::findOrFail($alamat_id);
+    $destination = $alamat->desa_id ?? $alamat->desa_id;
 
-        foreach ($items as $item) {
-            $variant = ProdukVariant::with('produk_umkm')->find($item['produk_variant_id']);
+    DB::beginTransaction();
+    try {
+        $transactions = [];
 
-            if (!$variant || !$variant->produk_umkm) {
-                return response()->json([
-                    'message' => 'Produk atau varian tidak ditemukan.',
-                    'variant_id' => $item['produk_variant_id'],
-                ], 404);
+        foreach ($groupedItems as $memberId => $memberItems) {
+            $orderId = 'TRX' . now()->format('YmdHis') . rand(1000, 9999);
+            $pay_method = 'bri_va';
+            $subtotal = 0;
+            $weight = 0;
+
+            // Hitung subtotal & berat total per member
+            foreach ($memberItems as $item) {
+                $subtotal += $item['variant']->harga * $item['qty'];
+                $weight += ($item['variant']->berat ?? 0) * $item['qty'];
             }
 
-            if ($variant->harga < 0.01) {
-                return response()->json([
-                    'message' => 'Harga produk tidak valid (kurang dari 0.01)',
-                    'produk_id' => $variant->produk_umkm->id,
-                    'harga' => $variant->harga,
-                ], 422);
+            // Origin dari produk UMKM
+            $origin = $memberItems[0]['variant']->produk_umkm->member_desa_id ?? $memberItems[0]['variant']->produk_umkm->member->desa_id;
+
+            // Ambil data kurir terpilih
+            $courierInfo = $selectedCouriers->get($memberId);
+            if (!$courierInfo) {
+                throw new \Exception("Kurir tidak dipilih untuk member_id $memberId");
             }
 
-            $variants[$item['produk_variant_id']] = $variant;
-            $amount += $variant->harga * $item['qty'];
-        }
+            // Panggil API ongkir internal
+            $ongkirResponse = Http::post('https://elsikomangdev.my.id/api/cek-ongkir', [
+                'origin' => $origin,
+                'destination' => $destination,
+                'weight' => $weight,
+                'courier' => $courierInfo['code']
+            ]);
+            // throw new \Exception("origin {$origin} dengan destination: " . $destination);
 
-        if ($amount < 0.01) {
-            return response()->json([
-                'message' => 'Total transaksi tidak valid (kurang dari 0.01)',
-                'amount' => $amount,
-            ], 422);
-        }
+            if (!$ongkirResponse->ok()) {
+                // throw new \Exception("Gagal cek ongkir untuk member_id $memberId");
+                throw new \Exception("Gagal cek ongkir untuk member_id {$memberId} dengan response: " . $ongkirResponse->body());
 
-        $params = $this->buildMidtransParams([
-            'order_id' => $orderId,
-            'amount' => $amount,
-            'payment_method' => $pay_method,
-        ]);
-        $midtrans = $this->callMidtrans($params);
+            }
 
-        DB::beginTransaction();
-        try {
-            $transaction = Transaksi::create([
-                'user_id' => auth()->id(),
+            $costData = collect($ongkirResponse->json()['data']['data'] ?? [])
+            ->first(function ($cost) use ($courierInfo) {
+                return strtolower($cost['code']) === strtolower($courierInfo['code']) &&
+                    strtolower($cost['service']) === strtolower($courierInfo['service']);
+            });
+
+            if (!$costData) {
+                throw new \Exception("Service {$courierInfo['service']} tidak ditemukan untuk member_id $memberId");
+                
+            }
+
+            $ongkos = $costData['cost'][0]['value'] ?? 0;
+            $amount = $subtotal + $ongkos;
+
+            $params = $this->buildMidtransParams([
                 'order_id' => $orderId,
                 'amount' => $amount,
+                'payment_method' => $pay_method,
+            ]);
+            $midtrans = $this->callMidtrans($params);
+
+            $transaction = Transaksi::create([
+                'user_id' => auth()->id(),
+                'member_id' => $memberId,
+                'alamat_id' => $alamat_id,
+                'order_id' => $orderId,
+                'amount' => $amount,
+                'total_ongkos' => $ongkos,
                 'payment_method' => $pay_method,
                 'snap_token' => $midtrans['token'],
                 'snap_redirect_url' => $midtrans['redirect_url'],
                 'status' => 'pending',
             ]);
 
-            foreach ($items as $item) {
-                $variant = $variants[$item['produk_variant_id']];
-
+            foreach ($memberItems as $item) {
                 TransaksiDetail::create([
-                    'produk_id' => $variant->produk_umkm->id,
+                    'produk_id' => $item['variant']->produk_umkm->id,
                     'transaksi_id' => $transaction->id,
-                    'produk_variant_id' => $item['produk_variant_id'],
+                    'produk_variant_id' => $item['variant']->id,
                     'qty' => $item['qty'],
-                    'harga' => $variant->harga,
+                    'harga' => $item['variant']->harga,
                 ]);
 
-                // Hapus dari keranjang
+                // Update keranjang
                 $keranjang = Keranjang::where('user_id', auth()->id())->first();
                 if ($keranjang) {
-                    $keranjangDetail = KeranjangDetail::where('keranjang_id', $keranjang->id)
-                        ->where('produk_variant_id', $item['produk_variant_id'])
+                    $detail = KeranjangDetail::where('keranjang_id', $keranjang->id)
+                        ->where('produk_variant_id', $item['variant']->id)
                         ->first();
 
-                    if ($keranjangDetail) {
-                        if ($keranjangDetail->jumlah > $item['qty']) {
-                            $keranjangDetail->jumlah -= $item['qty'];
-                            $keranjangDetail->save();
+                    if ($detail) {
+                        if ($detail->jumlah > $item['qty']) {
+                            $detail->jumlah -= $item['qty'];
+                            $detail->save();
                         } else {
-                            $keranjangDetail->delete();
+                            $detail->delete();
                         }
                     }
                 }
             }
 
-            // Cek sisa detail keranjang dan hapus keranjang kalau kosong
-            $keranjang = Keranjang::where('user_id', auth()->id())->first();
-            if ($keranjang && $keranjang->keranjangDetail()->count() === 0) {
-                $keranjang->delete();
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'message' => 'Transaksi berhasil dibuat',
-                'snap_token' => $transaction->snap_token,
-                'redirect_url' => $transaction->snap_redirect_url,
-                'data' => $transaction,
-            ]);
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            return response()->json([
-                'message' => 'Transaksi gagal dibuat',
-                'error' => $th->getMessage(),
-            ], 500);
+            $transactions[] = $transaction;
         }
+
+        // Hapus keranjang jika kosong
+        $keranjang = Keranjang::where('user_id', auth()->id())->first();
+        if ($keranjang && $keranjang->keranjangDetail()->count() === 0) {
+            $keranjang->delete();
+        }
+
+        DB::commit();
+
+        return response()->json([
+            'message' => 'Transaksi berhasil dibuat',
+            'data' => $transactions,
+        ]);
+    } catch (\Throwable $th) {
+        DB::rollBack();
+        return response()->json([
+            'message' => 'Transaksi gagal',
+            'error' => $th->getMessage(),
+        ], 500);
     }
+}
+
+
+
+    // public function store(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'items' => 'required|array|min:1',
+    //         'items.*.produk_variant_id' => 'required|exists:produk_variants,id',
+    //         'items.*.qty' => 'required|integer|min:1',
+    //     ]);
+
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'message' => 'Validasi gagal',
+    //             'errors' => $validator->errors(),
+    //         ], 422);
+    //     }
+
+    //     $validatedData = $validator->validated();
+    //     $items = $validatedData['items'];
+
+    //     $orderId = 'TRX' . now()->format('YmdHis') . rand(1000, 9999);
+    //     $pay_method = 'bri_va';
+    //     $amount = 0;
+
+    //     $variants = [];
+
+    //     foreach ($items as $item) {
+    //         $variant = ProdukVariant::with('produk_umkm')->find($item['produk_variant_id']);
+
+    //         if (!$variant || !$variant->produk_umkm) {
+    //             return response()->json([
+    //                 'message' => 'Produk atau varian tidak ditemukan.',
+    //                 'variant_id' => $item['produk_variant_id'],
+    //             ], 404);
+    //         }
+
+    //         if ($variant->harga < 0.01) {
+    //             return response()->json([
+    //                 'message' => 'Harga produk tidak valid (kurang dari 0.01)',
+    //                 'produk_id' => $variant->produk_umkm->id,
+    //                 'harga' => $variant->harga,
+    //             ], 422);
+    //         }
+
+    //         $variants[$item['produk_variant_id']] = $variant;
+    //         $amount += $variant->harga * $item['qty'];
+    //     }
+
+    //     if ($amount < 0.01) {
+    //         return response()->json([
+    //             'message' => 'Total transaksi tidak valid (kurang dari 0.01)',
+    //             'amount' => $amount,
+    //         ], 422);
+    //     }
+
+    //     $params = $this->buildMidtransParams([
+    //         'order_id' => $orderId,
+    //         'amount' => $amount,
+    //         'payment_method' => $pay_method,
+    //     ]);
+    //     $midtrans = $this->callMidtrans($params);
+
+    //     DB::beginTransaction();
+    //     try {
+    //         $transaction = Transaksi::create([
+    //             'user_id' => auth()->id(),
+    //             'order_id' => $orderId,
+    //             'amount' => $amount,
+    //             'payment_method' => $pay_method,
+    //             'snap_token' => $midtrans['token'],
+    //             'snap_redirect_url' => $midtrans['redirect_url'],
+    //             'status' => 'pending',
+    //         ]);
+
+    //         foreach ($items as $item) {
+    //             $variant = $variants[$item['produk_variant_id']];
+
+    //             TransaksiDetail::create([
+    //                 'produk_id' => $variant->produk_umkm->id,
+    //                 'transaksi_id' => $transaction->id,
+    //                 'produk_variant_id' => $item['produk_variant_id'],
+    //                 'qty' => $item['qty'],
+    //                 'harga' => $variant->harga,
+    //             ]);
+
+    //             // Hapus dari keranjang
+    //             $keranjang = Keranjang::where('user_id', auth()->id())->first();
+    //             if ($keranjang) {
+    //                 $keranjangDetail = KeranjangDetail::where('keranjang_id', $keranjang->id)
+    //                     ->where('produk_variant_id', $item['produk_variant_id'])
+    //                     ->first();
+
+    //                 if ($keranjangDetail) {
+    //                     if ($keranjangDetail->jumlah > $item['qty']) {
+    //                         $keranjangDetail->jumlah -= $item['qty'];
+    //                         $keranjangDetail->save();
+    //                     } else {
+    //                         $keranjangDetail->delete();
+    //                     }
+    //                 }
+    //             }
+    //         }
+
+    //         // Cek sisa detail keranjang dan hapus keranjang kalau kosong
+    //         $keranjang = Keranjang::where('user_id', auth()->id())->first();
+    //         if ($keranjang && $keranjang->keranjangDetail()->count() === 0) {
+    //             $keranjang->delete();
+    //         }
+
+    //         DB::commit();
+
+    //         return response()->json([
+    //             'message' => 'Transaksi berhasil dibuat',
+    //             'snap_token' => $transaction->snap_token,
+    //             'redirect_url' => $transaction->snap_redirect_url,
+    //             'data' => $transaction,
+    //         ]);
+    //     } catch (\Throwable $th) {
+    //         DB::rollBack();
+    //         return response()->json([
+    //             'message' => 'Transaksi gagal dibuat',
+    //             'error' => $th->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+
     public function index(Request $request)
     {
         $status = $request->query('status');

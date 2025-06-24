@@ -14,6 +14,8 @@ class Transaksi extends Model
     protected $fillable = [
         'user_id',
         'order_id',
+        'member_id',
+        'alamat_id',
         'amount',
         'payment_method',
         'snap_token',
