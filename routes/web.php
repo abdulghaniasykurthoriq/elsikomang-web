@@ -96,7 +96,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/klasterisasi_umkm', [UmkmLaporanKlasterProdukController::class, 'index'])->name('klasterisasi-produk.index');
         Route::post('/klasterisasi_umkm/process', [UmkmLaporanKlasterProdukController::class, 'process'])->name('klasterisasi-produk.process');
 
-        Route::get('/laporan-transaksi-produk-umkm', [UmkmLaporanTransaksiUmkmController::class, 'index'])->name('transaksi-produk-umkm.index');
+        Route::get('/laporan-transaksi-produk-umkm', [UmkmLaporanTransaksiUmkmController::class, 'index2'])->name('transaksi-produk-umkm.index');
+        // Route::get('/laporan-transaksi-produk-umkm2', [UmkmLaporanTransaksiUmkmController::class, 'index2'])->name('laporan.index');
+        Route::get('/laporan-transaksi-produk-umkm/{tahun}/{bulan}', [UmkmLaporanTransaksiUmkmController::class, 'showPerBulan'])->name('laporan.perbulan');
 
 
         Route::get('/peramalan/proses', [UmkmLaporanTransaksiUmkmController::class, 'proses'])->name('peramalan.proses');
