@@ -106,7 +106,7 @@
         const desaSelect = document.getElementById('desa');
 
         // Load Provinsi
-        fetch('http://127.0.0.1:8000/api/provinsi')
+        fetch('https://elsikomangdev.my.id/api/provinsi')
             .then(res => res.json())
             .then(res => {
                 res.data.forEach(p => {
@@ -125,7 +125,7 @@
             desaSelect.disabled = true;
 
             if (idProv) {
-                fetch(`http://127.0.0.1:8000/api/kota/${idProv}`)
+                fetch(`https://elsikomangdev.my.id/api/kota/${idProv}`)
                     .then(res => res.json())
                     .then(res => {
                         res.data.forEach(k => {
@@ -144,7 +144,7 @@
             desaSelect.disabled = true;
 
             if (idKota) {
-                fetch(`http://127.0.0.1:8000/api/kecamatan/${idKota}`)
+                fetch(`https://elsikomangdev.my.id/api/kecamatan/${idKota}`)
                     .then(res => res.json())
                     .then(res => {
                         res.data.forEach(kec => {
@@ -161,7 +161,7 @@
             desaSelect.disabled = true;
 
             if (idKec) {
-                fetch(`http://127.0.0.1:8000/api/desa/${idKec}`)
+                fetch(`https://elsikomangdev.my.id/api/desa/${idKec}`)
                     .then(res => res.json())
                     .then(res => {
                         res.data.forEach(d => {
