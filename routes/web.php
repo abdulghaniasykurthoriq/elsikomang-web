@@ -32,7 +32,7 @@ use App\Http\Controllers\Operator\Umkm\MemberUmkmController as UmkmMemberUmkmCon
 use App\Http\Controllers\Operator\Umkm\ProdukUmkmController as UmkmProdukUmkmController;
 use App\Http\Middleware\CheckUserRoleMiddleware;
 use App\Http\Controllers\Operator\Entertaiment;
-
+use App\Http\Controllers\Operator\Umkm\TransaksiController;
 
 // Halaman login
 Route::get('/', function () {
@@ -99,12 +99,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/laporan-transaksi-produk-umkm', [UmkmLaporanTransaksiUmkmController::class, 'index2'])->name('transaksi-produk-umkm.index');
         // Route::get('/laporan-transaksi-produk-umkm2', [UmkmLaporanTransaksiUmkmController::class, 'index2'])->name('laporan.index');
         Route::get('/laporan-transaksi-produk-umkm/{tahun}/{bulan}', [UmkmLaporanTransaksiUmkmController::class, 'showPerBulan'])->name('laporan.perbulan');
-
-
         Route::get('/peramalan/proses', [UmkmLaporanTransaksiUmkmController::class, 'proses'])->name('peramalan.proses');
 
-
-    Route::get('/simulasi', [LeastSquaresController::class, 'index'])->name('simulasi.ls.index');
+        Route::prefix('transaksi')->group(function () {
+            Route::get('/', [TransaksiController::class, 'index'])->name('transaksi.index');
+            Route::get('/data', [TransaksiController::class, 'data'])->name('transaksi.data');
+            Route::put('/{id}/update-status', [TransaksiController::class, 'updateStatus'])->name('transaksi.updateStatus');
+            Route::delete('/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
+        });
+        
+        
+    
+        Route::get('/simulasi', [LeastSquaresController::class, 'index'])->name('simulasi.ls.index');
     Route::post('/simulasi', [LeastSquaresController::class, 'proses'])->name('simulasi.ls.proses');
 
     });

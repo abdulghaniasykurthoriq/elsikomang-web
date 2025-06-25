@@ -20,6 +20,11 @@ return new class extends Migration
             $table->unsignedBigInteger('alamat_id');
             $table->double('total_ongkos')->default(0);
 
+            $table->string('no_resi')->nullable();
+            $table->string('kode_voucher')->nullable();
+            $table->string('kurir')->nullable();
+            $table->string('kurir_service')->nullable();
+
             $table->string('payment_method');
             $table->string('snap_token')->nullable();
             $table->string('snap_redirect_url')->nullable();
