@@ -17,7 +17,7 @@ class ProdukUmkmSeeder extends Seeder
             'no_hp' => '081234567890',
             'foto_toko' => 'foto_toko/toko-dumy.png',
             'created_by' => '1',
-            'desa_id' => '15238'
+            'desa_id' =>1234
         ]);
 
         $kategoriId = 2; // kategori makanan (pastikan sudah ada)

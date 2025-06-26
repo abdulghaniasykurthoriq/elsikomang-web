@@ -11,14 +11,23 @@ class Transaksi extends Model
 
     protected $table = 'transaksis';
 
+
+    
     protected $fillable = [
         'user_id',
         'order_id',
+        'member_id',
+        'alamat_id',
         'amount',
         'payment_method',
         'snap_token',
         'snap_redirect_url',
         'status',
+        'kode_voucher',
+        'no_resi',
+        'kurir',
+        'kurir_service',
+        'total_ongkos'
     ];
 
     public function user()

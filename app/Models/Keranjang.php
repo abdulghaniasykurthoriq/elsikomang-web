@@ -28,7 +28,7 @@ class Keranjang extends Model
     }
 
     
-      protected $appends = ['member_nama','member_foto'];
+      protected $appends = ['member_nama','member_foto','member_desa_id'];
       protected $hidden = ['member'];
       
 
@@ -36,6 +36,10 @@ class Keranjang extends Model
       public function getMemberNamaAttribute()
       {
           return $this->member->nama_toko;
+      }
+      public function getMemberDesaIdAttribute()
+      {
+          return $this->member->desa_id;
       }
       public function getMemberFotoAttribute()
       {

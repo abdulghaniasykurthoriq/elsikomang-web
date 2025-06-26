@@ -23,9 +23,7 @@ class TransaksiDumySeeder extends Seeder
                 $jumlahTransaksi = rand(8, 12);
                 for ($i = 1; $i <= $jumlahTransaksi; $i++) {
                     $harga = match (rand(1, 10)) {
-                        1 => 100000,
-                        2, 3 => 75000,
-                        default => Arr::random([15000, 20000, 25000, 30000, 750000])
+                        default => Arr::random([1000, 5000])
                     };
 
                     if ($tahun < 2025 || $bulan <= 5) {
