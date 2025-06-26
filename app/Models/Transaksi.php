@@ -29,4 +29,11 @@ class Transaksi extends Model
     {
         return $this->hasMany(TransaksiDetail::class, 'transaksi_id', 'id');
     }
+
+    public function voucher()
+    {
+        return $this->belongsTo(Voucher::class);
+    }
+    
+
 }
