@@ -24,10 +24,13 @@ class VoucherController extends Controller
             'total_transaksi' => 'required|numeric|min:0',
         ]);
 
+        // Default jumlah_pemakaian ke 1 jika tidak dikirim
+        $jumlah = (int) ($request->input('jumlah_pemakaian') ?? 1);
+
         $result = $this->voucherService->cekVoucher(
             $request->kode_voucher,
             $request->total_transaksi,
-            $request->jumlah_pemakaian ?? 1
+            $jumlah
         );
 
         return response()->json($result, $result['http_code']);

@@ -7,6 +7,9 @@ use Carbon\Carbon;
 
 class VoucherService
 {
+    /**
+     * Validasi dan hitung potongan dari voucher (tidak mengurangi kuota).
+     */
     public function cekVoucher(string $kode, float $total, int $jumlahPemakaian = 1): array
     {
         if (!$kode) {
@@ -16,11 +19,11 @@ class VoucherService
                 'http_code' => 400
             ];
         }
+
         $voucher = Voucher::where('kode_voucher', $kode)
             ->where('is_aktif', true)
             ->whereDate('tanggal_mulai', '<=', Carbon::today())
             ->whereDate('tanggal_berakhir', '>=', Carbon::today())
-            ->lockForUpdate()
             ->first();
 
         if (!$voucher) {
@@ -59,10 +62,6 @@ class VoucherService
             $diskon = $voucher->nilai_diskon;
         }
 
-        // Kurangi kuota
-        $voucher->kuota -= $jumlahPemakaian;
-        $voucher->save();
-
         return [
             'status' => true,
             'message' => 'Voucher valid.',
@@ -76,5 +75,17 @@ class VoucherService
             ],
             'http_code' => 200
         ];
+    }
+
+    /**
+     * Kurangi kuota voucher setelah transaksi berhasil.
+     */
+    public function pakaiVoucher(string $kode, int $jumlah = 1): void
+    {
+        Voucher::where('kode_voucher', $kode)
+            ->where('is_aktif', true)
+            ->whereDate('tanggal_mulai', '<=', Carbon::today())
+            ->whereDate('tanggal_berakhir', '>=', Carbon::today())
+            ->decrement('kuota', $jumlah);
     }
 }
