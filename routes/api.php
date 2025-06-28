@@ -14,6 +14,7 @@ use App\Http\Controllers\API\ProdukController;
 use App\Http\Controllers\API\RajaOngkirController;
 use App\Http\Controllers\API\SplashScreenController;
 use App\Http\Controllers\API\TransaksiController;
+use App\Http\Controllers\API\VoucherController;
 use App\Http\Controllers\API\WilayahController;
 use App\Http\Controllers\API\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -81,6 +82,8 @@ Route::get('/splashscreen', [SplashScreenController::class, 'index']);
 
 Route::get('/transaksi/success', [TransaksiController::class, 'success']);
 Route::post('/transaksi/callback', [TransaksiController::class, 'update']);
+
+Route::post('/cek-voucher', [VoucherController::class, 'cek']);
 
 
 
