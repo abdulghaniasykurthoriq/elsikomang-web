@@ -121,20 +121,20 @@ class TransaksiController extends Controller
                 $ongkos = $costData['cost'];
                 $amount = $subtotal + $ongkos;
                 
-                if ($request->kode_voucher) {
-                    $cek = $this->voucherService->cekVoucher(
-                        $request->kode_voucher,
-                        $amount
-                    );
+                // if ($request->kode_voucher) {
+                //     $cek = $this->voucherService->cekVoucher(
+                //         $request->kode_voucher,
+                //         $amount
+                //     );
             
-                    if ($cek['http_code'] !== 200) {
-                        return response()->json([
-                            'message' => 'Transaksi gagal',
-                            'error' => $cek['message'],
-                        ], $cek['http_code']);
-                    }
-                    $amount = $cek['data']['total_setelah_diskon'];
-                }                
+                //     if ($cek['http_code'] !== 200) {
+                //         return response()->json([
+                //             'message' => 'Transaksi gagal',
+                //             'error' => $cek['message'],
+                //         ], $cek['http_code']);
+                //     }
+                //     $amount = $cek['data']['total_setelah_diskon'];
+                // }                
                 
 
 
@@ -197,20 +197,22 @@ class TransaksiController extends Controller
                 $keranjang->delete();
             }
             
-            if ($request->kode_voucher) {
-                $pakai = $this->voucherService->pakaiVoucher(
-                    $request->kode_voucher,
-                    count($groupedItems)
-                );
+
+            //AGAT
+            // if ($request->kode_voucher) {
+            //     $pakai = $this->voucherService->pakaiVoucher(
+            //         $request->kode_voucher,
+            //         count($groupedItems)
+            //     );
         
-                if (!$pakai['status']) {
-                    DB::rollBack();
-                    return response()->json([
-                        'message' => 'Transaksi gagal',
-                        'error' => $pakai['message'],
-                    ], 400);
-                }
-            }
+            //     if (!$pakai['status']) {
+            //         DB::rollBack();
+            //         return response()->json([
+            //             'message' => 'Transaksi gagal',
+            //             'error' => $pakai['message'],
+            //         ], 400);
+            //     }
+            // }
             
 
             DB::commit();
