@@ -26,7 +26,8 @@ class VoucherController extends Controller
 
         $result = $this->voucherService->cekVoucher(
             $request->kode_voucher,
-            $request->total_transaksi
+            $request->total_transaksi,
+            $request->jumlah_pemakaian ?? 1
         );
 
         return response()->json($result, $result['http_code']);

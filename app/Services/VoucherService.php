@@ -9,6 +9,13 @@ class VoucherService
 {
     public function cekVoucher(string $kode, float $total, int $jumlahPemakaian = 1): array
     {
+        if (!$kode) {
+            return [
+                'status' => false,
+                'message' => 'Kode voucher tidak boleh kosong.',
+                'http_code' => 400
+            ];
+        }
         $voucher = Voucher::where('kode_voucher', $kode)
             ->where('is_aktif', true)
             ->whereDate('tanggal_mulai', '<=', Carbon::today())
