@@ -33,6 +33,7 @@ use App\Http\Controllers\Operator\Umkm\ProdukUmkmController as UmkmProdukUmkmCon
 use App\Http\Middleware\CheckUserRoleMiddleware;
 use App\Http\Controllers\Operator\Entertaiment;
 use App\Http\Controllers\Operator\Umkm\TransaksiController;
+use App\Http\Controllers\Operator\Umkm\VoucherController;
 
 // Halaman login
 Route::get('/', function () {
@@ -101,11 +102,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/laporan-transaksi-produk-umkm/{tahun}/{bulan}', [UmkmLaporanTransaksiUmkmController::class, 'showPerBulan'])->name('laporan.perbulan');
         Route::get('/peramalan/proses', [UmkmLaporanTransaksiUmkmController::class, 'proses'])->name('peramalan.proses');
 
+        Route::get('/voucher', [VoucherController::class, 'index'])->name('voucher.index');
+        Route::get('/voucher/create', [VoucherController::class, 'create'])->name('voucher.create');
+        Route::post('/voucher', [VoucherController::class, 'store'])->name('voucher.store');
+        Route::get('/voucher/{id}', [VoucherController::class, 'edit'])->name('voucher.edit');
+        Route::put('/voucher/{id}', [VoucherController::class, 'update'])->name('voucher.update');
+        Route::delete('/voucher/{id}', [VoucherController::class, 'destroy'])->name('voucher.destroy');
+
         Route::prefix('transaksi')->group(function () {
             Route::get('/', [TransaksiController::class, 'index'])->name('transaksi.index');
             Route::get('/data', [TransaksiController::class, 'data'])->name('transaksi.data');
             Route::put('/{id}/update-status', [TransaksiController::class, 'updateStatus'])->name('transaksi.updateStatus');
             Route::delete('/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
+
+
         });
         
         

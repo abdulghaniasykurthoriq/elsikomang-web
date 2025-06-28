@@ -9,32 +9,24 @@ use Carbon\Carbon;
 
 class LaporanKlasterProdukController extends Controller
 {
-    // public function index()
-    // {
-    //     $data = ProdukUmkm::with('produk_variant')->get();
-    //     return view('Operator.umkm.Laporan.KlasterisasiProduk.index', compact('data'));
-    // }
     public function index()
-{
-    $data = ProdukUmkm::with('produk_variant')->get();
+    {
+        $data = ProdukUmkm::with('produk_variant')->get();
 
-    // Ambil tahun unik dari semua produk_variant / produk
-    $tahunList = [];
+        $tahunList = [];
 
-    foreach ($data as $item) {
-        foreach ($item->produk_variant as $variant) {
-            $createdAt = $variant->created_at ?? $item->created_at;
-            $year = Carbon::parse($createdAt)->format('Y');
-            $tahunList[] = $year;
+        foreach ($data as $item) {
+            foreach ($item->produk_variant as $variant) {
+                $createdAt = $variant->created_at ?? $item->created_at;
+                $year = Carbon::parse($createdAt)->format('Y');
+                $tahunList[] = $year;
+            }
         }
+
+        $tahunList = collect($tahunList)->unique()->sortDesc()->values()->all();
+
+        return view('Operator.umkm.Laporan.KlasterisasiProduk.index', compact('data', 'tahunList'));
     }
-
-    // Buat list tahun unik dan urut menurun
-    $tahunList = collect($tahunList)->unique()->sortDesc()->values()->all();
-
-    return view('Operator.umkm.Laporan.KlasterisasiProduk.index', compact('data', 'tahunList'));
-}
-
 
     public function process(Request $request)
     {
@@ -73,28 +65,38 @@ class LaporanKlasterProdukController extends Controller
         }
 
         // -----------------------------
-        // Manual KMeans Clustering
+        // K-Means Clustering Manual
         // -----------------------------
-
-        // Inisialisasi centroid awal secara acak
         shuffle($dataset);
         $centroids = array_slice($dataset, 0, $cluster);
-        $lastCentroids = [];
-        $produkClustered = [];
-        $euclideanTable = [];
+        $logIterasi = [];
         $iterasiAktual = 0;
 
         for ($iterasi = 1; $iterasi <= $maxIterasi; $iterasi++) {
             $clusters = array_fill(0, $cluster, []);
+            $assignments = [];
+            $jarakTiapData = [];
 
-            // Assign data ke cluster berdasarkan jarak terdekat
             foreach ($dataset as $i => $data) {
                 $distances = array_map(fn($centroid) => abs($data[0] - $centroid[0]), $centroids);
                 $minIndex = array_keys($distances, min($distances))[0];
                 $clusters[$minIndex][] = $data;
+                $assignments[] = $minIndex;
+
+                $jarakTiapData[] = [
+                    'harga' => $data[0],
+                    'distances' => $distances,
+                    'cluster' => 'Cluster ' . ($minIndex + 1),
+                ];
             }
 
-            // Hitung centroid baru
+            $logIterasi[] = [
+                'iterasi' => $iterasi,
+                'centroids' => $centroids,
+                'assignments' => $assignments,
+                'jarak_data' => $jarakTiapData
+            ];
+
             $newCentroids = [];
             foreach ($clusters as $clusterPoints) {
                 if (count($clusterPoints) === 0) {
@@ -105,7 +107,6 @@ class LaporanKlasterProdukController extends Controller
                 }
             }
 
-            // Cek apakah centroid tidak berubah -> selesai
             if ($newCentroids == $centroids) {
                 $iterasiAktual = $iterasi;
                 break;
@@ -115,7 +116,9 @@ class LaporanKlasterProdukController extends Controller
             $iterasiAktual = $iterasi;
         }
 
-        // Hitung hasil akhir
+        $produkClustered = [];
+        $euclideanTable = [];
+
         foreach ($produkMapping as $produk) {
             $distances = array_map(fn($centroid) => round(abs($produk['harga'] - $centroid[0]), 4), $centroids);
             $minIndex = array_keys($distances, min($distances))[0];
@@ -173,7 +176,8 @@ class LaporanKlasterProdukController extends Controller
             'year' => now()->year,
             'selectedYear' => $selectedYear,
             'maxIterasi' => $maxIterasi,
-            'realIterasi' => $iterasiAktual
+            'realIterasi' => $iterasiAktual,
+            'logIterasi' => $logIterasi
         ]);
     }
 }
