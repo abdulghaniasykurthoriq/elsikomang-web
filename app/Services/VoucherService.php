@@ -7,12 +7,13 @@ use Carbon\Carbon;
 
 class VoucherService
 {
-    public function cekVoucher(string $kode, float $total): array
+    public function cekVoucher(string $kode, float $total, int $jumlahPemakaian = 1): array
     {
         $voucher = Voucher::where('kode_voucher', $kode)
             ->where('is_aktif', true)
             ->whereDate('tanggal_mulai', '<=', Carbon::today())
             ->whereDate('tanggal_berakhir', '>=', Carbon::today())
+            ->lockForUpdate()
             ->first();
 
         if (!$voucher) {
@@ -23,10 +24,10 @@ class VoucherService
             ];
         }
 
-        if ($voucher->kuota <= 0) {
+        if ($voucher->kuota < $jumlahPemakaian) {
             return [
                 'status' => false,
-                'message' => 'Voucher sudah habis kuotanya.',
+                'message' => "Voucher hanya tersedia untuk {$voucher->kuota} transaksi lagi.",
                 'http_code' => 400
             ];
         }
@@ -40,6 +41,7 @@ class VoucherService
             ];
         }
 
+        // Hitung diskon
         $diskon = 0;
         if ($voucher->tipe_diskon === 'persen') {
             $diskon = ($voucher->nilai_diskon / 100) * $total;
@@ -49,6 +51,10 @@ class VoucherService
         } else {
             $diskon = $voucher->nilai_diskon;
         }
+
+        // Kurangi kuota
+        $voucher->kuota -= $jumlahPemakaian;
+        $voucher->save();
 
         return [
             'status' => true,

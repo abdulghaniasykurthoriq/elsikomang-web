@@ -124,9 +124,13 @@ class TransaksiController extends Controller
                 
                 $result = $this->voucherService->cekVoucher(
                     $request->kode_voucher,
-                    $amount
+                    $amount,
+                    count($groupedItems)
                 );
-                throw new \Exception("Service $result");
+                if($result['http_code'] == 200){
+                    $amount = $result['data']['total_setelah_diskon'];
+                }
+
 
                 $params = $this->buildMidtransParams([
                     'order_id' => $orderId,
