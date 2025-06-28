@@ -125,8 +125,7 @@ class TransaksiController extends Controller
                 $result = $this->voucherService->cekVoucher(
                     $request->kode_voucher,
                     $amount,
-                    count($groupedItems),
-                    true
+                    count($groupedItems)
                 );
                 
                 if ($result['http_code'] !== 200) {
