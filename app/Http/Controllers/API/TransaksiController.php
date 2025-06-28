@@ -122,14 +122,23 @@ class TransaksiController extends Controller
 
                 $amount = $subtotal + $ongkos;
                 
-                $result = $this->voucherService->cekVoucher(
-                    $request->kode_voucher,
-                    $amount,
-                    count($groupedItems)
-                );
-                if($result['http_code'] == 200){
+                if ($request->filled('kode_voucher')) {
+                    $result = $this->voucherService->cekVoucher(
+                        $request->kode_voucher,
+                        $amount,
+                        count($groupedItems)
+                    );
+                
+                    if ($result['http_code'] !== 200) {
+                        return response()->json([
+                            'message' => 'Transaksi gagal',
+                            'error' => $result['message'],
+                        ], $result['http_code']);
+                    }
+                
                     $amount = $result['data']['total_setelah_diskon'];
                 }
+                
 
 
                 $params = $this->buildMidtransParams([
