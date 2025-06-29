@@ -312,7 +312,7 @@ class TransaksiController extends Controller
                     if (!$cek['status']) {
                         throw new \Exception($cek['message']);
                     }
-                    $amount = $cek['data']['total_setelah_diskon'];
+                    $amount = $cek['data']['total_setelah_diskon'] + $ongkos;
 
                     $voucher = Voucher::where('kode_voucher', $request->kode_voucher)
                         ->where('is_aktif', true)
