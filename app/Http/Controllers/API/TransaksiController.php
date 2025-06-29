@@ -287,7 +287,7 @@ class TransaksiController extends Controller
                     throw new \Exception("Kurir tidak dipilih untuk member_id $memberId");
                 }
 
-                $ongkirResponse = Http::post(config('services.cek_ongkir.url'), [
+                $ongkirResponse = Http::post('https://elsikomangdev.my.id/api/cek-ongkir', [
                     'origin' => $origin,
                     'destination' => $destination,
                     'weight' => $weight,
