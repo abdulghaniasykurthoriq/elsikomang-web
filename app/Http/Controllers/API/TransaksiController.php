@@ -9,7 +9,9 @@ use App\Models\KeranjangDetail;
 use App\Models\ProdukVariant;
 use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
+use App\Models\Voucher;
 use App\Services\VoucherService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -121,20 +123,30 @@ class TransaksiController extends Controller
                 $ongkos = $costData['cost'];
                 $amount = $subtotal + $ongkos;
                 
-                // if ($request->kode_voucher) {
-                //     $cek = $this->voucherService->cekVoucher(
-                //         $request->kode_voucher,
-                //         $amount
-                //     );
+                if ($request->kode_voucher) {
+                    $cek = $this->voucherService->cekVoucher(
+                        $request->kode_voucher,
+                        $amount
+                    );
             
-                //     if ($cek['http_code'] !== 200) {
-                //         return response()->json([
-                //             'message' => 'Transaksi gagal',
-                //             'error' => $cek['message'],
-                //         ], $cek['http_code']);
-                //     }
-                //     $amount = $cek['data']['total_setelah_diskon'];
-                // }                
+                    if ($cek['http_code'] !== 200) {
+                        return response()->json([
+                            'message' => 'Transaksi gagal',
+                            'error' => $cek['message'],
+                        ], $cek['http_code']);
+                    }
+                    $amount = $cek['data']['total_setelah_diskon'];
+                    if ($request->kode_voucher) {
+                        $voucher = Voucher::where('kode_voucher', $request->kode_voucher)
+                                        ->where('is_aktif', true)
+                                        ->whereDate('tanggal_mulai', '<=', Carbon::today())
+                                        ->whereDate('tanggal_berakhir', '>=', Carbon::today())
+                                        ->lockForUpdate()
+                                        ->firstOrFail();
+
+                                    $this->voucherService->pakaiVoucher($voucher, 1);
+                    }
+                }                
                 
 
 
@@ -196,25 +208,6 @@ class TransaksiController extends Controller
             if ($keranjang && $keranjang->keranjangDetail()->count() === 0) {
                 $keranjang->delete();
             }
-            
-
-            //AGAT
-            // if ($request->kode_voucher) {
-            //     $pakai = $this->voucherService->pakaiVoucher(
-            //         $request->kode_voucher,
-            //         count($groupedItems)
-            //     );
-        
-            //     if (!$pakai['status']) {
-            //         DB::rollBack();
-            //         return response()->json([
-            //             'message' => 'Transaksi gagal',
-            //             'error' => $pakai['message'],
-            //         ], 400);
-            //     }
-            // }
-            
-
             DB::commit();
 
             return response()->json([

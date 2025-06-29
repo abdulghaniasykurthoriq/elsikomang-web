@@ -80,12 +80,17 @@ class VoucherService
     /**
      * Kurangi kuota voucher setelah transaksi berhasil.
      */
-    public function pakaiVoucher(string $kode, int $jumlah = 1): void
+    // public function pakaiVoucher(string $kode, int $jumlah = 1): void
+    // {
+    //     Voucher::where('kode_voucher', $kode)
+    //         ->where('is_aktif', true)
+    //         ->whereDate('tanggal_mulai', '<=', Carbon::today())
+    //         ->whereDate('tanggal_berakhir', '>=', Carbon::today())
+    //         ->decrement('kuota', $jumlah);
+    // }
+
+    public function pakaiVoucher(Voucher $voucher, int $jumlah = 1): void
     {
-        Voucher::where('kode_voucher', $kode)
-            ->where('is_aktif', true)
-            ->whereDate('tanggal_mulai', '<=', Carbon::today())
-            ->whereDate('tanggal_berakhir', '>=', Carbon::today())
-            ->decrement('kuota', $jumlah);
+        $voucher->decrement('kuota', $jumlah);
     }
 }
