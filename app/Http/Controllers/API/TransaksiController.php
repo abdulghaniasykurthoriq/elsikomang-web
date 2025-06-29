@@ -305,9 +305,10 @@ class TransaksiController extends Controller
 
                 $ongkos = $costData['cost'];
                 $amount = $subtotal + $ongkos;
+                $amountProduk = $subtotal;
 
                 if ($request->kode_voucher) {
-                    $cek = $this->voucherService->cekVoucher($request->kode_voucher, $amount);
+                    $cek = $this->voucherService->cekVoucher($request->kode_voucher, $amountProduk);
                     if (!$cek['status']) {
                         throw new \Exception($cek['message']);
                     }
