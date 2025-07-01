@@ -34,10 +34,15 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                            @foreach ($defaultBobot as $key => $value)
+                            @foreach ($kriterias as $kriteria)
+                                @php
+                                    $key = $kriteria->nama;
+                                    $label = $kriteria->label;
+                                    $value = $bobots[$key] ?? 0;
+                                @endphp
                                 <tr>
                                     <td class="px-6 py-4 font-medium">
-                                        {{ ucfirst(str_replace('_', ' ', $key)) }}
+                                        {{ $label }}
                                     </td>
                                     <td class="px-6 py-4">
                                         <input type="number" step="0.01" min="0" max="1"
@@ -50,11 +55,18 @@
                     </table>
                 </div>
 
-                <div class="pt-6 flex justify-end">
-                    <button type="submit" class="btn bg-indigo-600 text-white hover:bg-indigo-700">
+                <div class="pt-6 flex justify-between items-center">
+                    <!-- Tombol Simpan -->
+                    <button type="submit" name="simpan" class="btn bg-gray-500 text-white hover:bg-gray-600">
+                        Simpan Bobot
+                    </button>
+                
+                    <!-- Tombol Lanjut -->
+                    <button type="submit" name="lanjut" class="btn bg-indigo-600 text-white hover:bg-indigo-700">
                         Lanjut ke Step 5 &rarr;
                     </button>
                 </div>
+                
             </form>
 
         </div>

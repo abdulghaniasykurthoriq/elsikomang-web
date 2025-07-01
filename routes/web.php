@@ -87,7 +87,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [RekomendasiWisataController::class, 'step1Data'])->name('operator.pariwisata.rekomendasi.step1');
 
             Route::get('/step2', [RekomendasiWisataController::class, 'step2Kriteria'])->name('operator.pariwisata.rekomendasi.step2');
-
+            Route::put('/kriteria/{id}', [RekomendasiWisataController::class, 'updateKriteria'])->name('operator.pariwisata.rekomendasi.kriteria.update');
+        
             Route::get('/step3', [RekomendasiWisataController::class, 'step3Normalisasi'])->name('operator.pariwisata.rekomendasi.step3');
 
             Route::get('/step4', [RekomendasiWisataController::class, 'step4Bobot'])->name('operator.pariwisata.rekomendasi.step4');

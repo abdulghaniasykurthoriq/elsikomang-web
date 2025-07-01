@@ -112,11 +112,6 @@
                     </a>
                 </li>
 
-                <!-- nav item -->
-                <li class="nav-item">
-                    <div class="navbar-heading">Rekomendasi DSS</div>
-                </li>
-
                 <!-- SAW Proses Dropdown -->
                 <li>
                     <a class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole . '/rekomendasi/step*') ? 'bg-gray-800' : 'collapsed' }}"

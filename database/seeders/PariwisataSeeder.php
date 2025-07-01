@@ -34,7 +34,10 @@ class PariwisataSeeder extends Seeder
 
         foreach ($namaWisata as $nama) {
             $slug = Str::slug($nama);
-
+            
+            $jamBuka = Carbon::createFromTime(rand(6, 10), 0, 0);
+            $jamTutup = (clone $jamBuka)->addHours(rand(7, 12));
+        
             $pariwisata = Pariwisata::create([
                 'nama' => $nama,
                 'deskripsi' => $faker->text(120),
@@ -42,18 +45,18 @@ class PariwisataSeeder extends Seeder
                 'harga_tiket' => $faker->randomElement([5000, 10000, 15000, 20000, 25000]),
                 'kategori' => $faker->randomElement($kategori),
                 'rating' => $faker->randomFloat(2, 3.0, 5.0),
-                'jam_buka' => '09:00:00',
-                'jam_tutup' => '18:00:00',
+                'jam_buka' => $jamBuka->format('H:i:s'),
+                'jam_tutup' => $jamTutup->format('H:i:s'),
                 'latitude' => $faker->randomFloat(7, -6.40, -6.30),
                 'longitude' => $faker->randomFloat(7, 108.30, 108.40),
                 'created_at' => $now,
                 'updated_at' => $now,
             ]);
-
-            // Hubungkan fasilitas acak
+        
             $pariwisata->fasilitas()->sync(
                 collect($fasilitasIds)->random(rand(1, min(4, count($fasilitasIds))))
             );
         }
+        
     }
 }

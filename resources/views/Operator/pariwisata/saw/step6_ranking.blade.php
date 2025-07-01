@@ -20,31 +20,34 @@
                 <table class="table-auto w-full text-sm text-left text-gray-700 border">
                     <thead class="bg-gray-50 border-b border-gray-200">
                         <tr>
-                            <th class="px-6 py-3">Peringkat</th>
+                            <th class="px-6 py-3 text-center">Peringkat</th>
                             <th class="px-6 py-3">Nama Wisata</th>
-                            <th class="px-6 py-3">Skor SAW</th>
+                            <th class="px-6 py-3 text-center">Skor SAW</th>
+                            <th class="px-6 py-3">Info Lain</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        @foreach ($ranking as $i => $row)
-                            <tr @if ($i === 0) class="bg-green-300" @endif>
-
-                                <td class="px-6 py-4 font-bold text-center">{{ $i + 1 }}</td>
-                                <td class="px-6 py-4">{{ $row['wisata']->nama }}</td>
-                                <td class="px-6 py-4 font-semibold text-indigo-700">{{ number_format($row['skor'], 4) }}
-                                <td class="px-6 py-4">
-                                    {{ $row['wisata']->nama }}
-                                    <div class="text-xs text-gray-500">
-                                        Kategori: {{ ucfirst($row['wisata']->kategori) }} |
-                                        Rating: {{ $row['wisata']->rating }}
-                                    </div>
+                        @foreach ($ranking as $row)
+                            <tr @if ($loop->first) class="bg-green-300" @endif>
+                                <td class="px-6 py-4 font-bold text-center">{{ $row->peringkat }}</td>
+                                <td class="px-6 py-4 font-medium">{{ $row->pariwisata->nama }}</td>
+                                <td class="px-6 py-4 text-center text-indigo-700 font-semibold">
+                                    {{ number_format($row->skor_total, 4) }}
                                 </td>
-
+                                <td class="px-6 py-4">
+                                    <div class="text-sm">{{ $row->pariwisata->lokasi }}</div>
+                                    <div class="text-xs text-gray-500">
+                                        Kategori: {{ ucfirst($row->pariwisata->kategori) }} |
+                                        Rating: {{ $row->pariwisata->rating }}
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+                <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+                    {{ $ranking->links('components.pagination') }}
+                </div>
             </div>
 
             <div class="pt-6 flex justify-end">

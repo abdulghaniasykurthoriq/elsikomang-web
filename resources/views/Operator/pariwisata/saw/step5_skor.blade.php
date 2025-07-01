@@ -3,6 +3,11 @@
 @section('title', 'Step 5: Skor Akhir Wisata')
 
 @section('content')
+    @if ($errors->any())
+        <div class="mb-4 mx-6 mt-4 p-4 bg-red-100 border border-red-400 rounded text-red-700">
+            {{ $errors->first('msg') }}
+        </div>
+    @endif
 
     <!-- Header Section -->
     <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
@@ -50,9 +55,10 @@
                             </tr>
                         @endforeach
                     </tbody>
-
-
                 </table>
+                <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+                    {{ $data->links('components.pagination') }}
+                </div>
             </div>
 
             <div class="pt-6 flex justify-end">

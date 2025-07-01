@@ -17,7 +17,8 @@
     <div class="px-6 -mt-24 relative z-10 mx-2">
         <div class="bg-white rounded-xl shadow-xl overflow-hidden w-full">
             <div class="p-4 border-b border-gray-100 font-semibold">
-                Total: {{ count($normalisasi) }} wisata
+                Total: {{ $data->total() }} wisata
+
             </div>
 
             <div class="overflow-x-auto">
@@ -43,7 +44,7 @@
                                         </div>
                                         <div class="text-gray-600">
                                             <strong>Hasil:</strong>
-                                            {{ number_format($row['normalisasi'][$kriteria]['hasil'], 4) }}
+                                            {{ number_format($row['normalisasi'][$kriteria]['nilai'] ?? 0, 4) }}
 
                                             @if ($kriteria == 'fasilitas')
                                                 <div class="text-xs text-gray-500 mt-1">
@@ -56,11 +57,11 @@
                             </tr>
                         @endforeach
                     </tbody>
-
-
                 </table>
+                <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+                    {{ $data->links('components.pagination') }}
+                </div>
             </div>
-
             <div class="p-4 flex justify-end">
                 <a href="{{ route('operator.pariwisata.rekomendasi.step4') }}"
                     class="btn bg-indigo-600 text-white hover:bg-indigo-700">

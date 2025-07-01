@@ -17,7 +17,11 @@
     <div class="px-6 -mt-24 relative z-10 mx-2">
         <div class="bg-white rounded-xl shadow-xl overflow-hidden w-full">
             <div class="p-4 border-b border-gray-100 font-semibold">
-                Total: {{ $data->count() }} alternatif wisata
+                <div class="flex justify-between items-center">
+                    <span>Total: {{ $data->total() }} alternatif wisata</span>
+                    <span>Halaman: {{ $data->currentPage() }} dari {{ $data->lastPage() }}</span>
+                </div>
+
             </div>
 
             <div class="overflow-x-auto">
@@ -55,8 +59,6 @@
                                         <span class="text-gray-400 italic">Tidak ada</span>
                                     @endif
                                 </td>
-
-
                             </tr>
                         @empty
                             <tr>
@@ -66,6 +68,10 @@
                         @endforelse
                     </tbody>
                 </table>
+                <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+                    {{ $data->links('components.pagination') }}
+                </div>
+                
             </div>
         </div>
     </div>

@@ -16,13 +16,9 @@
     <!-- Table Section -->
     <div class="px-6 -mt-24 relative z-10 mx-2">
         <div class="bg-white rounded-xl shadow-xl overflow-hidden w-full">
-            <div class="p-4 border-b border-gray-100 font-semibold">
-                Total: {{ count($kriteria) }} kriteria
-            </div>
-
             <div class="px-4 pt-2 pb-4">
                 <div class="mb-4 p-4 bg-blue-50 text-sm text-blue-800 rounded-md border border-blue-300">
-                    <strong>Catatan:</strong> 
+                    <strong>Catatan:</strong>
                     <span class="text-green-600 font-semibold">Benefit</span> berarti semakin besar nilainya semakin baik.
                     <span class="text-red-600 font-semibold">Cost</span> berarti semakin kecil nilainya semakin baik.
                 </div>
@@ -34,23 +30,46 @@
                                 <th class="px-6 py-3">Kriteria</th>
                                 <th class="px-6 py-3">Label</th>
                                 <th class="px-6 py-3">Tipe</th>
+                                <th class="px-6 py-3 text-end">Aksi</th>
                             </tr>
                         </thead>
+
                         <tbody class="divide-y divide-gray-200">
-                            @foreach ($kriteria as $item)
+                            @foreach ($kriterias as $item)
                                 <tr>
-                                    <td class="px-6 py-4 font-medium">{{ $item['nama'] }}</td>
-                                    <td class="px-6 py-4">{{ $item['label'] }}</td>
-                                    <td class="px-6 py-4">
-                                        @if ($item['tipe'] === 'cost')
-                                            <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-semibold">Cost</span>
-                                        @else
-                                            <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-semibold">Benefit</span>
-                                        @endif
-                                    </td>
+                                    <form action="{{ route('operator.pariwisata.rekomendasi.kriteria.update', $item->id) }}"
+                                        method="POST">
+                                        @csrf
+                                        @method('PUT')
+                                        <td class="px-6 py-4 font-medium">{{ $item->nama }}</td>
+
+                                        <td class="px-6 py-4">
+                                            <input type="text" name="label" value="{{ $item->label }}"
+                                                class="w-full border border-gray-300 rounded-md px-2 py-1 text-sm">
+                                        </td>
+
+                                        <td class="px-6 py-4">
+                                            <select name="tipe"
+                                                class="w-full border border-gray-300 rounded-md px-2 py-1 text-sm">
+                                                <option value="benefit" {{ $item->tipe == 'benefit' ? 'selected' : '' }}>
+                                                    Benefit</option>
+                                                <option value="cost" {{ $item->tipe == 'cost' ? 'selected' : '' }}>Cost
+                                                </option>
+                                            </select>
+                                        </td>
+
+
+                                        <td class="px-6 py-4 text-end">
+                                            <button type="submit"
+                                                class="px-3 py-1 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700">
+                                                Simpan
+                                            </button>
+                                        </td>
+                                    </form>
                                 </tr>
                             @endforeach
                         </tbody>
+
                     </table>
                 </div>
 
