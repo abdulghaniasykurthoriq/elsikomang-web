@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Pariwisata extends Model
 {
@@ -11,35 +12,30 @@ class Pariwisata extends Model
 
     protected $table = 'pariwisatas';
 
-    protected $fillable = [
-        'nama',
-        'deskripsi',
-        'gambar',
-        'harga_tiket',
-        'kategori',
-        'rating',
-        'latitude',
-        'longitude',
-    ];
+    protected $fillable = ['nama', 'deskripsi', 'gambar', 'harga_tiket', 'rating', 'jam_buka', 'jam_tutup', 'kategori', 'latitude', 'longitude', 'alamat'];
 
-    // Relasi ke fasilitas (many-to-many)
     public function fasilitas()
     {
         return $this->belongsToMany(Fasilitas::class, 'fasilitas_pariwisata');
     }
 
-    // Relasi ke rating user (one-to-many)
     public function ratings()
     {
         return $this->hasMany(PariwisataRating::class);
     }
-    protected $appends = ['gambar_url',];
+
+
+    public function getDurasiOperasionalAttribute()
+    {
+        if (!$this->jam_buka || !$this->jam_tutup) {
+            return 0;
+        }
+
+        return Carbon::parse($this->jam_tutup)->diffInHours(Carbon::parse($this->jam_buka));
+    }
 
     public function getGambarUrlAttribute()
     {
         return $this->gambar ? asset('storage/' . $this->gambar) : null;
     }
-
-    
-    
 }

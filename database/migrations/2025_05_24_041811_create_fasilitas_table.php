@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('fasilitas', function (Blueprint $table) {
             $table->id();
-            $table->string('nama'); // <--- tambahkan kolom ini
+            $table->string('nama');
             $table->timestamps();
         });
     }

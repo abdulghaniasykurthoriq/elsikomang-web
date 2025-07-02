@@ -10,14 +10,26 @@ return new class extends Migration
     {
         Schema::create('pariwisatas', function (Blueprint $table) {
             $table->id();
+
             $table->string('nama');
-            $table->text('deskripsi');
-            $table->string('gambar');
-            $table->integer('harga_tiket');
-            $table->enum('kategori', ['pantai', 'hutan', 'religi', 'budaya', 'kuliner', 'edukasi'])->default('pantai');
-            $table->decimal('rating', 3, 2)->default(0); 
+            $table->text('deskripsi')->nullable();
+            $table->string('gambar')->nullable(); // boleh null jika belum upload
+
+            $table->string('alamat')->nullable();
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
+
+            $table->enum('kategori', [
+                'pantai', 'hutan', 'religi', 'budaya', 'kuliner', 'edukasi', 'buatan'
+            ])->default('pantai');
+
+            $table->integer('harga_tiket');
+            $table->decimal('rating', 3, 2)->default(0);
+
+            $table->time('jam_buka')->nullable();
+            $table->time('jam_tutup')->nullable();
+
+
             $table->timestamps();
         });
     }

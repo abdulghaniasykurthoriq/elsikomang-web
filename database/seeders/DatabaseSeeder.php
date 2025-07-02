@@ -32,6 +32,12 @@ class DatabaseSeeder extends Seeder
             EventSeeder::class,
             EntertainmentSeeder::class,
         ]);
+        $this->call([
+            SawKriteriaSeeder::class,
+        ]);
+        $this->call([
+            SawBobotSeeder::class,
+        ]);
         // $this->call(DesaSeeder::class);
     }
 }
