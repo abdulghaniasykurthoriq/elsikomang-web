@@ -98,6 +98,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/step5', [RekomendasiWisataController::class, 'step5Skor'])->name('operator.pariwisata.rekomendasi.step5');
 
             Route::get('/step6', [RekomendasiWisataController::class, 'step6Ranking'])->name('operator.pariwisata.rekomendasi.step6');
+            
             Route::get('/pariwisata/rekomendasi/input', [RekomendasiWisataController::class, 'inputPreferensi'])->name('operator.pariwisata.rekomendasi.input');
 
             Route::post('/pariwisata/rekomendasi/result', [RekomendasiWisataController::class, 'hitungRekomendasi'])->name('operator.pariwisata.rekomendasi.result');
