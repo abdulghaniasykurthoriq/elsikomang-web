@@ -51,7 +51,13 @@
                     <label for="gambar" class="block text-sm font-medium text-gray-700">Ganti Gambar (Opsional)</label>
                     <input type="file" name="gambar" id="gambar" accept="image/*"
                         class="form-input mt-1 block w-full">
+
+                    @if ($item->gambar)
+                        <img src="{{ asset('storage/' . $item->gambar) }}" alt="Gambar Lama"
+                            class="mt-2 w-40 h-32 object-cover rounded border">
+                    @endif
                 </div>
+
 
                 <div class="mb-4">
                     <label for="harga_tiket" class="block text-sm font-medium text-gray-700">Harga Tiket</label>
@@ -94,12 +100,12 @@
                     <div>
                         <label for="jam_buka" class="block text-sm font-medium text-gray-700">Jam Buka</label>
                         <input type="time" name="jam_buka" id="jam_buka" class="form-input mt-1 block w-full"
-                            value="{{ old('jam_buka', $item->jam_buka) }}">
+                            value="{{ old('jam_buka', \Carbon\Carbon::parse($item->jam_buka)->format('H:i')) }}">
                     </div>
                     <div>
                         <label for="jam_tutup" class="block text-sm font-medium text-gray-700">Jam Tutup</label>
                         <input type="time" name="jam_tutup" id="jam_tutup" class="form-input mt-1 block w-full"
-                            value="{{ old('jam_tutup', $item->jam_tutup) }}">
+                            value="{{ old('jam_tutup', \Carbon\Carbon::parse($item->jam_tutup)->format('H:i')) }}">
                     </div>
                 </div>
 

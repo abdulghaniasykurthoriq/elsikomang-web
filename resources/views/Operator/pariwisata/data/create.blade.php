@@ -48,7 +48,8 @@
                 <div class="mb-4">
                     <label for="gambar" class="block text-sm font-medium text-gray-700">Upload Gambar</label>
                     <input type="file" name="gambar" id="gambar" accept="image/*"
-                        class="form-input mt-1 block w-full">
+                        class="form-input mt-1 block w-full" required>
+
                 </div>
 
                 <div class="mb-4">
@@ -107,7 +108,8 @@
                         @foreach ($fasilitas as $item)
                             <label class="inline-flex items-center">
                                 <input type="checkbox" name="fasilitas[]" value="{{ $item->id }}"
-                                    class="form-checkbox text-indigo-600">
+                                    class="form-checkbox text-indigo-600"
+                                    {{ is_array(old('fasilitas')) && in_array($item->id, old('fasilitas')) ? 'checked' : '' }}>
                                 <span class="ml-2">{{ ucfirst($item->nama) }}</span>
                             </label>
                         @endforeach

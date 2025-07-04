@@ -28,7 +28,7 @@
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         @foreach ($ranking as $row)
-                            <tr @if ($loop->first) class="bg-green-300" @endif>
+                            <tr @if ($loop->first) @endif>
                                 <td class="px-6 py-4 font-bold text-center">{{ $row->peringkat }}</td>
                                 <td class="px-6 py-4 font-medium">{{ $row->pariwisata->nama }}</td>
                                 <td class="px-6 py-4 text-center text-indigo-700 font-semibold">
