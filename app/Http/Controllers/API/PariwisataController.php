@@ -25,73 +25,9 @@ class PariwisataController extends Controller
         return response()->json($query->paginate($perPage));
     }
 
-    // public function rekomendasi(Request $request)
-    // {
-    //     $inputHarga = $request->input('harga');
-    //     $inputRating = $request->input('rating');
-    //     $inputFasilitas = $request->input('fasilitas', []);
-    //     $inputKategori = $request->input('kategori');
 
 
-
-    //     $wisatas = Pariwisata::with('fasilitas')->get();
-
-    //     // Cari nilai max/min untuk normalisasi
-    //     $maxRating = $wisatas->max('rating') ?: 1; // Benefit
-    //     $minHarga = $wisatas->min('harga_tiket') ?: 1; // Cost
-
-    //     // Bobot
-    //     $bobotHarga = $inputHarga ? 0.3 : 0;
-    //     $bobotRating = $inputRating ? 0.3 : 0;
-    //     $bobotKategori = $inputKategori ? 0.2 : 0;
-    //     $bobotFasilitas = !empty($inputFasilitas) ? 0.2 : 0;
-
-    //     $dataSaw = $wisatas->map(function ($wisata) use (
-    //         $inputHarga, $inputRating, $inputFasilitas, $inputKategori,
-    //         $minHarga, $maxRating,
-    //         $bobotHarga, $bobotRating, $bobotKategori, $bobotFasilitas
-    //     ) {
-    //         $Vi = 0;
-
-    //         // 1. Harga (COST) — Semakin kecil semakin baik
-    //         if ($bobotHarga > 0) {
-    //             $r_harga = $minHarga / max($wisata->harga_tiket, 1); // Hindari pembagian 0
-    //             $Vi += $r_harga * $bobotHarga;
-    //         }
-
-    //         // 2. Rating (BENEFIT) — Semakin besar semakin baik
-    //         if ($bobotRating > 0) {
-    //             $r_rating = $wisata->rating / $maxRating;
-    //             $Vi += $r_rating * $bobotRating;
-    //         }
-
-    //         // 3. Kategori (KESAMAAN) — Sama dengan pilihan user
-    //         if ($bobotKategori > 0) {
-    //             $r_kategori = $wisata->kategori == $inputKategori ? 1 : 0;
-    //             $Vi += $r_kategori * $bobotKategori;
-    //         }
-
-    //         // 4. Fasilitas (KESAMAAN) — Persentase fasilitas yang cocok
-    //         if ($bobotFasilitas > 0) {
-    //             $fasilitasWisata = $wisata->fasilitas->pluck('id')->toArray();
-    //             $intersect = array_intersect($inputFasilitas, $fasilitasWisata);
-    //             $r_fasilitas = count($intersect) / count($inputFasilitas);
-    //             $Vi += $r_fasilitas * $bobotFasilitas;
-    //         }
-
-    //         return [
-    //             'wisata' => $wisata,
-    //             'skor' => round($Vi, 4)
-    //         ];
-    //     });
-
-    //     $sorted = $dataSaw->sortByDesc('skor')->values()->take(6);
-    //     return response()->json([
-    //         'message' => 'Rekomendasi wisata berhasil diambil',
-    //         'data' =>  $sorted
-    //     ]);
-    // }
-    public function rekomendasi(Request $request)
+public function rekomendasi(Request $request)
 {
     $validated = $request->validate([
         'max_tiket' => 'nullable|numeric',
@@ -120,6 +56,7 @@ class PariwisataController extends Controller
         return response()->json([
             'status' => 'warning',
             'message' => 'Tidak ditemukan wisata dengan kriteria tersebut.',
+            'data' => [],
         ], 404);
     }
 
@@ -129,63 +66,67 @@ class PariwisataController extends Controller
         return response()->json([
             'status' => 'error',
             'message' => 'Bobot belum lengkap. Silakan isi di Step 4.',
-        ], 422);
+        ], 400);
     }
 
     $minHarga = max([$data->min('harga_tiket') ?? 1, 1]);
     $maxRating = max([$data->max('rating') ?? 1, 1]);
     $maxFasilitas = max([$data->max('fasilitas_count') ?? 1, 1]);
 
-    $result = $data->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot) {
-        $durasi = 0;
-        if ($item->jam_buka && $item->jam_tutup) {
-            $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
-        }
+    $result = $data
+        ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot) {
+            $durasi = 0;
+            if ($item->jam_buka && $item->jam_tutup) {
+                $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
+            }
 
-        $skorWaktu = match (true) {
-            $durasi >= 24 => 5,
-            $durasi >= 15 => 4,
-            $durasi >= 10 => 3,
-            $durasi >= 9 => 2,
-            default => 1,
-        };
+            $skorWaktu = match (true) {
+                $durasi >= 24 => 5,
+                $durasi >= 15 => 4,
+                $durasi >= 10 => 3,
+                $durasi >= 9 => 2,
+                default => 1,
+            };
 
-        $normalisasi = [
-            'harga_tiket' => round($minHarga / max($item->harga_tiket, 1), 4),
-            'fasilitas' => round($item->fasilitas_count / max($maxFasilitas, 1), 4),
-            'rating' => round($item->rating / max($maxRating, 1), 4),
-            'waktu_operasional' => round($skorWaktu / 5, 4),
-        ];
-
-        $detail = [];
-        $Vi = 0;
-
-        foreach ($normalisasi as $kriteria => $nilai) {
-            $bobotK = $bobot[$kriteria] ?? 0;
-            $hasil = round($nilai * $bobotK, 4);
-            $Vi += $hasil;
-
-            $detail[$kriteria] = [
-                'normalisasi' => $nilai,
-                'bobot' => $bobotK,
-                'perkalian' => "{$nilai} × {$bobotK}",
-                'hasil' => $hasil,
+            $normalisasi = [
+                'harga_tiket' => round($minHarga / max($item->harga_tiket, 1), 4),
+                'fasilitas' => round($item->fasilitas_count / max($maxFasilitas, 1), 4),
+                'rating' => round($item->rating / max($maxRating, 1), 4),
+                'waktu_operasional' => round($skorWaktu / 5, 4),
             ];
-        }
 
-        return [
-            'wisata' => $item,
-            'skor' => round($Vi, 4),
-            'detail' => $detail,
-        ];
-    })->sortByDesc('skor')->values();
+            $detail = [];
+            $Vi = 0;
+
+            foreach ($normalisasi as $kriteria => $nilai) {
+                $bobotK = $bobot[$kriteria] ?? 0;
+                $hasil = round($nilai * $bobotK, 4);
+                $Vi += $hasil;
+
+                $detail[$kriteria] = [
+                    'normalisasi' => $nilai,
+                    'bobot' => $bobotK,
+                    'perkalian' => "{$nilai} × {$bobotK}",
+                    'hasil' => $hasil,
+                ];
+            }
+
+            return [
+                'wisata' => $item,
+                'skor' => round($Vi, 4),
+                'detail' => $detail,
+            ];
+        })
+        ->sortByDesc('skor')
+        ->values();
 
     return response()->json([
         'status' => 'success',
-        'message' => 'Berhasil menghitung rekomendasi',
+        'message' => 'Data rekomendasi berhasil di tampilkan.',
         'data' => $result,
     ]);
 }
+
 
 
     public function show($id)

@@ -48,7 +48,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/transaksi/status-count', [TransaksiController::class, 'countByStatus']);
 
 
-    Route::post('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
     Route::post('/pariwisata/rate', [PariwisataController::class, 'rate']);
 
 });
@@ -63,6 +62,8 @@ Route::get('/produk/{id}', [ProdukController::class, 'show']);
 
 Route::get('/pariwisata', [PariwisataController::class, 'index']);
 Route::get('/pariwisata/{id}', [PariwisataController::class, 'show']);
+Route::post('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
+
 
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{id}', [EventController::class, 'show']);
