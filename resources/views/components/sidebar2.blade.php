@@ -43,6 +43,16 @@
                         <i data-feather="package" class="w-4 h-4 mr-3"></i>
                         Member UMKM
                     </a>
+                    <a href="{{ route('voucher.index') }}"
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole . '/member_umkm*') ? 'bg-gray-800' : '' }}">
+                        <i data-feather="package" class="w-4 h-4 mr-3"></i>
+                        Voucher
+                    </a>
+                    <a href="{{ route('transaksi.index') }}"
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole . '/member_umkm*') ? 'bg-gray-800' : '' }}">
+                        <i data-feather="package" class="w-4 h-4 mr-3"></i>
+                        Transaksi
+                    </a>
 
                     <button type="button"
                         class="w-full flex items-center justify-between px-3 py-2 rounded-md hover:bg-gray-800 transition focus:outline-none"
