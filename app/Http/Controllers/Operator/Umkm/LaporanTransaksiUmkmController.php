@@ -135,6 +135,7 @@ class LaporanTransaksiUmkmController extends Controller
 
     public function index2(Request $request)
     {
+        
         $year = $request->get('tahun', now()->year);
         $months = [
             1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
