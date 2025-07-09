@@ -84,6 +84,7 @@ class LaporanKlasterProdukController extends Controller
                 $assignments[] = $minIndex;
 
                 $jarakTiapData[] = [
+                    'nama_produk' => $produkMapping[$i]['nama_produk'],
                     'harga' => $data[0],
                     'distances' => $distances,
                     'cluster' => 'Cluster ' . ($minIndex + 1),
@@ -100,7 +101,7 @@ class LaporanKlasterProdukController extends Controller
             $newCentroids = [];
             foreach ($clusters as $clusterPoints) {
                 if (count($clusterPoints) === 0) {
-                    $newCentroids[] = [0];
+                    $newCentroids[] = [$i];
                 } else {
                     $sum = array_sum(array_column($clusterPoints, 0));
                     $newCentroids[] = [round($sum / count($clusterPoints), 4)];
