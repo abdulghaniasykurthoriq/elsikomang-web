@@ -12,46 +12,38 @@ class PariwisataSeeder extends Seeder
 {
     public function run(): void
     {
-        $kategori = ['pantai', 'hutan', 'religi', 'budaya', 'kuliner', 'edukasi'];
-        $now = Carbon::now();
         $faker = \Faker\Factory::create('id_ID');
+        $kategori = ['pantai', 'hutan', 'religi', 'budaya', 'kuliner', 'edukasi', 'buatan'];
+        $now = Carbon::now();
 
-        $namaWisata = [
-            "Pantai Tirtamaya", "Situ Bolang", "Hutan Mangrove Karangsong", "Waterboom Bojongsari", "Curug Cipeuteuy",
-            "Pulau Biawak", "Cimanuk Riverside", "Agro Wisata Mangga", "Alun-Alun Indramayu", "Kampung Batik Paoman",
-            "Waduk Cipancuh", "Pantai Balongan Indah", "Taman Cimanuk", "Situ Cipai", "Cagar Alam Cibodas",
-            "Pantai Eretan", "Situ Cikuda", "Bukit Cikeusik", "Goa Lalay", "Kebun Raya Indramayu",
-            "Situs Buyut Banjar", "Masjid Agung Indramayu", "Wisata Edukasi Karangsong", "Pantai Lemah Abang",
-            "Hutan Kota Sindang", "Situ Girang", "Taman Air Pabean", "Museum Indramayu", "Situ Sukra", "Situ Cileuleuy",
-            "Bukit Seribu Tangga", "Cikalahang Adventure", "Waduk Bugel", "Kampung Wisata Nelayan", "Pantai Glayem",
-            "Pasar Seni Paoman", "Kampung Cengkir", "Hutan Lindung Rancajawad", "Wisata Religi Syeikh Abdul Manan",
-            "Pantai Cibugel", "Taman 1000 Lampu", "Ciwaringin Lake", "Kolam Renang Sindang", "Bukit Kunci",
-            "Hutan Jati Kertasemaya", "Situ Jaya", "Situ Gede", "Pantai Plentong", "Kampung Tangguh Indramayu",
-            "Wisata Embung Tegaldana"
-        ];
+        $namaWisata = ['Pantai Tirtamaya', 'Pantai Glayem', 'Pantai Karangsong', 'Pantai Dadap', 'Pantai Tebing Patrol', 'Pantai Cibugel', 'Pantai Eretan Wetan', 'Pantai Lemah Abang', 'Pantai Balongan Indah', 'Pantai Solikin', 'Pantai Limbangan', 'Taman Cimanuk', 'Water Boom Tirta Djaya', 'Waduk Cipancuh', 'Rangdu Gede', 'Hutan Mangrove Pantai Lestari Karangsong', 'Agung Fantasi Waterpark', 'Tugu Bor Kertanegara', 'Monumen Bumi Patra', 'Alun-Alun Indramayu', 'Masjid Agung Indramayu', 'Pulau Biawak Indramayu', 'Science Center Mutiara Bangsa', 'Situs Buyut Banjar', 'Jembatan Terusan Indramayu', 'Tugu Perjuangan Indramayu', 'Situ Bolang Indramayu', 'Taman Rusa Bumi Patra', 'Tiga Bintang Firdaus Waterpark', 'Waterboom Bojongsari'];
 
         $fasilitasIds = DB::table('fasilitas')->pluck('id')->toArray();
 
         foreach ($namaWisata as $nama) {
             $slug = Str::slug($nama);
 
+            $jamBuka = Carbon::createFromTime(rand(6, 10), 0, 0);
+            $jamTutup = (clone $jamBuka)->addHours(rand(7, 12));
+
             $pariwisata = Pariwisata::create([
                 'nama' => $nama,
                 'deskripsi' => $faker->text(120),
+                'alamat' => $faker->randomElement(['Anjatan', 'Arahan', 'Balongan', 'Bangodua', 'Bongas', 'Cantigi', 'Cikedung', 'Gabuswetan', 'Gantar', 'Haurgeulis', 'Indramayu', 'Jatibarang', 'Kandanghaur', 'Karangampel', 'Kedokanbunder', 'Kertasemaya', 'Krangkeng', 'Losarang', 'Pasekan', 'Patrol', 'Sindang', 'Sliyeg', 'Sukagumiwang', 'Sukra', 'Terisi', 'Tukdana', 'Widasari']) . ', Indramayu',
+
                 'gambar' => 'pariwisata_images/' . $slug . '.jpg',
-                'harga_tiket' => $faker->randomElement([5000, 10000, 15000, 20000, 25000]),
+                'harga_tiket' => $faker->randomElement([5000, 10000, 15000, 25000, 35000, 50000]),
                 'kategori' => $faker->randomElement($kategori),
                 'rating' => $faker->randomFloat(2, 3.0, 5.0),
-                'latitude' => $faker->randomFloat(7, -6.40, -6.30),
-                'longitude' => $faker->randomFloat(7, 108.30, 108.40),
+                'jam_buka' => $jamBuka->format('H:i:s'),
+                'jam_tutup' => $jamTutup->format('H:i:s'),
+                'latitude' => $faker->randomFloat(7, -6.4, -6.3),
+                'longitude' => $faker->randomFloat(7, 108.3, 108.4),
                 'created_at' => $now,
                 'updated_at' => $now,
             ]);
 
-            // Hubungkan fasilitas acak
-            $pariwisata->fasilitas()->sync(
-                collect($fasilitasIds)->random(rand(1, min(4, count($fasilitasIds))))
-            );
+            $pariwisata->fasilitas()->sync(collect($fasilitasIds)->random(rand(1, min(4, count($fasilitasIds)))));
         }
     }
 }

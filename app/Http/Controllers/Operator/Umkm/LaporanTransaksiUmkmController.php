@@ -28,113 +28,114 @@ class LaporanTransaksiUmkmController extends Controller
 
 
 
-    public function index(Request $request)
-    {
-        $year = $request->get('tahun', now()->year);
-        $months = [
-            1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
-            7 => 'Jul', 8 => 'Agu', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
-        ];
-        $dataView = [];
+    // public function index(Request $request)
+    // {
+    //     $year = $request->get('tahun', now()->year);
+    //     $months = [
+    //         1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
+    //         7 => 'Jul', 8 => 'Agu', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
+    //     ];
+    //     $dataView = [];
 
-        $allProduk = ProdukUmkm::all();
+    //     $allProduk = ProdukUmkm::all();
 
-        foreach ($allProduk as $produk) {
-            $query = DB::table('transaksi_details')
-                ->selectRaw('MONTH(created_at) as bulan, SUM(qty * harga) as pendapatan')
-                ->where('produk_id', $produk->id)
-                ->whereYear('created_at', $year)
-                ->groupByRaw('MONTH(created_at)')
-                ->orderByRaw('MONTH(created_at)')
-                ->get();
+    //     foreach ($allProduk as $produk) {
+    //         $query = DB::table('transaksi_details')
+    //             ->selectRaw('MONTH(created_at) as bulan, SUM(qty * harga) as pendapatan')
+    //             ->where('produk_id', $produk->id)
+    //             ->whereYear('created_at', $year)
+    //             ->groupByRaw('MONTH(created_at)')
+    //             ->orderByRaw('MONTH(created_at)')
+    //             ->get();
 
-            $bulanData = [];
-            $trainSamples = [];
-            $trainTargets = [];
+    //         $bulanData = [];
+    //         $trainSamples = [];
+    //         $trainTargets = [];
 
-            foreach ($query as $row) {
-                $bulan = intval($row->bulan);
-                $pendapatan = floatval($row->pendapatan);
+    //         foreach ($query as $row) {
+    //             $bulan = intval($row->bulan);
+    //             $pendapatan = floatval($row->pendapatan);
 
-                // Data aktual (input dan target untuk training)
-                $trainSamples[] = [$bulan];
-                $trainTargets[] = $pendapatan;
+    //             // Data aktual (input dan target untuk training)
+    //             $trainSamples[] = [$bulan];
+    //             $trainTargets[] = $pendapatan;
 
-                // Simpan data aktual
-                $bulanData[$bulan] = [
-                    'actual' => $pendapatan,
-                    'prediksi' => null,
-                    'error' => null,
-                ];
-            }
+    //             // Simpan data aktual
+    //             $bulanData[$bulan] = [
+    //                 'actual' => $pendapatan,
+    //                 'prediksi' => null,
+    //                 'error' => null,
+    //             ];
+    //         }
 
-            // Inisialisasi semua bulan agar lengkap
-            for ($i = 1; $i <= 12; $i++) {
-                if (!isset($bulanData[$i])) {
-                    $bulanData[$i] = [
-                        'actual' => null,
-                        'prediksi' => null,
-                        'error' => null,
-                    ];
-                }
-            }
+    //         // Inisialisasi semua bulan agar lengkap
+    //         for ($i = 1; $i <= 12; $i++) {
+    //             if (!isset($bulanData[$i])) {
+    //                 $bulanData[$i] = [
+    //                     'actual' => null,
+    //                     'prediksi' => null,
+    //                     'error' => null,
+    //                 ];
+    //             }
+    //         }
 
-            // Proses prediksi hanya jika ada cukup data aktual
-            if (count($trainSamples) >= 2) {
-                $model = new LeastSquares();
-                $model->train($trainSamples, $trainTargets);
+    //         // Proses prediksi hanya jika ada cukup data aktual
+    //         if (count($trainSamples) >= 2) {
+    //             $model = new LeastSquares();
+    //             $model->train($trainSamples, $trainTargets);
 
-                $totalError = 0;
-                $jumlahError = 0;
+    //             $totalError = 0;
+    //             $jumlahError = 0;
 
-                for ($i = 1; $i <= 12; $i++) {
-                    $prediksi = $model->predict([$i]);
-                    $prediksi = max(0, round($prediksi, 2)); 
-                    $aktual = $bulanData[$i]['actual'];
+    //             for ($i = 1; $i <= 12; $i++) {
+    //                 $prediksi = $model->predict([$i]);
+    //                 $prediksi = max(0, round($prediksi, 2)); 
+    //                 $aktual = $bulanData[$i]['actual'];
 
-                    $error = null;
-                    if (!is_null($aktual) && $aktual != 0) {
-                        $error = abs(($aktual - $prediksi) / $aktual); // error tanpa *100
-                        $totalError += $error;
-                        $jumlahError++;
-                        $error = round($error * 100, 2); // simpan dalam % di UI
-                    }
+    //                 $error = null;
+    //                 if (!is_null($aktual) && $aktual != 0) {
+    //                     $error = abs(($aktual - $prediksi) / $aktual); // error tanpa *100
+    //                     $totalError += $error;
+    //                     $jumlahError++;
+    //                     $error = round($error * 100, 2); // simpan dalam % di UI
+    //                 }
 
-                    $bulanData[$i]['prediksi'] = $prediksi;
-                    $bulanData[$i]['error'] = $error;
-                }
+    //                 $bulanData[$i]['prediksi'] = $prediksi;
+    //                 $bulanData[$i]['error'] = $error;
+    //             }
 
-                $mape = $jumlahError > 0 ? round($totalError / $jumlahError * 100, 2) : null;
-            } else {
-                $mape = null;
-            }
+    //             $mape = $jumlahError > 0 ? round($totalError / $jumlahError * 100, 2) : null;
+    //         } else {
+    //             $mape = null;
+    //         }
 
-            $dataView[$produk->nama_produk] = [
-                'bulan' => $bulanData,
-                'mape' => $mape,
-            ];
-        }
+    //         $dataView[$produk->nama_produk] = [
+    //             'bulan' => $bulanData,
+    //             'mape' => $mape,
+    //         ];
+    //     }
 
-        // Grafik (produk pertama)
-        $labels = array_values($months);
-        $actual = [];
-        $prediction = [];
+    //     // Grafik (produk pertama)
+    //     $labels = array_values($months);
+    //     $actual = [];
+    //     $prediction = [];
 
-        if (!empty($dataView)) {
-            $firstProduk = array_key_first($dataView);
-            for ($i = 1; $i <= 12; $i++) {
-                $actual[] = $dataView[$firstProduk]['bulan'][$i]['actual'] ?? null;
-                $prediction[] = $dataView[$firstProduk]['bulan'][$i]['prediksi'] ?? null;
-            }
-        }
+    //     if (!empty($dataView)) {
+    //         $firstProduk = array_key_first($dataView);
+    //         for ($i = 1; $i <= 12; $i++) {
+    //             $actual[] = $dataView[$firstProduk]['bulan'][$i]['actual'] ?? null;
+    //             $prediction[] = $dataView[$firstProduk]['bulan'][$i]['prediksi'] ?? null;
+    //         }
+    //     }
 
-        return view('Operator.umkm.Laporan.LaporanTransaksiProdukUmkm.index',
-            compact('year', 'months', 'dataView', 'labels', 'actual', 'prediction', 'allProduk'));
-    }
+    //     return view('Operator.umkm.Laporan.LaporanTransaksiProdukUmkm.index',
+    //         compact('year', 'months', 'dataView', 'labels', 'actual', 'prediction', 'allProduk'));
+    // }
 
 
     public function index2(Request $request)
     {
+        
         $year = $request->get('tahun', now()->year);
         $months = [
             1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',

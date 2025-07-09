@@ -9,13 +9,22 @@ use App\Models\KeranjangDetail;
 use App\Models\ProdukVariant;
 use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
+use App\Models\Voucher;
+use App\Services\VoucherService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class TransaksiController extends Controller
 {
+    protected $voucherService;
+    public function __construct(VoucherService $voucherService)
+    {
+        $this->voucherService = $voucherService;
+    }
 
     // public function store(Request $request)
     // {
@@ -28,6 +37,7 @@ class TransaksiController extends Controller
     //         'selected_couriers.*.member_id' => 'required|exists:member_umkm,id',
     //         'selected_couriers.*.code' => 'required|string',
     //         'selected_couriers.*.service' => 'required|string',
+    //         'kode_voucher' => 'nullable|string|max:100'
     //     ]);
 
     //     if ($validator->fails()) {
@@ -43,7 +53,6 @@ class TransaksiController extends Controller
     //     $groupedItems = [];
     //     $variants = [];
 
-    //     // Kelompokkan item per member dan simpan varian
     //     foreach ($items as $item) {
     //         $variant = ProdukVariant::with('produk_umkm')->find($item['produk_variant_id']);
     //         if (!$variant || !$variant->produk_umkm) {
@@ -62,13 +71,13 @@ class TransaksiController extends Controller
     //         ];
     //     }
 
-    //     // Ambil detail alamat tujuan user
     //     $alamat = Alamat::findOrFail($alamat_id);
-    //     $destination = $alamat->desa_id ?? $alamat->desa_id;
+    //     $destination = $alamat->desa_id;
 
     //     DB::beginTransaction();
     //     try {
     //         $transactions = [];
+            
 
     //         foreach ($groupedItems as $memberId => $memberItems) {
     //             $orderId = 'TRX' . now()->format('YmdHis') . rand(1000, 9999);
@@ -76,55 +85,78 @@ class TransaksiController extends Controller
     //             $subtotal = 0;
     //             $weight = 0;
 
-    //             // Hitung subtotal & berat total per member
     //             foreach ($memberItems as $item) {
     //                 $subtotal += $item['variant']->harga * $item['qty'];
     //                 $weight += ($item['variant']->berat ?? 0) * $item['qty'];
     //             }
 
-    //             // Origin dari produk UMKM
-    //             $origin = $memberItems[0]['variant']->produk_umkm->member_desa_id ?? $memberItems[0]['variant']->produk_umkm->member->desa_id;
+    //             $origin = $memberItems[0]['variant']->produk_umkm->member_desa_id 
+    //                 ?? $memberItems[0]['variant']->produk_umkm->member->desa_id;
 
-    //             // Ambil data kurir terpilih
     //             $courierInfo = $selectedCouriers->get($memberId);
     //             if (!$courierInfo) {
     //                 throw new \Exception("Kurir tidak dipilih untuk member_id $memberId");
     //             }
 
-    //             // Panggil API ongkir internal
     //             $ongkirResponse = Http::post('https://elsikomangdev.my.id/api/cek-ongkir', [
     //                 'origin' => $origin,
     //                 'destination' => $destination,
     //                 'weight' => $weight,
     //                 'courier' => $courierInfo['code']
     //             ]);
-    //             // throw new \Exception("origin {$origin} dengan destination: " . $destination);
 
     //             if (!$ongkirResponse->ok()) {
-    //                 // throw new \Exception("Gagal cek ongkir untuk member_id $memberId");
     //                 throw new \Exception("Gagal cek ongkir untuk member_id {$memberId} dengan response: " . $ongkirResponse->body());
-
     //             }
 
     //             $costData = collect($ongkirResponse->json()['data']['data'] ?? [])
-    //             ->first(function ($cost) use ($courierInfo) {
-    //                 return strtolower($cost['code']) === strtolower($courierInfo['code']) &&
-    //                     strtolower($cost['service']) === strtolower($courierInfo['service']);
-    //             });
+    //                 ->first(function ($cost) use ($courierInfo) {
+    //                     return strtolower($cost['code']) === strtolower($courierInfo['code']) &&
+    //                         strtolower($cost['service']) === strtolower($courierInfo['service']);
+    //                 });
+
+
 
     //             if (!$costData) {
     //                 throw new \Exception("Service {$courierInfo['service']} tidak ditemukan untuk member_id $memberId");
-                    
     //             }
 
-    //             $ongkos = $costData['cost'][0]['value'] ?? 0;
+    //             $ongkos = $costData['cost'];
     //             $amount = $subtotal + $ongkos;
+                
+    //             if ($request->kode_voucher) {
+    //                 $cek = $this->voucherService->cekVoucher(
+    //                     $request->kode_voucher,
+    //                     $amount
+    //                 );
+            
+    //                 if ($cek['http_code'] !== 200) {
+    //                     return response()->json([
+    //                         'message' => 'Transaksi gagal',
+    //                         'error' => $cek['message'],
+    //                     ], $cek['http_code']);
+    //                 }
+    //                 $amount = $cek['data']['total_setelah_diskon'];
+    //                 if ($request->kode_voucher) {
+    //                     $voucher = Voucher::where('kode_voucher', $request->kode_voucher)
+    //                                     ->where('is_aktif', true)
+    //                                     ->whereDate('tanggal_mulai', '<=', Carbon::today())
+    //                                     ->whereDate('tanggal_berakhir', '>=', Carbon::today())
+    //                                     ->lockForUpdate()
+    //                                     ->firstOrFail();
+
+    //                                 $this->voucherService->pakaiVoucher($voucher, 1);
+    //                 }
+    //             }                
+                
+
 
     //             $params = $this->buildMidtransParams([
     //                 'order_id' => $orderId,
     //                 'amount' => $amount,
     //                 'payment_method' => $pay_method,
     //             ]);
+
     //             $midtrans = $this->callMidtrans($params);
 
     //             $transaction = Transaksi::create([
@@ -138,6 +170,10 @@ class TransaksiController extends Controller
     //                 'snap_token' => $midtrans['token'],
     //                 'snap_redirect_url' => $midtrans['redirect_url'],
     //                 'status' => 'pending',
+    //                 'kode_voucher' => $request->kode_voucher ?? null,
+    //                 'kurir' => $courierInfo['code'] ?? null,
+    //                 'kurir_service' => $courierInfo['service'] ?? null,
+    //                 'no_resi' => null
     //             ]);
 
     //             foreach ($memberItems as $item) {
@@ -149,7 +185,6 @@ class TransaksiController extends Controller
     //                     'harga' => $item['variant']->harga,
     //                 ]);
 
-    //                 // Update keranjang
     //                 $keranjang = Keranjang::where('user_id', auth()->id())->first();
     //                 if ($keranjang) {
     //                     $detail = KeranjangDetail::where('keranjang_id', $keranjang->id)
@@ -170,12 +205,10 @@ class TransaksiController extends Controller
     //             $transactions[] = $transaction;
     //         }
 
-    //         // Hapus keranjang jika kosong
     //         $keranjang = Keranjang::where('user_id', auth()->id())->first();
     //         if ($keranjang && $keranjang->keranjangDetail()->count() === 0) {
     //             $keranjang->delete();
     //         }
-
     //         DB::commit();
 
     //         return response()->json([
@@ -190,7 +223,6 @@ class TransaksiController extends Controller
     //         ], 500);
     //     }
     // }
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -216,24 +248,19 @@ class TransaksiController extends Controller
         $alamat_id = $request->alamat_id;
         $selectedCouriers = collect($request->selected_couriers)->keyBy('member_id');
         $groupedItems = [];
-        $variants = [];
 
         foreach ($items as $item) {
-            $variant = ProdukVariant::with('produk_umkm')->find($item['produk_variant_id']);
+            $variant = ProdukVariant::with('produk_umkm')->lockForUpdate()->find($item['produk_variant_id']);
             if (!$variant || !$variant->produk_umkm) {
-                return response()->json([
-                    'message' => 'Produk atau varian tidak ditemukan.',
-                    'variant_id' => $item['produk_variant_id'],
-                ], 404);
+                return response()->json(['message' => 'Produk atau varian tidak ditemukan.'], 404);
+            }
+
+            if ($variant->stok < $item['qty']) {
+                return response()->json(['message' => "Stok tidak mencukupi untuk varian ID {$variant->id}"], 400);
             }
 
             $memberId = $variant->produk_umkm->member_id;
-            $variants[$item['produk_variant_id']] = $variant;
-
-            $groupedItems[$memberId][] = [
-                'variant' => $variant,
-                'qty' => $item['qty'],
-            ];
+            $groupedItems[$memberId][] = ['variant' => $variant, 'qty' => $item['qty']];
         }
 
         $alamat = Alamat::findOrFail($alamat_id);
@@ -254,9 +281,7 @@ class TransaksiController extends Controller
                     $weight += ($item['variant']->berat ?? 0) * $item['qty'];
                 }
 
-                $origin = $memberItems[0]['variant']->produk_umkm->member_desa_id 
-                    ?? $memberItems[0]['variant']->produk_umkm->member->desa_id;
-
+                $origin = $memberItems[0]['variant']->produk_umkm->member_desa_id ?? $memberItems[0]['variant']->produk_umkm->member->desa_id;
                 $courierInfo = $selectedCouriers->get($memberId);
                 if (!$courierInfo) {
                     throw new \Exception("Kurir tidak dipilih untuk member_id $memberId");
@@ -270,34 +295,44 @@ class TransaksiController extends Controller
                 ]);
 
                 if (!$ongkirResponse->ok()) {
-                    throw new \Exception("Gagal cek ongkir untuk member_id {$memberId} dengan response: " . $ongkirResponse->body());
+                    throw new \Exception("Gagal cek ongkir: " . $ongkirResponse->body());
                 }
 
-                $costData = collect($ongkirResponse->json()['data']['data'] ?? [])
-                    ->first(function ($cost) use ($courierInfo) {
-                        return strtolower($cost['code']) === strtolower($courierInfo['code']) &&
-                            strtolower($cost['service']) === strtolower($courierInfo['service']);
-                    });
-
-
-
+                $costData = collect($ongkirResponse->json()['data']['data'] ?? [])->first(fn($c) => strtolower($c['code']) === strtolower($courierInfo['code']) && strtolower($c['service']) === strtolower($courierInfo['service']));
                 if (!$costData) {
                     throw new \Exception("Service {$courierInfo['service']} tidak ditemukan untuk member_id $memberId");
                 }
 
                 $ongkos = $costData['cost'];
-                // throw new \Exception("Service $ongkos");
-
-
                 $amount = $subtotal + $ongkos;
+                $amountProduk = $subtotal;
 
-                $params = $this->buildMidtransParams([
+                if ($request->kode_voucher) {
+                    $cek = $this->voucherService->cekVoucher($request->kode_voucher, $amountProduk);
+                    if (!$cek['status']) {
+                        throw new \Exception($cek['message']);
+                    }
+                    $amount = $cek['data']['total_setelah_diskon'] + $ongkos;
+
+                    $voucher = Voucher::where('kode_voucher', $request->kode_voucher)
+                        ->where('is_aktif', true)
+                        ->whereDate('tanggal_mulai', '<=', Carbon::today())
+                        ->whereDate('tanggal_berakhir', '>=', Carbon::today())
+                        ->lockForUpdate()
+                        ->firstOrFail();
+
+                    $this->voucherService->pakaiVoucher($voucher, 1);
+                }
+
+                $midtrans = $this->callMidtrans($this->buildMidtransParams([
                     'order_id' => $orderId,
                     'amount' => $amount,
                     'payment_method' => $pay_method,
-                ]);
+                ]));
 
-                $midtrans = $this->callMidtrans($params);
+                if (!$midtrans || !isset($midtrans['token'])) {
+                    throw new \Exception("Gagal membuat transaksi Midtrans.");
+                }
 
                 $transaction = Transaksi::create([
                     'user_id' => auth()->id(),
@@ -310,9 +345,9 @@ class TransaksiController extends Controller
                     'snap_token' => $midtrans['token'],
                     'snap_redirect_url' => $midtrans['redirect_url'],
                     'status' => 'pending',
-                    'kode_voucher' => $request->kode_voucher ?? null,
-                    'kurir' => $courierInfo['code'] ?? null,
-                    'kurir_service' => $courierInfo['service'] ?? null,
+                    'kode_voucher' => $request->kode_voucher,
+                    'kurir' => $courierInfo['code'],
+                    'kurir_service' => $courierInfo['service'],
                     'no_resi' => null
                 ]);
 
@@ -325,21 +360,7 @@ class TransaksiController extends Controller
                         'harga' => $item['variant']->harga,
                     ]);
 
-                    $keranjang = Keranjang::where('user_id', auth()->id())->first();
-                    if ($keranjang) {
-                        $detail = KeranjangDetail::where('keranjang_id', $keranjang->id)
-                            ->where('produk_variant_id', $item['variant']->id)
-                            ->first();
-
-                        if ($detail) {
-                            if ($detail->jumlah > $item['qty']) {
-                                $detail->jumlah -= $item['qty'];
-                                $detail->save();
-                            } else {
-                                $detail->delete();
-                            }
-                        }
-                    }
+                    $item['variant']->decrement('stok', $item['qty']);
                 }
 
                 $transactions[] = $transaction;
@@ -358,13 +379,13 @@ class TransaksiController extends Controller
             ]);
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::error('Checkout error: ' . $th->getMessage());
             return response()->json([
                 'message' => 'Transaksi gagal',
                 'error' => $th->getMessage(),
             ], 500);
         }
     }
-
 
 
 

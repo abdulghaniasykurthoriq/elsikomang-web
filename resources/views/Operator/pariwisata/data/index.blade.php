@@ -29,6 +29,8 @@
                             <th class="px-6 py-3">Gambar</th>
                             <th class="px-6 py-3">Kategori</th>
                             <th class="px-6 py-3">Harga Tiket</th>
+                            <th class="px-6 py-3">Rating</th>
+                            <th class="px-6 py-3">Jam Operasional</th>
                             <th class="px-6 py-3 text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -43,6 +45,11 @@
                                 </td>
                                 <td class="px-6 py-4 capitalize">{{ $item->kategori }}</td>
                                 <td class="px-6 py-4">Rp{{ number_format($item->harga_tiket) }}</td>
+                                <td class="px-6 py-4">{{ $item->rating ?? '-' }}</td>
+                                <td class="px-6 py-4">
+                                    {{ $item->jam_buka ? \Carbon\Carbon::parse($item->jam_buka)->format('H:i') : '-' }} -
+                                    {{ $item->jam_tutup ? \Carbon\Carbon::parse($item->jam_tutup)->format('H:i') : '-' }}
+                                </td>
                                 <td class="px-6 py-4 flex gap-2 justify-center">
                                     <a href="{{ route('operator.pariwisata.data.edit', ['id' => $item->id]) }}"
                                         class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600" title="Edit">
@@ -62,7 +69,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-4 text-gray-500">Belum ada data pariwisata.</td>
+                                <td colspan="9" class="text-center py-4 text-gray-500">Belum ada data pariwisata.</td>
                             </tr>
                         @endforelse
                     </tbody>

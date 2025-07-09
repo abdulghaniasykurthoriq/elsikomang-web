@@ -5,71 +5,340 @@ namespace App\Http\Controllers\Operator\Pariwisata;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pariwisata;
+use App\Models\SawKriteria;
+use App\Models\SawNormalisasi;
+use App\Models\SawBobot;
+use App\Models\SawSkor;
+use App\Models\SawRanking;
+use Carbon\Carbon;
 
 class RekomendasiWisataController extends Controller
 {
-    public function index(Request $request)
+    // STEP 1: Menampilkan data wisata (alternatif)
+    public function step1Data()
     {
-        $inputHarga = $request->input('harga');
-        $inputRating = $request->input('rating');
-        $inputFasilitas = $request->input('fasilitas', []);
-        $inputKategori = $request->input('kategori');
+        $data = Pariwisata::with('fasilitas')->paginate(10);
+        return view('Operator.pariwisata.saw.step1_data', compact('data'));
+    }
 
-        $wisatas = Pariwisata::with('fasilitas')->get();
+    // STEP 2: Menampilkan jenis kriteria
+    public function step2Kriteria()
+    {
+        $kriterias = SawKriteria::all();
+        return view('Operator.pariwisata.saw.step2_kriteria', compact('kriterias'));
+    }
 
-        // Cari nilai max/min untuk normalisasi
-        $maxRating = $wisatas->max('rating') ?: 1; // Benefit
-        $minHarga = $wisatas->min('harga_tiket') ?: 1; // Cost
+    public function updateKriteria(Request $request, $id)
+    {
+        $request->validate([
+            'label' => 'required|string|max:255',
+            'tipe' => 'required|in:cost,benefit',
+        ]);
 
-        // Bobot
-        $bobotHarga = $inputHarga ? 0.3 : 0;
-        $bobotRating = $inputRating ? 0.3 : 0;
-        $bobotKategori = $inputKategori ? 0.2 : 0;
-        $bobotFasilitas = !empty($inputFasilitas) ? 0.2 : 0;
+        $kriteria = SawKriteria::findOrFail($id);
+        $kriteria->update([
+            'label' => $request->label,
+            'tipe' => $request->tipe,
+        ]);
 
-        $dataSaw = $wisatas->map(function ($wisata) use (
-            $inputHarga, $inputRating, $inputFasilitas, $inputKategori,
-            $minHarga, $maxRating,
-            $bobotHarga, $bobotRating, $bobotKategori, $bobotFasilitas
-        ) {
+        return redirect()->back()->with('success', 'Kriteria berhasil diperbarui.');
+    }
+
+    // STEP 3: Normalisasi
+    public function step3Normalisasi()
+    {
+        $data = Pariwisata::with('fasilitas')->paginate(10);
+
+        $minHarga = max($data->min('harga_tiket'), 1);
+        $maxRating = max($data->max('rating'), 1);
+        $maxFasilitas = max(1, $data->map(fn($d) => $d->fasilitas->count())->max());
+
+        $normalisasi = [];
+
+        foreach ($data as $item) {
+            $durasi = 0;
+            if ($item->jam_buka && $item->jam_tutup) {
+                $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
+            }
+
+            $skor_waktu = match (true) {
+                $durasi >= 24 => 5,
+                $durasi >= 15 => 4,
+                $durasi >= 10 => 3,
+                $durasi >= 9 => 2,
+                default => 1,
+            };
+
+            $fasilitasCount = $item->fasilitas->count();
+
+            $hasil = [
+                'harga_tiket' => [
+                    'nilai' => round($minHarga / max($item->harga_tiket, 1), 4),
+                    'rumus' => "{$minHarga} / " . max($item->harga_tiket, 1),
+                ],
+                'fasilitas' => [
+                    'nilai' => round($fasilitasCount / $maxFasilitas, 4),
+                    'rumus' => "{$fasilitasCount} / {$maxFasilitas}",
+                ],
+                'rating' => [
+                    'nilai' => round($item->rating / $maxRating, 4),
+                    'rumus' => "{$item->rating} / {$maxRating}",
+                ],
+                'waktu_operasional' => [
+                    'nilai' => round($skor_waktu / 5, 4),
+                    'rumus' => "{$skor_waktu} / 5",
+                ],
+            ];
+
+            foreach ($hasil as $kriteria => $dataHasil) {
+                SawNormalisasi::updateOrCreate(
+                    [
+                        'pariwisata_id' => $item->id,
+                        'kriteria' => $kriteria,
+                    ],
+                    [
+                        'nilai_normalisasi' => $dataHasil['nilai'],
+                        'rumus' => $dataHasil['rumus'],
+                    ],
+                );
+            }
+
+            $normalisasi[] = [
+                'wisata' => $item,
+                'normalisasi' => $hasil,
+            ];
+        }
+
+        return view('Operator.pariwisata.saw.step3_normalisasi', [
+            'data' => $data,
+            'normalisasi' => $normalisasi,
+        ]);
+    }
+
+    // STEP 4: Bobot
+    public function step4Bobot()
+    {
+        $kriterias = SawKriteria::all();
+
+        $bobots = SawBobot::pluck('bobot', 'kriteria')->toArray();
+
+        return view('Operator.pariwisata.saw.step4_bobot', compact('kriterias', 'bobots'));
+    }
+
+    public function saveBobot(Request $request)
+    {
+        $inputBobot = $request->only(['harga_tiket', 'fasilitas', 'rating', 'waktu_operasional']);
+        $total = array_sum($inputBobot);
+
+        if (abs($total - 1.0) > 0.001) {
+            return back()->withErrors(['msg' => 'Total bobot harus sama dengan 1.0']);
+        }
+
+        foreach ($inputBobot as $kriteria => $nilaiBobot) {
+            SawBobot::create([
+                'kriteria' => $kriteria,
+                'bobot' => $nilaiBobot,
+            ]);
+        }
+
+        if ($request->has('simpan')) {
+            return back()->with('success', 'Bobot berhasil disimpan.');
+        }
+
+        return redirect()->route('operator.pariwisata.rekomendasi.step5')->with('success', 'Bobot berhasil disimpan dan lanjut ke Step 5.');
+    }
+
+    // STEP 5: Skor
+    public function step5Skor()
+    {
+        $bobot = SawBobot::pluck('bobot', 'kriteria')->toArray();
+
+        if (count($bobot) < 4) {
+            return redirect()
+                ->route('operator.pariwisata.rekomendasi.step4')
+                ->withErrors(['msg' => 'Silakan isi semua bobot kriteria terlebih dahulu di Step 4.']);
+        }
+
+        $data = Pariwisata::withCount('fasilitas')->paginate(10);
+
+        $minHarga = max($data->min('harga_tiket'), 1);
+        $maxFasilitas = max(array_map('intval', $data->pluck('fasilitas_count')->all()) ?: [1]);
+        $maxRating = max($data->max('rating'), 1);
+
+        $skorData = $data->map(function ($item) use ($minHarga, $maxFasilitas, $maxRating, $bobot) {
+            $durasi = 0;
+            if ($item->jam_buka && $item->jam_tutup) {
+                $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
+            }
+
+            $skorWaktu = match (true) {
+                $durasi >= 24 => 5,
+                $durasi >= 15 => 4,
+                $durasi >= 10 => 3,
+                $durasi >= 9 => 2,
+                default => 1,
+            };
+
+            $normalisasi = [
+                'harga_tiket' => round($minHarga / max($item->harga_tiket, 1), 4),
+                'fasilitas' => round($item->fasilitas_count / max($maxFasilitas, 1), 4),
+                'rating' => round($item->rating / max($maxRating, 1), 4),
+                'waktu_operasional' => round($skorWaktu / 5, 4),
+            ];
+
             $Vi = 0;
+            $detail = [];
 
-            // 1. Harga (COST) — Semakin kecil semakin baik
-            if ($bobotHarga > 0) {
-                $r_harga = $minHarga / max($wisata->harga_tiket, 1); // Hindari pembagian 0
-                $Vi += $r_harga * $bobotHarga;
+            foreach ($normalisasi as $kriteria => $nilai) {
+                $bobotK = $bobot[$kriteria] ?? 0;
+                $hasil = round($nilai * $bobotK, 4);
+                $Vi += $hasil;
+
+                $detail[$kriteria] = [
+                    'normalisasi' => $nilai,
+                    'bobot' => $bobotK,
+                    'perkalian' => "{$nilai} × {$bobotK}",
+                    'hasil' => $hasil,
+                ];
             }
 
-            // 2. Rating (BENEFIT) — Semakin besar semakin baik
-            if ($bobotRating > 0) {
-                $r_rating = $wisata->rating / $maxRating;
-                $Vi += $r_rating * $bobotRating;
-            }
-
-            // 3. Kategori (KESAMAAN) — Sama dengan pilihan user
-            if ($bobotKategori > 0) {
-                $r_kategori = $wisata->kategori == $inputKategori ? 1 : 0;
-                $Vi += $r_kategori * $bobotKategori;
-            }
-
-            // 4. Fasilitas (KESAMAAN) — Persentase fasilitas yang cocok
-            if ($bobotFasilitas > 0) {
-                $fasilitasWisata = $wisata->fasilitas->pluck('id')->toArray();
-                $intersect = array_intersect($inputFasilitas, $fasilitasWisata);
-                $r_fasilitas = count($intersect) / count($inputFasilitas);
-                $Vi += $r_fasilitas * $bobotFasilitas;
-            }
+            SawSkor::updateOrCreate(['pariwisata_id' => $item->id], ['skor_total' => round($Vi, 4)]);
 
             return [
-                'wisata' => $wisata,
-                'skor' => round($Vi, 4)
+                'wisata' => $item,
+                'skor' => round($Vi, 4),
+                'detail' => $detail,
             ];
         });
 
-        $sorted = $dataSaw->sortByDesc('skor')->values();
-
-        return view('Operator.pariwisata.rekomendasi.index', [
-            'data' => $sorted,
+        return view('Operator.pariwisata.saw.step5_skor', [
+            'skorData' => $skorData,
+            'data' => $data->withQueryString(),
         ]);
+    }
+
+    // STEP 6: Ranking
+    public function step6Ranking()
+    {
+        if (SawBobot::count() < 4) {
+            return redirect()
+                ->route('operator.pariwisata.rekomendasi.step4')
+                ->withErrors(['msg' => 'Silakan isi semua bobot kriteria terlebih dahulu di Step 4.']);
+        }
+
+        $skorList = SawSkor::with('pariwisata')->orderByDesc('skor_total')->get();
+
+        SawRanking::truncate();
+
+        foreach ($skorList as $index => $skor) {
+            SawRanking::create([
+                'pariwisata_id' => $skor->pariwisata_id,
+                'peringkat' => $index + 1,
+                'skor_total' => $skor->skor_total,
+            ]);
+        }
+
+        $ranking = SawRanking::with('pariwisata')->orderBy('peringkat')->paginate(10)->withQueryString();
+
+        return view('Operator.pariwisata.saw.step6_ranking', compact('ranking'));
+    }
+
+    public function inputPreferensi()
+    {
+        return view('Operator.pariwisata.rekomendasi.input');
+    }
+
+    public function hitungRekomendasi(Request $request)
+    {
+        $validated = $request->validate([
+            'max_tiket' => 'nullable|numeric',
+            'min_fasilitas' => 'nullable|numeric',
+            'min_rating' => 'nullable|numeric',
+            'kategori' => 'nullable|string',
+        ]);
+
+        $query = Pariwisata::withCount('fasilitas');
+
+        if ($request->max_tiket) {
+            $query->where('harga_tiket', '<=', $request->max_tiket);
+        }
+
+        if ($request->min_rating) {
+            $query->where('rating', '>=', $request->min_rating);
+        }
+
+        if ($request->kategori) {
+            $query->where('kategori', $request->kategori);
+        }
+
+        $data = $query->get();
+
+        if ($data->isEmpty()) {
+            return back()->withInput()->with('warning', 'Tidak ditemukan wisata dengan kriteria tersebut.');
+        }
+
+        // Ambil bobot dari Step 4 (TABEL)
+        $bobot = SawBobot::pluck('bobot', 'kriteria')->toArray();
+
+        if (count($bobot) < 4) {
+            return redirect()
+                ->route('operator.pariwisata.rekomendasi.step4')
+                ->withErrors(['msg' => 'Bobot belum lengkap. Silakan isi di Step 4.']);
+        }
+
+        // Cari nilai normalisasi max/min
+        $minHarga = max([$data->min('harga_tiket') ?? 1, 1]);
+        $maxRating = max([$data->max('rating') ?? 1, 1]);
+        $maxFasilitas = max([$data->max('fasilitas_count') ?? 1, 1]);
+
+        // Hitung normalisasi dan skor per item
+        $result = $data
+            ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot) {
+                $durasi = 0;
+                if ($item->jam_buka && $item->jam_tutup) {
+                    $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
+                }
+
+                $skorWaktu = match (true) {
+                    $durasi >= 24 => 5,
+                    $durasi >= 15 => 4,
+                    $durasi >= 10 => 3,
+                    $durasi >= 9 => 2,
+                    default => 1,
+                };
+
+                $normalisasi = [
+                    'harga_tiket' => round($minHarga / max($item->harga_tiket, 1), 4),
+                    'fasilitas' => round($item->fasilitas_count / max($maxFasilitas, 1), 4),
+                    'rating' => round($item->rating / max($maxRating, 1), 4),
+                    'waktu_operasional' => round($skorWaktu / 5, 4),
+                ];
+
+                $detail = [];
+                $Vi = 0;
+
+                foreach ($normalisasi as $kriteria => $nilai) {
+                    $bobotK = $bobot[$kriteria] ?? 0;
+                    $hasil = round($nilai * $bobotK, 4);
+                    $Vi += $hasil;
+
+                    $detail[$kriteria] = [
+                        'normalisasi' => $nilai,
+                        'bobot' => $bobotK,
+                        'perkalian' => "{$nilai} × {$bobotK}",
+                        'hasil' => $hasil,
+                    ];
+                }
+
+                return [
+                    'wisata' => $item,
+                    'skor' => round($Vi, 4),
+                    'detail' => $detail,
+                ];
+            })
+            ->sortByDesc('skor')
+            ->values();
+
+        return view('Operator.pariwisata.rekomendasi.result', compact('result'));
     }
 }

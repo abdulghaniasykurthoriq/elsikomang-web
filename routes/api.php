@@ -14,6 +14,7 @@ use App\Http\Controllers\API\ProdukController;
 use App\Http\Controllers\API\RajaOngkirController;
 use App\Http\Controllers\API\SplashScreenController;
 use App\Http\Controllers\API\TransaksiController;
+use App\Http\Controllers\API\VoucherController;
 use App\Http\Controllers\API\WilayahController;
 use App\Http\Controllers\API\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -47,7 +48,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/transaksi/status-count', [TransaksiController::class, 'countByStatus']);
 
 
-    Route::post('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
     Route::post('/pariwisata/rate', [PariwisataController::class, 'rate']);
 
 });
@@ -62,6 +62,8 @@ Route::get('/produk/{id}', [ProdukController::class, 'show']);
 
 Route::get('/pariwisata', [PariwisataController::class, 'index']);
 Route::get('/pariwisata/{id}', [PariwisataController::class, 'show']);
+Route::post('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
+
 
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{id}', [EventController::class, 'show']);
@@ -81,6 +83,8 @@ Route::get('/splashscreen', [SplashScreenController::class, 'index']);
 
 Route::get('/transaksi/success', [TransaksiController::class, 'success']);
 Route::post('/transaksi/callback', [TransaksiController::class, 'update']);
+
+Route::post('/cek-voucher', [VoucherController::class, 'cek']);
 
 
 

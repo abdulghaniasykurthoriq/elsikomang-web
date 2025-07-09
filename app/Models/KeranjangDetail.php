@@ -16,11 +16,12 @@ class KeranjangDetail extends Model
     ];
     protected $hidden = ['keranjang_id','produk_umkm','produkUmkm', 'produkVariant'];
     
-    protected $appends = ['produk_umkm_nama','produk_umkm_foto', 'produk_variant_nama', 'produk_variant_harga', 'produk_variant_stok'];
+    protected $appends = ['produk_umkm_nama','produk_umkm_foto', 'produk_variant_nama', 'produk_variant_harga', 'produk_variant_stok', 'berat'];
     public function getProdukUmkmNamaAttribute()
     {
         return $this->produkUmkm->nama_produk;
     }
+    
     public function getProdukUmkmFotoAttribute()
     {
         return $this->produkUmkm->images->first() ? $this->produkUmkm->images->first()->file_path_url : null;
@@ -37,6 +38,10 @@ class KeranjangDetail extends Model
     public function getProdukVariantStokAttribute()
     {
         return $this->produkVariant->stok;
+    }
+    public function getBeratAttribute()
+    {
+        return $this->produkVariant->berat;
     }
     
 
