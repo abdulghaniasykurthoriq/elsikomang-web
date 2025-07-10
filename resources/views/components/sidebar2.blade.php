@@ -79,6 +79,24 @@
                     </ul>
 
                 </li>
+                <li class="px-3 pt-4 pb-2 text-sm font-semibold text-gray-400 uppercase tracking-wider">
+                    OPTIMALISASI PENCARIAN
+                </li>
+                <li>
+                    <a href="{{ route('pencarian.index') }}"
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole . '/pencarian*') ? 'bg-gray-800' : '' }}">
+                        <i data-feather="search" class="w-4 h-4 mr-3"></i>
+                        Pencarian Produk
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('pencarian.perbandingan') }}"
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole . '/perbandingan*') ? 'bg-gray-800' : '' }}">
+                        <i data-feather="bar-chart-2" class="w-4 h-4 mr-3"></i>
+                        Perbandingan TF-IDF
+                    </a>
+                </li>
 
 
                 <!-- Pariwisata -->
@@ -217,56 +235,13 @@
 
                 <!-- Entertaiment -->
             @elseif ($user->role == 'Operator entertainment')
-            <a href="{{ route('entertaiment.dashboard') }}"
-            class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/dashboard') ? 'bg-gray-800' : '' }}">
-            <i data-feather="home" class="w-4 h-4 mr-3"></i>
-            Dashboard
-        </a>
-        <li class="px-3 pt-4 pb-2 text-sm font-semibold text-gray-400 uppercase tracking-wider">
-            Data Master
-        </li>
-            <a href="{{ route('entertaiment.index') }}"
-            class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/entertaiment*') ? 'bg-gray-800' : '' }}">
-            <i data-feather="package" class="w-4 h-4 mr-3"></i>
-            Data Entertainment
-
-            <!-- Box Office -->
-            @elseif ($user->role == 'Operator box office')
-            <a href="{{ route('box-office.dashboard') }}"
-            class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole.'/dashboard') ? 'bg-gray-800' : '' }}">
-            <i data-feather="home" class="w-4 h-4 mr-3"></i>
-            Dashboard
-        </a>
-        <li class="px-3 pt-4 pb-2 text-sm font-semibold text-gray-400 uppercase tracking-wider">
-            Data Master
-        </li>
-                
-                <li class="nav-item">
-                    <a class="nav-link flex items-center justify-between px-3 py-2 text-white hover:bg-gray-800 transition cursor-pointer"
-                    data-bs-toggle="collapse"
-                    href="#navIklan"
-                    role="button"
-                    aria-expanded="false"
-                    aria-controls="navIklan">
-                        <span class="flex items-center gap-2">
-                            <i data-feather="file-text" class="w-4 h-4"></i>
-                            Iklan
-                        </span>
-                        <i data-feather="chevron-down" class="w-4 h-4 transition-transform duration-200"></i>
-                    </a>
-                    <div class="collapse" id="navIklan" data-bs-parent="#sideNavbar">
-                        <ul class="pl-10 py-2 text-sm space-y-1">
-                            
-                            <li><a href="{{ route('iklan.index') }}" class="block text-gray-300 hover:text-white">Informasi Data Iklan</a></li>
-                            <li><a href="{{ route('iklandata.index', ['q' => 'home-1']) }}" class="block text-gray-300 hover:text-white">Halaman Home</a></li>
-                            <li><a href="{{ route('iklandata.index', ['q' => 'umkm-1']) }}" class="block text-gray-300 hover:text-white">Halaman UMKM</a></li>
-                            <li><a href="{{ route('iklandata.index', ['q' => 'pariwisata-1']) }}" class="block text-gray-300 hover:text-white">Halaman Pariwisata</a></li>
-                            <li><a href="{{ route('iklandata.index', ['q' => 'event-1']) }}" class="block text-gray-300 hover:text-white">Halaman Event</a></li>
-                            <li><a href="{{ route('iklandata.index', ['q' => 'investasi-1']) }}" class="block text-gray-300 hover:text-white">Halaman Investasi</a></li>
-                            <li><a href="{{ route('iklandata.index', ['q' => 'entertaiment-1']) }}" class="block text-gray-300 hover:text-white">Halaman Entertainment</a></li>
-
-                        </ul>
-                    </div>
+                <a href="{{ route('entertaiment.dashboard') }}"
+                    class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole . '/dashboard') ? 'bg-gray-800' : '' }}">
+                    <i data-feather="home" class="w-4 h-4 mr-3"></i>
+                    Dashboard
+                </a>
+                <li class="px-3 pt-4 pb-2 text-sm font-semibold text-gray-400 uppercase tracking-wider">
+                    Data Master
                 </li>
                 <a href="{{ route('entertaiment.index') }}"
                     class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole . '/entertaiment*') ? 'bg-gray-800' : '' }}">
@@ -274,7 +249,7 @@
                     Data Entertainment
 
                     <!-- Box Office -->
-                @elseif ($user->role == 'Operatr box office')
+                @elseif ($user->role == 'Operator box office')
                     <a href="{{ route('box-office.dashboard') }}"
                         class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole . '/dashboard') ? 'bg-gray-800' : '' }}">
                         <i data-feather="home" class="w-4 h-4 mr-3"></i>
@@ -315,6 +290,53 @@
                             </ul>
                         </div>
                     </li>
+                    <a href="{{ route('entertaiment.index') }}"
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole . '/entertaiment*') ? 'bg-gray-800' : '' }}">
+                        <i data-feather="package" class="w-4 h-4 mr-3"></i>
+                        Data Entertainment
+
+                        <!-- Box Office -->
+                    @elseif ($user->role == 'Operatr box office')
+                        <a href="{{ route('box-office.dashboard') }}"
+                            class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole . '/dashboard') ? 'bg-gray-800' : '' }}">
+                            <i data-feather="home" class="w-4 h-4 mr-3"></i>
+                            Dashboard
+                        </a>
+                        <li class="px-3 pt-4 pb-2 text-sm font-semibold text-gray-400 uppercase tracking-wider">
+                            Data Master
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link flex items-center justify-between px-3 py-2 text-white hover:bg-gray-800 transition cursor-pointer"
+                                data-bs-toggle="collapse" href="#navIklan" role="button" aria-expanded="false"
+                                aria-controls="navIklan">
+                                <span class="flex items-center gap-2">
+                                    <i data-feather="file-text" class="w-4 h-4"></i>
+                                    Iklan
+                                </span>
+                                <i data-feather="chevron-down" class="w-4 h-4 transition-transform duration-200"></i>
+                            </a>
+                            <div class="collapse" id="navIklan" data-bs-parent="#sideNavbar">
+                                <ul class="pl-10 py-2 text-sm space-y-1">
+
+                                    <li><a href="{{ route('iklan.index') }}"
+                                            class="block text-gray-300 hover:text-white">Informasi Data Iklan</a></li>
+                                    <li><a href="{{ route('iklandata.index', ['q' => 'home-1']) }}"
+                                            class="block text-gray-300 hover:text-white">Halaman Home</a></li>
+                                    <li><a href="{{ route('iklandata.index', ['q' => 'umkm-1']) }}"
+                                            class="block text-gray-300 hover:text-white">Halaman UMKM</a></li>
+                                    <li><a href="{{ route('iklandata.index', ['q' => 'pariwisata-1']) }}"
+                                            class="block text-gray-300 hover:text-white">Halaman Pariwisata</a></li>
+                                    <li><a href="{{ route('iklandata.index', ['q' => 'event-1']) }}"
+                                            class="block text-gray-300 hover:text-white">Halaman Event</a></li>
+                                    <li><a href="{{ route('iklandata.index', ['q' => 'investasi-1']) }}"
+                                            class="block text-gray-300 hover:text-white">Halaman Investasi</a></li>
+                                    <li><a href="{{ route('iklandata.index', ['q' => 'entertaiment-1']) }}"
+                                            class="block text-gray-300 hover:text-white">Halaman Entertainment</a></li>
+
+                                </ul>
+                            </div>
+                        </li>
             @endif
 
 

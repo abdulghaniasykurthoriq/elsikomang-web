@@ -34,6 +34,7 @@ use App\Http\Middleware\CheckUserRoleMiddleware;
 use App\Http\Controllers\Operator\Entertaiment;
 use App\Http\Controllers\Operator\Umkm\TransaksiController;
 use App\Http\Controllers\Operator\Umkm\VoucherController;
+use App\Http\Controllers\Operator\Umkm\PencarianProdukController;
 
 // Halaman login
 Route::get('/', function () {
@@ -90,7 +91,7 @@ Route::middleware(['auth'])->group(function () {
 
             Route::get('/step2', [RekomendasiWisataController::class, 'step2Kriteria'])->name('operator.pariwisata.rekomendasi.step2');
             Route::put('/kriteria/{id}', [RekomendasiWisataController::class, 'updateKriteria'])->name('operator.pariwisata.rekomendasi.kriteria.update');
-        
+
             Route::get('/step3', [RekomendasiWisataController::class, 'step3Normalisasi'])->name('operator.pariwisata.rekomendasi.step3');
 
             Route::get('/step4', [RekomendasiWisataController::class, 'step4Bobot'])->name('operator.pariwisata.rekomendasi.step4');
@@ -100,7 +101,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/step5', [RekomendasiWisataController::class, 'step5Skor'])->name('operator.pariwisata.rekomendasi.step5');
 
             Route::get('/step6', [RekomendasiWisataController::class, 'step6Ranking'])->name('operator.pariwisata.rekomendasi.step6');
-            
+
             Route::get('/pariwisata/rekomendasi/input', [RekomendasiWisataController::class, 'inputPreferensi'])->name('operator.pariwisata.rekomendasi.input');
 
             Route::post('/pariwisata/rekomendasi/result', [RekomendasiWisataController::class, 'hitungRekomendasi'])->name('operator.pariwisata.rekomendasi.result');
@@ -136,11 +137,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/data', [TransaksiController::class, 'data'])->name('transaksi.data');
             Route::put('/{id}/update-status', [TransaksiController::class, 'updateStatus'])->name('transaksi.updateStatus');
             Route::delete('/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
-
-
         });
-        
-        
+        Route::get('/pencarian', [PencarianProdukController::class, 'index'])->name('pencarian.index');
+        Route::get('/perbandingan', [PencarianProdukController::class, 'perbandingan'])->name('pencarian.perbandingan');
     });
 });
 
