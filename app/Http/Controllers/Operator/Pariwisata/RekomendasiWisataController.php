@@ -11,6 +11,7 @@ use App\Models\SawBobot;
 use App\Models\SawSkor;
 use App\Models\SawRanking;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class RekomendasiWisataController extends Controller
 {
@@ -128,24 +129,24 @@ class RekomendasiWisataController extends Controller
     public function saveBobot(Request $request)
     {
         $inputBobot = $request->only(['harga_tiket', 'fasilitas', 'rating', 'waktu_operasional']);
+
+        // pastikan total = 1
         $total = array_sum($inputBobot);
-
         if (abs($total - 1.0) > 0.001) {
-            return back()->withErrors(['msg' => 'Total bobot harus sama dengan 1.0']);
-        }
-
-        foreach ($inputBobot as $kriteria => $nilaiBobot) {
-            SawBobot::create([
-                'kriteria' => $kriteria,
-                'bobot' => $nilaiBobot,
+            return back()->withErrors([
+                'msg' => 'Total bobot harus sama dengan 1.0',
             ]);
         }
 
-        if ($request->has('simpan')) {
-            return back()->with('success', 'Bobot berhasil disimpan.');
+        // ——— update atau buat, BUKAN create baru ———
+        foreach ($inputBobot as $kriteria => $nilai) {
+            SawBobot::updateOrCreate(
+                ['kriteria' => $kriteria], // primary/unique key
+                ['bobot' => $nilai],
+            );
         }
 
-        return redirect()->route('operator.pariwisata.rekomendasi.step5')->with('success', 'Bobot berhasil disimpan dan lanjut ke Step 5.');
+        return $request->has('simpan') ? back()->with('success', 'Bobot berhasil disimpan.') : redirect()->route('operator.pariwisata.rekomendasi.step5')->with('success', 'Bobot berhasil disimpan dan lanjut ke Step 5.');
     }
 
     // STEP 5: Skor
@@ -220,23 +221,32 @@ class RekomendasiWisataController extends Controller
     // STEP 6: Ranking
     public function step6Ranking()
     {
+        // validasi: bobot sudah lengkap
         if (SawBobot::count() < 4) {
             return redirect()
                 ->route('operator.pariwisata.rekomendasi.step4')
-                ->withErrors(['msg' => 'Silakan isi semua bobot kriteria terlebih dahulu di Step 4.']);
+                ->withErrors(['msg' => 'Silakan isi semua bobot kriteria terlebih dahulu di Step 4.']);
         }
 
+        // ambil skor total (sudah dihitung di Step 5)
         $skorList = SawSkor::with('pariwisata')->orderByDesc('skor_total')->get();
 
-        SawRanking::truncate();
+        DB::transaction(function () use ($skorList) {
+            // update ranking satu‑per‑satu
+            foreach ($skorList as $index => $skor) {
+                SawRanking::updateOrCreate(
+                    ['pariwisata_id' => $skor->pariwisata_id], 
+                    [
+                        'peringkat' => $index + 1,
+                        'skor_total' => $skor->skor_total,
+                    ],
+                );
+            }
 
-        foreach ($skorList as $index => $skor) {
-            SawRanking::create([
-                'pariwisata_id' => $skor->pariwisata_id,
-                'peringkat' => $index + 1,
-                'skor_total' => $skor->skor_total,
-            ]);
-        }
+            // bersihkan record ranking yang tak lagi punya skor
+            $aktifIds = $skorList->pluck('pariwisata_id');
+            SawRanking::whereNotIn('pariwisata_id', $aktifIds)->delete();
+        });
 
         $ranking = SawRanking::with('pariwisata')->orderBy('peringkat')->paginate(10)->withQueryString();
 
