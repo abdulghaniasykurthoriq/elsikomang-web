@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProdukUmkm;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class LaporanKlasterProdukController extends Controller
 {
@@ -150,14 +151,44 @@ class LaporanKlasterProdukController extends Controller
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
         ];
 
+        // Ambil daftar produk_umkm_id dan cluster-nya
+        $produkClusterMap = collect($produkClustered)->groupBy('cluster')->map(function ($items) {
+            return $items->map(function ($i) {
+                // Pisahkan nama_produk dari nama dan varian
+                $namaProduk = explode(' - ', $i['nama_produk'])[0];
+                return $namaProduk;
+            })->unique()->values();
+        });
+
+        // Ambil produk_umkm_id berdasarkan nama
+        $produkIdMap = [];
+        foreach ($produkClusterMap as $cluster => $namaProduks) {
+            $ids = ProdukUmkm::whereIn('nama_produk', $namaProduks)->pluck('id')->all();
+            $produkIdMap[$cluster] = $ids;
+        }
+
+        // Siapkan data kosong
         $clusterMonthly = [];
         foreach ($labels as $label) {
             $clusterMonthly[$label] = array_fill(0, 12, 0);
         }
 
-        foreach ($produkClustered as $produk) {
-            if (isset($clusterMonthly[$produk['cluster']])) {
-                $clusterMonthly[$produk['cluster']][$produk['bulan_index']]++;
+        // Hitung transaksi tiap bulan berdasarkan klaster
+        foreach ($produkIdMap as $cluster => $produkIds) {
+            $transaksi = DB::table('transaksi_details as td')
+                ->join('produk_variants as pv', 'td.produk_variant_id', '=', 'pv.id')
+                ->join('transaksis as t', 'td.transaksi_id', '=', 't.id')
+                ->whereIn('pv.produk_umkm_id', $produkIds)
+                ->whereYear('t.created_at', $selectedYear)
+                ->select(
+                    DB::raw('MONTH(t.created_at) as bulan'),
+                    DB::raw('COUNT(DISTINCT t.id) as total')
+                )
+                ->groupBy('bulan')
+                ->get();
+
+            foreach ($transaksi as $item) {
+                $clusterMonthly[$cluster][$item->bulan - 1] = $item->total;
             }
         }
 

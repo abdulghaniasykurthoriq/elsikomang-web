@@ -211,7 +211,12 @@
                                         <td class="px-4 py-2 font-semibold">{{ $clusterName }}</td>
                                         <td class="px-4 py-2">Rp {{ number_format($min, 0, ',', '.') }} - Rp {{ number_format($max, 0, ',', '.') }}</td>
                                         <td class="px-4 py-2">Rp {{ number_format($avg, 2, ',', '.') }}</td>
-                                        <td class="px-4 py-2">{{ $jumlah }} produk</td>
+                                        <td class="px-4 py-2">
+                                            {{ $jumlah }} produk 
+                                            ({{ number_format(($jumlah / array_sum(array_map('count', $clusterInfo))) * 100, 2, ',', '.') }}%)
+                                        </td>
+                                        
+                                        
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -221,38 +226,40 @@
 
         <!-- INFO CLUSTER & GRAFIK -->
         <div class="p-4 border-b border-gray-100" x-show="tab === 'grafik'">
-            <h2 class="text-lg font-semibold text-gray-800 mb-2">Grafik Jumlah Produk per Bulan per Klaster</h2>
-            <canvas id="clusterChart" height="100"></canvas>
-        </div>
-
-        <div class="p-4" x-show="tab === 'grafik'">
-            <h3 class="text-md font-bold text-gray-800 mb-2">Jumlah Produk per Bulan per Klaster</h3>
-            <div class="overflow-x-auto">
-                <table class="table-auto w-full text-sm text-gray-700 border border-gray-200 rounded">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-2 text-left">Bulan</th>
-                            @foreach ($labels as $label)
-                                <th class="px-4 py-2 text-left">{{ $label }}</th>
-                            @endforeach
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @foreach ($months as $i => $bulan)
-                            <tr>
-                                <td class="px-4 py-2">{{ $bulan }}</td>
-                                @foreach ($labels as $label)
-                                    <td class="px-4 py-2">{{ $clusterMonthly[$label][$i] ?? 0 }}</td>
+                <h1 class="text-2xl font-bold mb-4">Grafik Jumlah Transaksi per Bulan berdasarkan Klaster Produk</h1>
+            
+                <!-- GRAFIK -->
+                <div class="mb-10 border p-4 rounded shadow bg-white">
+                    <canvas id="clusterChart" height="100"></canvas>
+                </div>
+            
+                <!-- TABEL -->
+                <div class="mb-10 border p-4 rounded shadow bg-white">
+                    <h3 class="text-lg font-semibold mb-3">Jumlah Transaksi per Bulan per Klaster</h3>
+                    <div class="overflow-x-auto">
+                        <table class="table-auto w-full text-sm text-left text-gray-600">
+                            <thead class="bg-gray-100 text-gray-700">
+                                <tr>
+                                    <th class="px-4 py-2">Bulan</th>
+                                    @foreach ($labels as $label)
+                                        <th class="px-4 py-2">{{ $label }}</th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y">
+                                @foreach ($months as $i => $bulan)
+                                    <tr>
+                                        <td class="px-4 py-2">{{ $bulan }}</td>
+                                        @foreach ($labels as $label)
+                                            <td class="px-4 py-2 text-center">{{ $clusterMonthly[$label][$i] ?? 0 }}</td>
+                                        @endforeach
+                                    </tr>
                                 @endforeach
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-
-    </div>
-</div>
 
 
 <!-- Chart.js -->
