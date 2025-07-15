@@ -209,9 +209,9 @@ class TransaksiController extends Controller
         }
 
         // Jika status bukan shipping
-        if ($transaksi->status !== 'shipping') {
+        if ($transaksi->status !== 'received') {
             return response()->json([
-                'message' => 'Status transaksi harus "shipping" untuk bisa diubah menjadi "done"',
+                'message' => 'Status transaksi harus "received" untuk bisa diubah menjadi "done"',
             ], 400);
         }
 
