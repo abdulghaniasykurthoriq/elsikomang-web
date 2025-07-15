@@ -32,7 +32,7 @@
             <div class="p-6 w-full sm:p-8 lg:p-8">
                 <div class="mb-4 text-center">
                     
-                    <a href="#" class="text-indigo-600 text-2xl font-bold ">
+                    <a class="text-indigo-600 text-2xl font-bold ">
                         
                             Elsikomang <br/> Klak Klik
                         
@@ -45,7 +45,7 @@
 
                     <!-- Email Address -->
                     <div class="mb-3">
-                        <label for="email" class="inline-block mb-2">Username or email</label>
+                        <label for="email" class="inline-block mb-2">Email</label>
                         <input type="email" id="email" name="email" value="{{ old('email') }}" required
                             autofocus autocomplete="username"
                             class="border border-gray-300 text-gray-900 rounded focus:ring-indigo-600 focus:border-indigo-600 block w-full p-2 px-3 disabled:opacity-50 disabled:pointer-events-none"
@@ -86,31 +86,10 @@
                         </button>
                     </div>
 
-                    <div class="grid mt-3">
-                        <a href="{{ url('auth/google') }}"
-                            class="btn bg-white text-gray-900 border-gray-300 hover:bg-gray-100 hover:border-gray-300 active:bg-gray-100 active:border-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-300">
-                            <span class="flex items-center">
-                                <svg class="w-4 h-4 me-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="feather feather-google">
-                                    <path
-                                        d="M17.657 8.657a4 4 0 1 1-5.657-5.657A4 4 0 1 1 17.657 8.657z">
-                                    </path>
-                                    <path
-                                        d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0-2a12 12 0 1 1-12 12A12 12 0 0 1 12 .001z">
-                                    </path>
-                                </svg>
-                                Sign in with Google
-                            </span>
-                        </a>
-                    </div>
+
 
                     <!-- Links -->
                     <div class="flex justify-between mt-4">
-                        <div class="mb-2">
-                            <a href="{{ route('register') }}" class="text-indigo-600 hover:text-indigo-800">Create An
-                                Account</a>
-                        </div>
                         <div>
                             @if (Route::has('password.request'))
                                 <a href="{{ route('password.request') }}"

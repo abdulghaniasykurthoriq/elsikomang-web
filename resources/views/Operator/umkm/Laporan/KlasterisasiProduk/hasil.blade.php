@@ -54,8 +54,7 @@
                 :class="tab === 'grafik' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 border'">
                 Grafik
             </button>
-
-        </div>
+</div>
 
         <!-- CENTROID -->
         <div class="p-4" x-show="tab === 'centroid'">
@@ -111,7 +110,7 @@
         <div class="p-4" x-show="tab === 'euclidean'">
             <h3 class="text-md font-bold text-gray-800 mb-2">Perhitungan Euclidean Distance</h3>
             <div class="overflow-x-auto">
-                <table class="table-auto w-full text-sm text-center text-gray-700 border border-gray-200 rounded">
+                <table id="euclidian-distance-table" class="table-auto w-full text-sm text-center text-gray-700 border border-gray-200 rounded">
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-4 py-2">Nama Produk</th>
@@ -119,6 +118,9 @@
                             @foreach ($centroids as $i => $centroid)
                                 <th class="px-4 py-2">Jarak ke C{{ $i + 1 }}</th>
                             @endforeach
+                            <th class="px-4 py-2">Jarak Terdekat</th>
+                            <th class="px-4 py-2">Klaster</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -129,6 +131,8 @@
                                 @foreach ($item['distances'] as $distance)
                                     <td class="px-4 py-1">{{ $distance }}</td>
                                 @endforeach
+                                <td class="px-4 py-1">{{ number_format($item['distance']) }}</td>
+                                <td class="px-4 py-1">{{ $item['cluster'] }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -224,46 +228,49 @@
                     </div>
                 </div>
 
-        <!-- INFO CLUSTER & GRAFIK -->
-        <div class="p-4 border-b border-gray-100" x-show="tab === 'grafik'">
-                <h1 class="text-2xl font-bold mb-4">Grafik Jumlah Transaksi per Bulan berdasarkan Klaster Produk</h1>
-            
-                <!-- GRAFIK -->
-                <div class="mb-10 border p-4 rounded shadow bg-white">
-                    <canvas id="clusterChart" height="100"></canvas>
-                </div>
-            
-                <!-- TABEL -->
-                <div class="mb-10 border p-4 rounded shadow bg-white">
-                    <h3 class="text-lg font-semibold mb-3">Jumlah Transaksi per Bulan per Klaster</h3>
-                    <div class="overflow-x-auto">
-                        <table class="table-auto w-full text-sm text-left text-gray-600">
-                            <thead class="bg-gray-100 text-gray-700">
-                                <tr>
-                                    <th class="px-4 py-2">Bulan</th>
-                                    @foreach ($labels as $label)
-                                        <th class="px-4 py-2">{{ $label }}</th>
-                                    @endforeach
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y">
-                                @foreach ($months as $i => $bulan)
-                                    <tr>
-                                        <td class="px-4 py-2">{{ $bulan }}</td>
-                                        @foreach ($labels as $label)
-                                            <td class="px-4 py-2 text-center">{{ $clusterMonthly[$label][$i] ?? 0 }}</td>
-                                        @endforeach
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+<!-- INFO CLUSTER & GRAFIK -->
+<div class="p-4 border-b border-gray-100" x-show="tab === 'grafik'">
+    <h1 class="text-2xl font-bold mb-4">Grafik Jumlah Transaksi per Bulan berdasarkan Klaster Produk</h1>
 
+    <!-- GRAFIK -->
+    <div class="mb-10 border p-4 rounded shadow bg-white">
+        <canvas id="clusterChart" height="100"></canvas>
+    </div>
 
-<!-- Chart.js -->
+    <!-- TABEL -->
+    <div class="mb-10 border p-4 rounded shadow bg-white">
+        <h3 class="text-lg font-semibold mb-3">Jumlah Transaksi per Bulan per Klaster</h3>
+        <div class="overflow-x-auto">
+            <table class="table-auto w-full text-sm text-left text-gray-600">
+                <thead class="bg-gray-100 text-gray-700">
+                    <tr>
+                        <th class="px-4 py-2">Bulan</th>
+                        @foreach ($labels as $label)
+                            <th class="px-4 py-2 text-center">{{ $label }}</th>
+                        @endforeach
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    @foreach ($months as $i => $bulan)
+                        <tr>
+                            <td class="px-4 py-2">{{ $bulan }}</td>
+                            @foreach ($labels as $label)
+                                <td class="px-4 py-2 text-center">
+                                    {{ $clusterMonthly[$label][$i] ?? 0 }}
+                                </td>
+                            @endforeach
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js & DataTables -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 <script>
     const ctx = document.getElementById('clusterChart').getContext('2d');
     const clusterChart = new Chart(ctx, {
@@ -274,8 +281,8 @@
                 @foreach ($labels as $i => $label)
                 {
                     label: '{{ $label }}',
-                    data: @json($clusterMonthly[$label]),
-                    backgroundColor: '{{ $colors[$i] }}',
+                    data: @json(array_values($clusterMonthly[$label] ?? array_fill(0, 12, 0))),
+                    backgroundColor: '{{ $colors[$i % count($colors)] }}',
                     borderWidth: 1
                 },
                 @endforeach
@@ -284,13 +291,38 @@
         options: {
             responsive: true,
             plugins: {
-                legend: { position: 'top' },
-                tooltip: { mode: 'index', intersect: false }
+                legend: {
+                    position: 'top',
+                    labels: {
+                        boxWidth: 20,
+                        padding: 12
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.formattedValue} transaksi`;
+                        }
+                    }
+                }
             },
             scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Bulan'
+                    }
+                },
                 y: {
                     beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Jumlah Transaksi'
+                    },
                     ticks: {
+                        precision: 0,
                         callback: function(value) {
                             return value.toLocaleString('id-ID');
                         }
@@ -301,6 +333,7 @@
     });
 </script>
 @endsection
+
 
 @push('scripts')
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -317,4 +350,19 @@
         feather.replace();
     });
 </script>
+<script>
+    $(document).ready(function () {
+        $('#euclidian-distance-table').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
+            },
+            pageLength: 10,
+            dom: '<"top"f<"spacer">l>rt<"bottom"ip><"clear">'
+        });
+        feather.replace();
+    });
+</script>
+
+
+
 @endpush
