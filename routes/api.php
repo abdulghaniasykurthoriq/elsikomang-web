@@ -45,6 +45,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('/transaksi', [TransaksiController::class, 'store']);
     Route::get('/transaksi', [TransaksiController::class, 'index']);
+    Route::post('/transaksi/{id}/done', [TransaksiController::class, 'changeStatusDone']);
     Route::get('/transaksi/status-count', [TransaksiController::class, 'countByStatus']);
 
 

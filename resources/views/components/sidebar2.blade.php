@@ -60,7 +60,7 @@
                         <span class="flex items-center">
                             <i data-feather="bar-chart-2" class="w-4 h-4 mr-3"></i>
                             Laporan Transaksi
-                        </span>
+                        </span> 
                         <i data-feather="chevron-down" class="w-4 h-4"></i>
                     </button>
                     <ul id="analisisSubmenu" class="pl-10 mt-1 space-y-1 hidden">
@@ -105,7 +105,7 @@
                     <a href="{{ route('operator.pariwisata.laporan.index') }}"
                         class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole . '/laporan*') ? 'bg-gray-800' : '' }}">
                         <i data-feather="file-text" class="w-4 h-4 mr-3"></i>
-                        Laporan Pariwisata
+                        Pariwisata
                     </a>
                 </li>
 
@@ -193,7 +193,7 @@
                     <a href="{{ route('investasi.index') }}"
                         class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole . '/investasi*') ? 'bg-gray-800' : '' }}">
                         <i data-feather="bar-chart" class="w-4 h-4 mr-3"></i>
-                        Laporan Investasi
+                        Investasi
                     </a>
                 </li>
 
