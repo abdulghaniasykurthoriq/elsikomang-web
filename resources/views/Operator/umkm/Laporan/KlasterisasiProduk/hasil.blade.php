@@ -2,6 +2,27 @@
 
 @section('title', 'Hasil Klasterisasi Harga Produk')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<style>
+    div.dataTables_wrapper .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+            .dataTables_length select {
+            padding-right: 1rem;        
+            background-position: right 0rem center; 
+            background-repeat: no-repeat;
+            background-size: 1rem;
+            appearance: auto;          
+        }
+</style>
+@endpush
+
 @section('content')
 <!-- Header -->
 <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
@@ -63,10 +84,11 @@
         <div class="p-4" x-show="tab === 'klaster'">
             <h3 class="text-md font-bold text-gray-800 mb-2">Hasil Klasterisasi Produk</h3>
             <div class="overflow-x-auto">
-                <table class="table-auto w-full text-sm text-gray-700 border border-gray-200 rounded">
+                <table id="hasil-klaster-table" class="table-auto w-full text-sm text-gray-700 border border-gray-200 rounded">
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-4 py-2">Nama Produk</th>
+                            <th class="px-4 py-2">Harga</th>
                             <th class="px-4 py-2">Klaster</th>
                             <th class="px-4 py-2">Jarak ke Centroid</th>
                         </tr>
@@ -75,6 +97,7 @@
                         @foreach ($produkClustered as $produk)
                             <tr>
                                 <td class="px-4 py-2">{{ $produk['nama_produk'] }}</td>
+                                <td class="px-4 py-1">Rp {{ number_format($produk['harga'], 0, ',', '.') }}</td>
                                 <td class="px-4 py-2">{{ $produk['cluster'] }}</td>
                                 <td class="px-4 py-2">{{ $produk['distance'] }}</td>
                             </tr>
@@ -129,6 +152,7 @@
                         <table class="table-auto w-full text-sm text-gray-700 border border-gray-300">
                             <thead class="bg-gray-50">
                                 <tr>
+                                    <th class="px-4 py-2">Nama Produk</th>
                                     <th class="px-4 py-2">Harga</th>
                                     @foreach ($iterasi['centroids'] as $i => $c)
                                         <th class="px-4 py-2">Jarak ke C{{ $i + 1 }}</th>
@@ -139,6 +163,7 @@
                             <tbody>
                                 @foreach ($iterasi['jarak_data'] as $row)
                                     <tr>
+                                <td class="px-4 py-2">{{ $row['nama_produk'] }}</td>
                                         <td class="px-4 py-1">Rp {{ number_format($row['harga'], 0, ',', '.') }}</td>
                                         @foreach ($row['distances'] as $d)
                                             <td class="px-4 py-1">{{ number_format($d, 2) }}</td>
@@ -186,7 +211,12 @@
                                         <td class="px-4 py-2 font-semibold">{{ $clusterName }}</td>
                                         <td class="px-4 py-2">Rp {{ number_format($min, 0, ',', '.') }} - Rp {{ number_format($max, 0, ',', '.') }}</td>
                                         <td class="px-4 py-2">Rp {{ number_format($avg, 2, ',', '.') }}</td>
-                                        <td class="px-4 py-2">{{ $jumlah }} produk</td>
+                                        <td class="px-4 py-2">
+                                            {{ $jumlah }} produk 
+                                            ({{ number_format(($jumlah / array_sum(array_map('count', $clusterInfo))) * 100, 2, ',', '.') }}%)
+                                        </td>
+                                        
+                                        
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -196,38 +226,40 @@
 
         <!-- INFO CLUSTER & GRAFIK -->
         <div class="p-4 border-b border-gray-100" x-show="tab === 'grafik'">
-            <h2 class="text-lg font-semibold text-gray-800 mb-2">Grafik Jumlah Produk per Bulan per Klaster</h2>
-            <canvas id="clusterChart" height="100"></canvas>
-        </div>
-
-        <div class="p-4" x-show="tab === 'grafik'">
-            <h3 class="text-md font-bold text-gray-800 mb-2">Jumlah Produk per Bulan per Klaster</h3>
-            <div class="overflow-x-auto">
-                <table class="table-auto w-full text-sm text-gray-700 border border-gray-200 rounded">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-2 text-left">Bulan</th>
-                            @foreach ($labels as $label)
-                                <th class="px-4 py-2 text-left">{{ $label }}</th>
-                            @endforeach
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @foreach ($months as $i => $bulan)
-                            <tr>
-                                <td class="px-4 py-2">{{ $bulan }}</td>
-                                @foreach ($labels as $label)
-                                    <td class="px-4 py-2">{{ $clusterMonthly[$label][$i] ?? 0 }}</td>
+                <h1 class="text-2xl font-bold mb-4">Grafik Jumlah Transaksi per Bulan berdasarkan Klaster Produk</h1>
+            
+                <!-- GRAFIK -->
+                <div class="mb-10 border p-4 rounded shadow bg-white">
+                    <canvas id="clusterChart" height="100"></canvas>
+                </div>
+            
+                <!-- TABEL -->
+                <div class="mb-10 border p-4 rounded shadow bg-white">
+                    <h3 class="text-lg font-semibold mb-3">Jumlah Transaksi per Bulan per Klaster</h3>
+                    <div class="overflow-x-auto">
+                        <table class="table-auto w-full text-sm text-left text-gray-600">
+                            <thead class="bg-gray-100 text-gray-700">
+                                <tr>
+                                    <th class="px-4 py-2">Bulan</th>
+                                    @foreach ($labels as $label)
+                                        <th class="px-4 py-2">{{ $label }}</th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y">
+                                @foreach ($months as $i => $bulan)
+                                    <tr>
+                                        <td class="px-4 py-2">{{ $bulan }}</td>
+                                        @foreach ($labels as $label)
+                                            <td class="px-4 py-2 text-center">{{ $clusterMonthly[$label][$i] ?? 0 }}</td>
+                                        @endforeach
+                                    </tr>
                                 @endforeach
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div>
-
-    </div>
-</div>
 
 
 <!-- Chart.js -->
@@ -269,3 +301,20 @@
     });
 </script>
 @endsection
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#hasil-klaster-table').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
+            },
+            pageLength: 10,
+            dom: '<"top"f<"spacer">l>rt<"bottom"ip><"clear">'
+        });
+        feather.replace();
+    });
+</script>
+@endpush

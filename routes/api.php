@@ -17,6 +17,7 @@ use App\Http\Controllers\API\TransaksiController;
 use App\Http\Controllers\API\VoucherController;
 use App\Http\Controllers\API\WilayahController;
 use App\Http\Controllers\API\WishlistController;
+use App\Http\Controllers\API\ProdukUmkmSearchController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'auth'], function ($router) {
@@ -61,6 +62,8 @@ Route::get('/desa/{id}', [WilayahController::class, 'desa']);
 Route::get('/produk', [ProdukController::class, 'index']);
 Route::get('/produk/{id}', [ProdukController::class, 'show']);
 
+Route::get('/produk/search', [ProdukUmkmSearchController::class, 'search']);
+
 Route::get('/pariwisata', [PariwisataController::class, 'index']);
 Route::get('/pariwisata/{id}', [PariwisataController::class, 'show']);
 Route::post('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
@@ -77,7 +80,7 @@ Route::get('/investasi/{id}', [InvestasiController::class, 'show']);
 
 Route::get('/iklan', [IklanController::class, 'index']);
 
- 
+
 Route::post('/kritiksaran', [KritikDanSaranController::class, 'create']);
 Route::get('/cover-menu', [CoverMenuController::class, 'index']);
 Route::get('/splashscreen', [SplashScreenController::class, 'index']);
@@ -92,7 +95,7 @@ Route::post('/cek-voucher', [VoucherController::class, 'cek']);
 // Route::get('/wilayah/raga-ongkir', [WilayahController::class, 'importDestinasi']);
 Route::post('/cek-ongkir', [RajaOngkirController::class, 'checkOngkir']);
 
- 
+
 
 
 
