@@ -95,6 +95,7 @@ Route::post('/cek-voucher', [VoucherController::class, 'cek']);
 // Route::get('/wilayah/raga-ongkir', [WilayahController::class, 'importDestinasi']);
 Route::post('/cek-ongkir', [RajaOngkirController::class, 'checkOngkir']);
 
+route::post('/produk/search', [ProdukUmkmSearchController::class, 'search']);
 
 
 
