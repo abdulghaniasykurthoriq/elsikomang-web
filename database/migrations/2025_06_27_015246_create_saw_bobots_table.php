@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('saw_bobots', function (Blueprint $table) {
             $table->id();
-            $table->string('kriteria');
+            $table->string('kriteria')->unique(); // ✅ DIBUAT UNIK
             $table->float('bobot');
             $table->timestamps();
         });
