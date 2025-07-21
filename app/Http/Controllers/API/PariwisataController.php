@@ -34,7 +34,7 @@ class PariwisataController extends Controller
             'kategori' => 'nullable|string',
         ]);
 
-        $query = Pariwisata::withCount('fasilitas');
+        $query = Pariwisata::with('fasilitas')->withCount('fasilitas');
 
         if ($request->max_tiket) {
             $query->where('harga_tiket', '<=', $request->max_tiket);
