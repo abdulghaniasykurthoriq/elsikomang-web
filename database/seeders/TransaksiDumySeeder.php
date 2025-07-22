@@ -11,32 +11,39 @@ use Illuminate\Support\Arr;
 
 class TransaksiDumySeeder extends Seeder
 {
+    // punya agat untuk transaksi detail jangan diganti yaa jol
+    // punya agat untuk transaksi detail jangan diganti yaa jol
+    // punya agat untuk transaksi detail jangan diganti yaa jol
+    // punya agat untuk transaksi detail jangan diganti yaa jol
     public function run(): void
     {
         $produkId = 1;
         $produkVariantId = 1;
         $transaksiId = 1;
 
-        for ($tahun = 2025; $tahun <= 2025; $tahun++) {
-            for ($bulan = 1; $bulan <= 12; $bulan++) {
-                // 8–12 transaksi per bulan biar variasi
-                $jumlahTransaksi = rand(8, 12);
-                for ($i = 1; $i <= $jumlahTransaksi; $i++) {
-                    $harga = match (rand(1, 10)) {
-                        default => Arr::random([1000, 5000])
-                    };
+        $baseQty = 2; // rata-rata qty awal
+        $growthRate = 0.06; // naik 6% per bulan
+        $baseHarga = 25000; // harga stabil dasar
 
-                    if ($tahun < 2025 || $bulan <= 5) {
-                        TransaksiDetail::create([
-                            'produk_id' => $produkId,
-                            'transaksi_id' => $transaksiId,
-                            'produk_variant_id' => $produkVariantId,
-                            'qty' => rand(1, 5),
-                            'harga' => $harga,
-                            'created_at' => Carbon::create($tahun, $bulan, rand(1, 28)),
-                        ]);
-                    }
-                    
+        for ($tahun = 2025; $tahun <= 2025; $tahun++) {
+            for ($bulan = 1; $bulan <= 7; $bulan++) { // hanya Januari-Juli 2025
+                $jumlahTransaksi = rand(10, 15); // variasi realistis
+
+                // Hitung rata-rata qty bulan ini dengan tren naik
+                $qtyBulanIni = (int) round($baseQty * pow(1 + $growthRate, $bulan - 1));
+
+                for ($i = 1; $i <= $jumlahTransaksi; $i++) {
+                    $qty = max(1, $qtyBulanIni + rand(-1, 1)); // sedikit variasi
+                    $harga = $baseHarga + rand(-3000, 3000); // variasi harga ±3rb
+
+                    TransaksiDetail::create([
+                        'produk_id' => $produkId,
+                        'transaksi_id' => $transaksiId++,
+                        'produk_variant_id' => $produkVariantId,
+                        'qty' => $qty,
+                        'harga' => $harga,
+                        'created_at' => Carbon::create($tahun, $bulan, rand(1, 28)),
+                    ]);
                 }
             }
         }
