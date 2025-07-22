@@ -58,7 +58,7 @@
 <!-- Password -->
 <div class="mb-5">
     <label for="password" class="inline-block mb-2">Password</label>
-    <div class="flex items-center border border-gray-300 rounded focus-within:ring-1 focus-within:ring-indigo-600 overflow-hidden">
+    <div class="flex items-center border  rounded focus-within:ring-1 focus-within:ring-indigo-600 overflow-hidden">
         <input type="password" id="password" name="password" required autocomplete="current-password"
             class="flex-1 px-3 py-2 text-gray-900 focus:outline-none"
             placeholder="**************" />
