@@ -176,8 +176,8 @@
                     borderWidth: 2,
                     tension: .3,
                     pointRadius: 4,
-                    borderColor: '#ef4444',
-                    backgroundColor: '#ef4444',
+                    borderColor: '#ca8a04',
+                    backgroundColor: '#ca8a04',
                     borderDash: [6, 3],
                 }
             ]
