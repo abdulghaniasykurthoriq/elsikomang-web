@@ -16,7 +16,15 @@
 <body>
     <main>
         <div id="app-layout" class="overflow-x-hidden flex">
-            @include('components.sidebar')
+            
+            
+            @if (auth()->check() && auth()->user()->role === 'Admin')
+                @include('components.sidebar')
+            @else
+                @include('components.sidebar2')
+            @endif
+
+
             <div id="app-layout-content"
                 class="min-h-screen w-full min-w-[100vw] md:min-w-0 ml-[15.625rem] [transition:margin_0.25s_ease-out]">
                 <div class="header">
