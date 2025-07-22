@@ -75,8 +75,8 @@
 
             <div class="flex items-center justify-end gap-4 px-4 py-2 text-sm text-gray-600">
                 <div><span class="text-blue-600 font-bold">A</span>: Aktual</div>
-                <div><span class="text-red-600 font-bold">P</span>: Prediksi</div>
-                <div><span class="text-yellow-600 font-bold">E</span>: Error</div>
+                <div><span class="text-yellow-600 font-bold">P</span>: Prediksi</div>
+                <div><span class="text-red-600 font-bold">E</span>: Error</div>
             </div>
 
             <!-- Tabel -->
@@ -88,7 +88,7 @@
             @foreach($months as $month)
                 <th class="px-4 py-3 text-center">{{ $month }}</th>
             @endforeach
-            <th class="px-4 py-3 text-center text-yellow-700">MAPE (%)</th>
+            <th class="px-4 py-3 text-center text-red-700">MAPE (%)</th>
             <th class="px-4 py-3 text-center text-green-700">Akurasi (%)</th>
             <th class="px-4 py-3 text-center text-indigo-700">Keterangan</th>
         </tr>
@@ -107,12 +107,12 @@
                         </span>
                     @endif
                     @if (!is_null($cell['prediksi']))
-                        <span class="text-red-600 font-semibold block">
+                        <span class="text-yellow-600 font-semibold block">
                             {{ number_format($cell['prediksi'], 0, ',', '.') }}
                         </span>
                     @endif
                     @if (!is_null($cell['error']))
-                        <span class="text-yellow-600 font-semibold block">
+                        <span class="text-red-600 font-semibold block">
                             {{ number_format($cell['error'], 2) }}%
                         </span>
                     @endif
@@ -130,7 +130,7 @@
                 };
             @endphp
 
-            <td class="px-4 py-3 text-center font-semibold text-yellow-700">
+            <td class="px-4 py-3 text-center font-semibold text-red-700">
                 {{ $mape !== null ? number_format($mape, 2) . '%' : '-' }}
             </td>
             <td class="px-4 py-3 text-center font-semibold text-green-600">

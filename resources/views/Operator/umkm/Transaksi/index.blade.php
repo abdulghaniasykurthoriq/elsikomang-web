@@ -41,7 +41,7 @@
                         <th class="px-4 py-3 font-semibold">No</th>
                         <th class="px-4 py-3 font-semibold">Order ID</th>
                         <th class="px-4 py-3 font-semibold">User</th>
-                        <th class="px-4 py-3 font-semibold">Amount</th>
+                        <th class="px-4 py-3 font-semibold">Pendapatan</th>
                         <th class="px-4 py-3 font-semibold">Total Ongkos</th>
                         <th class="px-4 py-3 font-semibold">Metode</th>
                         <th class="px-4 py-3 font-semibold">Status</th>
