@@ -68,7 +68,7 @@
                     <span class="text-sm text-gray-700">Aktual</span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="w-4 h-4 bg-red-500 rounded border border-dashed border-gray-500"></span>
+                    <span class="w-4 h-4 bg-yellow-500 rounded border border-dashed border-gray-500"></span>
                     <span class="text-sm text-gray-700">Prediksi</span>
                 </div>
             </div>
