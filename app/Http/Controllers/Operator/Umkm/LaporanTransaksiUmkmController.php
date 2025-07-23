@@ -192,6 +192,7 @@ class LaporanTransaksiUmkmController extends Controller
             for ($i = 1; $i <= 12; $i++) {
                 $prediksi = $model->predict([$i]);
                 $prediksi = max(0, round($prediksi, 2)); 
+                $prediksi = round($prediksi / 5) * 5;
                 $aktual = $bulanData[$i]['actual'];
 
                 $error = null;
