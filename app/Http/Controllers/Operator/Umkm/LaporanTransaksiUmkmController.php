@@ -595,7 +595,7 @@ public function proses(Request $request)
 
     // Paginasi manual
     $page = request('page', 1);
-    $perPage = 6;
+    $perPage = 7;
     $offset = ($page - 1) * $perPage;
     $evaluasiPaginated = new LengthAwarePaginator(
         array_slice($evaluasi, $offset, $perPage),
