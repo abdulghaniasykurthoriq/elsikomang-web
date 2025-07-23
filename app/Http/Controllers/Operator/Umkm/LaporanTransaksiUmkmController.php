@@ -150,7 +150,6 @@ class LaporanTransaksiUmkmController extends Controller
             ->groupByRaw('MONTH(created_at)')
             ->orderByRaw('MONTH(created_at)')
             ->get();
-        dd($query);
 
         $bulanData = [];
         $trainSamples = [];
