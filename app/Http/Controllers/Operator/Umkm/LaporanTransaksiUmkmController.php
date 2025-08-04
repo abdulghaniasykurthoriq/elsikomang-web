@@ -141,6 +141,7 @@ class LaporanTransaksiUmkmController extends Controller
             1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
             7 => 'Jul', 8 => 'Agu', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
         ];
+        
 
         // Ambil total pendapatan semua produk per bulan
         $query = DB::table('transaksi_details')
@@ -190,7 +191,9 @@ class LaporanTransaksiUmkmController extends Controller
 
             for ($i = 1; $i <= 12; $i++) {
                 $prediksi = $model->predict([$i]);
-                $prediksi = max(0, round($prediksi, 2)); 
+                $prediksi = round($prediksi, 3);
+
+
                 $aktual = $bulanData[$i]['actual'];
 
                 $error = null;
@@ -594,7 +597,7 @@ public function proses(Request $request)
 
     // Paginasi manual
     $page = request('page', 1);
-    $perPage = 6;
+    $perPage = 7;
     $offset = ($page - 1) * $perPage;
     $evaluasiPaginated = new LengthAwarePaginator(
         array_slice($evaluasi, $offset, $perPage),

@@ -29,7 +29,15 @@
             <!-- card body -->
             <div class="p-6 w-full sm:p-8 lg:p-8">
                 <div class="mb-4 text-center">
-                    <a href="/"><img src="assets/images/brand/logo/logo-primary.svg" class="mb-1 mx-auto" alt="Logo" /></a>
+                    <div class="mb-4 text-center">
+                    
+                        <a class="text-indigo-600 text-2xl font-bold ">
+                            
+                                Elsikomang <br/> Klak Klik
+                            
+                            </a>
+                        <!-- <p class="mb-6 mt-2">Please enter your user information.</p> -->
+                    </div>
                     <h2 class="text-lg font-semibold mb-2">Forgot your password?</h2>
                     <p class="mb-6 text-sm text-gray-600">No problem. Just enter your email address below and we will email you a password reset link that allows you to choose a new one.</p>
                 </div>

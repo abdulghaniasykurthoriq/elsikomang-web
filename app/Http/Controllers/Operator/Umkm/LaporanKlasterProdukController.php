@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProdukUmkm;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class LaporanKlasterProdukController extends Controller
 {
@@ -52,6 +53,7 @@ class LaporanKlasterProdukController extends Controller
                 if (!is_null($harga) && $created && Carbon::parse($created)->year == $selectedYear) {
                     $dataset[] = [$harga];
                     $produkMapping[] = [
+                        'produk_umkm_id' => $item->id,
                         'nama_produk' => $item->nama_produk . ' - ' . $variant->varian,
                         'harga' => $harga,
                         'created_at' => $created,
@@ -64,9 +66,7 @@ class LaporanKlasterProdukController extends Controller
             return back()->with('error', 'Jumlah data harga untuk tahun ' . $selectedYear . ' harus lebih banyak dari jumlah cluster.');
         }
 
-        // -----------------------------
-        // K-Means Clustering Manual
-        // -----------------------------
+        // K-Means
         shuffle($dataset);
         $centroids = array_slice($dataset, 0, $cluster);
         $logIterasi = [];
@@ -118,27 +118,64 @@ class LaporanKlasterProdukController extends Controller
         }
 
         $produkClustered = [];
-        $euclideanTable = [];
-
-        foreach ($produkMapping as $produk) {
+        foreach ($produkMapping as $i => $produk) {
             $distances = array_map(fn($centroid) => round(abs($produk['harga'] - $centroid[0]), 4), $centroids);
             $minIndex = array_keys($distances, min($distances))[0];
 
-            $euclideanTable[] = [
-                'nama_produk' => $produk['nama_produk'],
-                'harga' => $produk['harga'],
-                'distances' => $distances,
-            ];
-
             $produkClustered[] = [
+                'produk_umkm_id' => $produk['produk_umkm_id'],
                 'nama_produk' => $produk['nama_produk'],
                 'harga' => $produk['harga'],
                 'cluster' => 'Cluster ' . ($minIndex + 1),
+                'cluster_index' => $minIndex,
                 'distance' => $distances[$minIndex],
-                'bulan' => Carbon::parse($produk['created_at'])->translatedFormat('F'),
-                'bulan_index' => Carbon::parse($produk['created_at'])->format('n') - 1,
+                'distances' => $distances,
             ];
         }
+
+        // Perhitungan Silhouette Score
+        $clusters = collect($produkClustered)->groupBy('cluster_index')->toArray();
+        $silhouetteDetails = [];
+        $silhouetteScores = [];
+
+        foreach ($produkClustered as $item) {
+            $ownCluster = $item['cluster_index'];
+            $ownHarga = $item['harga'];
+            $namaProduk = $item['nama_produk'];
+
+            // a(i): rata-rata jarak ke klaster sendiri
+            $intraDistances = [];
+            foreach ($clusters[$ownCluster] as $other) {
+                if ($other['nama_produk'] !== $namaProduk) {
+                    $intraDistances[] = abs($ownHarga - $other['harga']);
+                }
+            }
+            $a = count($intraDistances) ? round(array_sum($intraDistances) / count($intraDistances), 4) : 0;
+
+            // b(i): jarak minimum ke klaster lain
+            $bValues = [];
+            foreach ($clusters as $clusterIndex => $points) {
+                if ($clusterIndex == $ownCluster) continue;
+                $distances = array_map(fn($p) => abs($ownHarga - $p['harga']), $points);
+                if (count($distances)) {
+                    $bValues[] = array_sum($distances) / count($distances);
+                }
+            }
+            $b = count($bValues) ? round(min($bValues), 4) : 0;
+
+            $s = ($a == 0 && $b == 0) ? 0 : round(($b - $a) / max($a, $b), 4);
+            $silhouetteScores[] = $s;
+
+            $silhouetteDetails[] = [
+                'nama_produk' => $namaProduk,
+                'cluster' => $ownCluster + 1,
+                'a' => $a,
+                'b' => $b,
+                's' => $s
+            ];
+        }
+
+        $avgSilhouette = count($silhouetteScores) ? round(array_sum($silhouetteScores) / count($silhouetteScores), 4) : 0;
 
         $labels = [];
         for ($i = 1; $i <= $cluster; $i++) {
@@ -150,15 +187,52 @@ class LaporanKlasterProdukController extends Controller
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
         ];
 
+        // Mapping produk_umkm_id ke cluster
+        $produkClusterMap = [];
+        foreach ($produkClustered as $item) {
+            $produkClusterMap[$item['produk_umkm_id']] = 'Cluster ' . ($item['cluster_index'] + 1);
+        }
+
+        // Ambil semua transaksi dan hitung klaster dominan
+        $transaksiProduk = DB::table('transaksi_details as td')
+            ->join('produk_variants as pv', 'td.produk_variant_id', '=', 'pv.id')
+            ->join('transaksis as t', 'td.transaksi_id', '=', 't.id')
+            ->whereYear('t.created_at', $selectedYear)
+            ->select('t.id as transaksi_id', 'pv.produk_umkm_id', 't.created_at')
+            ->get();
+
+        $transaksiKlasterMap = [];
+
+        foreach ($transaksiProduk->groupBy('transaksi_id') as $transaksi_id => $items) {
+            $klasterHitung = [];
+            $createdAt = $items[0]->created_at;
+
+            foreach ($items as $item) {
+                $produkId = $item->produk_umkm_id;
+                if (isset($produkClusterMap[$produkId])) {
+                    $klaster = $produkClusterMap[$produkId];
+                    $klasterHitung[$klaster] = ($klasterHitung[$klaster] ?? 0) + 1;
+                }
+            }
+
+            if (count($klasterHitung)) {
+                arsort($klasterHitung);
+                $dominantCluster = array_key_first($klasterHitung);
+                $bulanIndex = Carbon::parse($createdAt)->format('n') - 1;
+                $transaksiKlasterMap[] = [
+                    'bulan' => $bulanIndex,
+                    'cluster' => $dominantCluster
+                ];
+            }
+        }
+
         $clusterMonthly = [];
         foreach ($labels as $label) {
             $clusterMonthly[$label] = array_fill(0, 12, 0);
         }
 
-        foreach ($produkClustered as $produk) {
-            if (isset($clusterMonthly[$produk['cluster']])) {
-                $clusterMonthly[$produk['cluster']][$produk['bulan_index']]++;
-            }
+        foreach ($transaksiKlasterMap as $entry) {
+            $clusterMonthly[$entry['cluster']][$entry['bulan']]++;
         }
 
         $colors = [
@@ -168,7 +242,7 @@ class LaporanKlasterProdukController extends Controller
 
         return view('Operator.umkm.Laporan.KlasterisasiProduk.hasil', [
             'centroids' => $centroids,
-            'euclideanTable' => $euclideanTable,
+            'euclideanTable' => $produkClustered,
             'produkClustered' => $produkClustered,
             'labels' => $labels,
             'months' => $months,
@@ -178,7 +252,9 @@ class LaporanKlasterProdukController extends Controller
             'selectedYear' => $selectedYear,
             'maxIterasi' => $maxIterasi,
             'realIterasi' => $iterasiAktual,
-            'logIterasi' => $logIterasi
+            'logIterasi' => $logIterasi,
+            'avgSilhouette' => $avgSilhouette,
+            'silhouetteDetails' => $silhouetteDetails,
         ]);
     }
 }
