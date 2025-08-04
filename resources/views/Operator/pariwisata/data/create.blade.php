@@ -78,19 +78,6 @@
 
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label for="latitude" class="block text-sm font-medium text-gray-700">Latitude</label>
-                        <input type="text" name="latitude" id="latitude" class="form-input mt-1 block w-full"
-                            placeholder="-6.1234567" value="{{ old('latitude') }}">
-                    </div>
-                    <div>
-                        <label for="longitude" class="block text-sm font-medium text-gray-700">Longitude</label>
-                        <input type="text" name="longitude" id="longitude" class="form-input mt-1 block w-full"
-                            placeholder="108.1234567" value="{{ old('longitude') }}">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
                         <label for="jam_buka" class="block text-sm font-medium text-gray-700">Jam Buka</label>
                         <input type="time" name="jam_buka" id="jam_buka" class="form-input mt-1 block w-full"
                             value="{{ old('jam_buka') }}">

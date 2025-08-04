@@ -40,23 +40,34 @@
                                 @foreach (['harga_tiket', 'fasilitas', 'rating', 'waktu_operasional'] as $kriteria)
                                     <td class="px-6 py-4">
                                         <div class="text-gray-800">
-                                            <strong>Rumus:</strong> {{ $row['normalisasi'][$kriteria]['rumus'] }}
+                                            <strong>Skor:</strong> {{ $row['normalisasi'][$kriteria]['nilai'] ?? '-' }}
                                         </div>
-                                        <div class="text-gray-600">
-                                            <strong>Hasil:</strong>
-                                            {{ number_format($row['normalisasi'][$kriteria]['nilai'] ?? 0, 4) }}
 
-                                            @if ($kriteria == 'fasilitas')
-                                                <div class="text-xs text-gray-500 mt-1">
-                                                    Total fasilitas: {{ $row['wisata']->fasilitas->count() }}
-                                                </div>
-                                            @endif
-                                        </div>
+                                        @if ($kriteria == 'fasilitas')
+                                            <div class="text-xs text-gray-500 mt-1">
+                                                Total fasilitas: {{ $row['wisata']->fasilitas->count() }}
+                                            </div>
+                                        @elseif ($kriteria == 'waktu_operasional')
+                                            <div class="text-xs text-gray-500 mt-1">
+                                                Durasi buka:
+                                                {{ \Carbon\Carbon::parse($row['wisata']->jam_buka)->diffInHours(\Carbon\Carbon::parse($row['wisata']->jam_tutup)) }}
+                                                jam
+                                            </div>
+                                        @elseif ($kriteria == 'harga_tiket')
+                                            <div class="text-xs text-gray-500 mt-1">
+                                                Harga: Rp{{ number_format($row['wisata']->harga_tiket, 0, ',', '.') }}
+                                            </div>
+                                        @elseif ($kriteria == 'rating')
+                                            <div class="text-xs text-gray-500 mt-1">
+                                                Rating asli: {{ $row['wisata']->rating }}
+                                            </div>
+                                        @endif
                                     </td>
                                 @endforeach
                             </tr>
                         @endforeach
                     </tbody>
+
                 </table>
                 <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
                     {{ $data->links('components.pagination') }}

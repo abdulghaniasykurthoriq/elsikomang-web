@@ -15,10 +15,8 @@ return new class extends Migration {
             $table->string('gambar')->nullable();
 
             $table->string('alamat')->nullable();
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
 
-            $table->enum('kategori', ['pantai', 'hutan', 'religi', 'budaya', 'kuliner', 'edukasi', 'buatan'])->default('pantai');
+            $table->enum('kategori', ['pantai', 'religi', 'budaya', 'kuliner', 'edukasi', 'buatan'])->default('pantai');
 
             $table->integer('harga_tiket');
             $table->decimal('rating', 3, 2)->default(0);
