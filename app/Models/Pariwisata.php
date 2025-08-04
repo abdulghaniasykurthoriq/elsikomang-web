@@ -12,7 +12,7 @@ class Pariwisata extends Model
 
     protected $table = 'pariwisatas';
 
-    protected $fillable = ['nama', 'deskripsi', 'gambar', 'harga_tiket', 'rating', 'jam_buka', 'jam_tutup', 'kategori', 'latitude', 'longitude', 'alamat'];
+    protected $fillable = ['nama', 'deskripsi', 'gambar', 'harga_tiket', 'rating', 'jam_buka', 'jam_tutup', 'kategori', 'alamat'];
 
     public function fasilitas()
     {
