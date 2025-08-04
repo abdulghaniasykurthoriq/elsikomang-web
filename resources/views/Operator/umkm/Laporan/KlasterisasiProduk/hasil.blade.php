@@ -54,6 +54,10 @@
                 :class="tab === 'grafik' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 border'">
                 Grafik
             </button>
+            <button @click="tab = 'silhouettescore'" class="px-4 py-2 rounded font-semibold"
+            :class="tab === 'silhouettescore' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-700 border'">
+            Silhouette Score
+        </button>
 </div>
 
         <!-- CENTROID -->
@@ -81,7 +85,6 @@
 
         <!-- HASIL KLASTERISASI -->
         <div class="p-4" x-show="tab === 'klaster'">
-            <h3 class="text-md font-bold text-gray-800 mb-2">Hasil Klasterisasi Produk</h3>
             <div class="overflow-x-auto">
                 <table id="hasil-klaster-table" class="table-auto w-full text-sm text-gray-700 border border-gray-200 rounded">
                     <thead class="bg-gray-50">
@@ -108,7 +111,6 @@
 
         <!-- EUCLIDEAN DISTANCE -->
         <div class="p-4" x-show="tab === 'euclidean'">
-            <h3 class="text-md font-bold text-gray-800 mb-2">Perhitungan Euclidean Distance</h3>
             <div class="overflow-x-auto">
                 <table id="euclidian-distance-table" class="table-auto w-full text-sm text-center text-gray-700 border border-gray-200 rounded">
                     <thead class="bg-gray-50">
@@ -142,7 +144,6 @@
 
         <!-- ITERASI -->
         <div class="p-4" x-show="tab === 'iterasi'">
-            <h3 class="text-md font-bold text-gray-800 mb-2">Proses Iterasi Klasterisasi</h3>
             @foreach ($logIterasi as $iterasi)
                 <div class="mt-4 mb-6 p-4 border rounded shadow">
                     <h4 class="font-semibold">Iterasi ke-{{ $iterasi['iterasi'] }}</h4>
@@ -181,6 +182,40 @@
                 </div>
             @endforeach
         </div>
+
+<!-- SILHOUETTE SCORE -->
+<div class="p-4" x-show="tab === 'silhouettescore'">
+    <div class="overflow-x-auto">
+        <table class="table-auto w-full text-sm text-center text-gray-700 border border-gray-200 rounded">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-2">Produk</th>
+                    <th class="px-4 py-2">Cluster</th>
+                    <th class="px-4 py-2">a(i) - Intra</th>
+                    <th class="px-4 py-2">b(i) - Nearest</th>
+                    <th class="px-4 py-2">s(i) - Silhouette</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($silhouetteDetails as $row)
+                    <tr>
+                        <td class="px-4 py-2">{{ $row['nama_produk'] }}</td>
+                        <td class="px-4 py-2">{{ $row['cluster'] }}</td>
+                        <td class="px-4 py-2">{{ number_format($row['a'], 2, ',', '.') }}</td>
+                        <td class="px-4 py-2">{{ number_format($row['b'], 2, ',', '.') }}</td>
+                        <td class="px-4 py-2">{{ number_format($row['s'], 2, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+                <tr class="bg-gray-100 font-semibold">
+                    <td colspan="4" class="text-right px-4 py-2">Rata-rata Silhouette Score</td>
+                    <td class="px-4 py-2 text-indigo-700">{{ number_format($avgSilhouette, 2, ',', '.') }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+        
 
                 <!-- INFO CLUSTER -->
                 <div class="p-4" x-show="tab === 'grafik'">
@@ -340,29 +375,25 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#hasil-klaster-table').DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
-            },
-            pageLength: 10,
-            dom: '<"top"f<"spacer">l>rt<"bottom"ip><"clear">'
+        const tables = [
+            '#hasil-klaster-table',
+            '#euclidian-distance-table',
+            '#silhouette-score-table'
+        ];
+
+        tables.forEach(function (selector) {
+            if ($(selector).length) {
+                $(selector).DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
+                    },
+                    pageLength: 10,
+                    dom: '<"top"f<"spacer">l>rt<"bottom"ip><"clear">'
+                });
+            }
         });
+
         feather.replace();
     });
 </script>
-<script>
-    $(document).ready(function () {
-        $('#euclidian-distance-table').DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
-            },
-            pageLength: 10,
-            dom: '<"top"f<"spacer">l>rt<"bottom"ip><"clear">'
-        });
-        feather.replace();
-    });
-</script>
-
-
-
 @endpush
