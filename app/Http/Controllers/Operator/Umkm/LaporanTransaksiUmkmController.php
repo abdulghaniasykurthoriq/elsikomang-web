@@ -109,7 +109,7 @@ class LaporanTransaksiUmkmController extends Controller
             $actual[] = $bulanData[$i]['actual'] ?? null;
             $prediction[] = $bulanData[$i]['prediksi'] ?? null;
         }
-        dd($prediction);
+        // dd($prediction);
 
 
         return view('Operator.umkm.Laporan.LaporanTransaksiProdukUmkm.index2', [
