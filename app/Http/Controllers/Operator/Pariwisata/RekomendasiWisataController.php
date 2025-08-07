@@ -12,6 +12,7 @@ use App\Models\SawSkor;
 use App\Models\SawRanking;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class RekomendasiWisataController extends Controller
 {
@@ -336,9 +337,8 @@ class RekomendasiWisataController extends Controller
             ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot, $maxSkorWaktu) {
                 $durasi = 0;
                 if ($item->jam_buka && $item->jam_tutup) {
-                    $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
+                    $durasi = Carbon::parse($item->jam_buka)->diffInHours(Carbon::parse($item->jam_tutup));
                 }
-
                 $skorWaktu = match (true) {
                     $durasi >= 24 => 5,
                     $durasi >= 15 => 4,

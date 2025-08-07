@@ -87,7 +87,7 @@ class PariwisataController extends Controller
             ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot) {
                 $durasi = 0;
                 if ($item->jam_buka && $item->jam_tutup) {
-                    $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
+                    $durasi = Carbon::parse($item->jam_buka)->diffInHours(Carbon::parse($item->jam_tutup));
                 }
 
                 $skorWaktu = match (true) {
