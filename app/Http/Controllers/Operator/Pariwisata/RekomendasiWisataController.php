@@ -290,6 +290,7 @@ class RekomendasiWisataController extends Controller
             'kategori' => 'nullable|string',
         ]);
 
+        // Ambil data hasil filter preferensi user
         $query = Pariwisata::withCount('fasilitas');
 
         if ($request->max_tiket) {
@@ -310,6 +311,7 @@ class RekomendasiWisataController extends Controller
             return back()->withInput()->with('warning', 'Tidak ditemukan wisata dengan kriteria tersebut.');
         }
 
+        // Ambil bobot
         $bobot = SawBobot::pluck('bobot', 'kriteria')->toArray();
 
         if (count($bobot) < SawKriteria::count()) {
@@ -318,14 +320,18 @@ class RekomendasiWisataController extends Controller
                 ->withErrors(['msg' => 'Bobot belum lengkap. Silakan isi di Step 4.']);
         }
 
+        // Ambil nilai acuan dari SELURUH data dalam kategori
         $kategori = $request->kategori;
 
-        $kategoriQuery = Pariwisata::withCount('fasilitas')->when($kategori, fn($q) => $q->where('kategori', $kategori));
+        // Perhatikan: get() untuk bisa menghitung fasilitas_count
+        $kategoriData = Pariwisata::withCount('fasilitas')->when($kategori, fn($q) => $q->where('kategori', $kategori))->get();
 
-        $minHarga = max([$kategoriQuery->min('harga_tiket') ?? 1, 1]);
-        $maxRating = max([$kategoriQuery->max('rating') ?? 1, 1]);
-        $maxFasilitas = max([$kategoriQuery->max('fasilitas_count') ?? 1, 1]);
+        $minHarga = max([$kategoriData->min('harga_tiket') ?? 1, 1]);
+        $maxRating = max([$kategoriData->max('rating') ?? 1, 1]);
+        $maxFasilitas = max([$kategoriData->max('fasilitas_count') ?? 1, 1]);
         $maxSkorWaktu = 5;
+
+        // Proses perhitungan SAW
         $result = $data
             ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot, $maxSkorWaktu) {
                 $durasi = 0;
@@ -341,7 +347,6 @@ class RekomendasiWisataController extends Controller
                     default => 1,
                 };
 
-                // Normalisasi
                 $normalisasi = [
                     'harga_tiket' => round($minHarga / max($item->harga_tiket, 1), 4),
                     'rating' => round($item->rating / max($maxRating, 1), 4),
@@ -374,6 +379,6 @@ class RekomendasiWisataController extends Controller
             ->sortByDesc('skor')
             ->values();
 
-        return view('Operator.pariwisata.rekomendasi.result', compact('result', 'minHarga', 'maxRating', 'maxFasilitas'));
+        return view('Operator.pariwisata.rekomendasi.result', compact('result', 'minHarga', 'maxRating', 'maxFasilitas', 'maxSkorWaktu', 'kategori'));
     }
 }
