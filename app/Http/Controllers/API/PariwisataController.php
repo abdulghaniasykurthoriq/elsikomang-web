@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Pariwisata;
 use App\Models\PariwisataRating;
 use App\Models\SawBobot;
+use App\Models\SawKriteria;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -63,7 +64,7 @@ class PariwisataController extends Controller
 
         $bobot = SawBobot::pluck('bobot', 'kriteria')->toArray();
 
-        if (count($bobot) < 4) {
+        if (count($bobot) < SawKriteria::count()) {
             return response()->json(
                 [
                     'status' => 'error',
