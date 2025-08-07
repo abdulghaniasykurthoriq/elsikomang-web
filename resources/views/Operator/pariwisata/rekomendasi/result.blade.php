@@ -22,6 +22,17 @@
                     <p>Tidak ada wisata yang cocok dengan preferensi Anda.</p>
                 </div>
             @else
+                <div class="mb-4 p-4 bg-indigo-50 rounded-md text-sm text-gray-700">
+                    <p class="font-semibold text-indigo-700 mb-2">Nilai Acuan Normalisasi (Kategori:
+                        {{ request('kategori') }})</p>
+                    <ul class="list-disc ml-5 space-y-1">
+                        <li>Harga Tiket Minimum: <strong>Rp{{ number_format($minHarga) }}</strong></li>
+                        <li>Rating Maksimum: <strong>{{ $maxRating }}</strong></li>
+                        <li>Jumlah Fasilitas Maksimum: <strong>{{ $maxFasilitas }}</strong></li>
+                        <li>Durasi Operasional Maksimum: <strong>{{ $maxSkorWaktu }}</strong> poin (skala 1–5)</li>
+                    </ul>
+                </div>
+
                 @foreach ($result as $index => $item)
                     <div class="border border-gray-200 rounded-lg p-4 mb-4 shadow-sm">
                         <div class="flex justify-between items-center">
@@ -57,7 +68,8 @@
                                     <tbody class="divide-y divide-gray-200">
                                         @foreach ($item['detail'] as $kriteria => $detail)
                                             <tr>
-                                                <td class="px-4 py-2 capitalize">{{ str_replace('_', ' ', $kriteria) }}</td>
+                                                <td class="px-4 py-2 capitalize">{{ str_replace('_', ' ', $kriteria) }}
+                                                </td>
                                                 <td class="px-4 py-2">{{ $detail['normalisasi'] }}</td>
                                                 <td class="px-4 py-2">{{ $detail['bobot'] }}</td>
                                                 <td class="px-4 py-2">{{ $detail['perkalian'] }}</td>

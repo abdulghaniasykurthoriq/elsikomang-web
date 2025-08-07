@@ -310,7 +310,6 @@ class RekomendasiWisataController extends Controller
             return back()->withInput()->with('warning', 'Tidak ditemukan wisata dengan kriteria tersebut.');
         }
 
-        // Ambil bobot dari Step 4 (TABEL)
         $bobot = SawBobot::pluck('bobot', 'kriteria')->toArray();
 
         if (count($bobot) < SawKriteria::count()) {
@@ -319,21 +318,21 @@ class RekomendasiWisataController extends Controller
                 ->withErrors(['msg' => 'Bobot belum lengkap. Silakan isi di Step 4.']);
         }
 
-        // Cari nilai MIN dan MAX dari data real
-        $minHarga = max([$data->min('harga_tiket') ?? 1, 1]);
-        $maxRating = max([$data->max('rating') ?? 1, 1]);
-        $maxFasilitas = max([$data->max('fasilitas_count') ?? 1, 1]);
-        $maxSkorWaktu = 5; // karena skor waktu dibatasi 1–5
+        $kategori = $request->kategori;
 
+        $kategoriQuery = Pariwisata::withCount('fasilitas')->when($kategori, fn($q) => $q->where('kategori', $kategori));
+
+        $minHarga = max([$kategoriQuery->min('harga_tiket') ?? 1, 1]);
+        $maxRating = max([$kategoriQuery->max('rating') ?? 1, 1]);
+        $maxFasilitas = max([$kategoriQuery->max('fasilitas_count') ?? 1, 1]);
+        $maxSkorWaktu = 5;
         $result = $data
             ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot, $maxSkorWaktu) {
-                // Hitung durasi waktu operasional (jam)
                 $durasi = 0;
                 if ($item->jam_buka && $item->jam_tutup) {
                     $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
                 }
 
-                // Konversi durasi ke skor (1–5)
                 $skorWaktu = match (true) {
                     $durasi >= 24 => 5,
                     $durasi >= 15 => 4,
@@ -375,6 +374,6 @@ class RekomendasiWisataController extends Controller
             ->sortByDesc('skor')
             ->values();
 
-        return view('Operator.pariwisata.rekomendasi.result', compact('result'));
+        return view('Operator.pariwisata.rekomendasi.result', compact('result', 'minHarga', 'maxRating', 'maxFasilitas'));
     }
 }
