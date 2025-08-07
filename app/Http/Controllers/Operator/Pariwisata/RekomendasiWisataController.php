@@ -313,25 +313,27 @@ class RekomendasiWisataController extends Controller
         // Ambil bobot dari Step 4 (TABEL)
         $bobot = SawBobot::pluck('bobot', 'kriteria')->toArray();
 
-        if (count($bobot) < 4) {
+        if (count($bobot) < SawKriteria::count()) {
             return redirect()
                 ->route('operator.pariwisata.rekomendasi.step4')
                 ->withErrors(['msg' => 'Bobot belum lengkap. Silakan isi di Step 4.']);
         }
 
-        // Cari nilai normalisasi max/min
+        // Cari nilai MIN dan MAX dari data real
         $minHarga = max([$data->min('harga_tiket') ?? 1, 1]);
         $maxRating = max([$data->max('rating') ?? 1, 1]);
         $maxFasilitas = max([$data->max('fasilitas_count') ?? 1, 1]);
+        $maxSkorWaktu = 5; // karena skor waktu dibatasi 1–5
 
-        // Hitung normalisasi dan skor per item
         $result = $data
-            ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot) {
+            ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot, $maxSkorWaktu) {
+                // Hitung durasi waktu operasional (jam)
                 $durasi = 0;
                 if ($item->jam_buka && $item->jam_tutup) {
                     $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
                 }
 
+                // Konversi durasi ke skor (1–5)
                 $skorWaktu = match (true) {
                     $durasi >= 24 => 5,
                     $durasi >= 15 => 4,
@@ -340,11 +342,12 @@ class RekomendasiWisataController extends Controller
                     default => 1,
                 };
 
+                // Normalisasi
                 $normalisasi = [
                     'harga_tiket' => round($minHarga / max($item->harga_tiket, 1), 4),
-                    'fasilitas' => round($item->fasilitas_count / max($maxFasilitas, 1), 4),
                     'rating' => round($item->rating / max($maxRating, 1), 4),
-                    'waktu_operasional' => round($skorWaktu / 5, 4),
+                    'fasilitas' => round($item->fasilitas_count / max($maxFasilitas, 1), 4),
+                    'waktu_operasional' => round($skorWaktu / $maxSkorWaktu, 4),
                 ];
 
                 $detail = [];
