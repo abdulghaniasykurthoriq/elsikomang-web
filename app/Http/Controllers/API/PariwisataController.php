@@ -74,9 +74,14 @@ class PariwisataController extends Controller
             );
         }
 
-        $minHarga = max([$data->min('harga_tiket') ?? 1, 1]);
-        $maxRating = max([$data->max('rating') ?? 1, 1]);
-        $maxFasilitas = max([$data->max('fasilitas_count') ?? 1, 1]);
+        $kategori = $request->kategori;
+
+        $kategoriQuery = Pariwisata::withCount('fasilitas')->when($kategori, fn($q) => $q->where('kategori', $kategori));
+
+        // Ambil nilai acuan normalisasi dari data kategori penuh
+        $minHarga = max([$kategoriQuery->min('harga_tiket') ?? 1, 1]);
+        $maxRating = max([$kategoriQuery->max('rating') ?? 1, 1]);
+        $maxFasilitas = max([$kategoriQuery->max('fasilitas_count') ?? 1, 1]);
 
         $result = $data
             ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot) {
