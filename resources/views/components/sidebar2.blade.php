@@ -60,7 +60,7 @@
                         <span class="flex items-center">
                             <i data-feather="bar-chart-2" class="w-4 h-4 mr-3"></i>
                             Laporan Transaksi
-                        </span> 
+                        </span>
                         <i data-feather="chevron-down" class="w-4 h-4"></i>
                     </button>
                     <ul id="analisisSubmenu" class="pl-10 mt-1 space-y-1 hidden">
@@ -119,13 +119,13 @@
                         Data Pariwisata
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="{{ route('operator.pariwisata.laporan.index') }}"
                         class="flex items-center px-3 py-2 rounded-md hover:bg-gray-800 transition {{ request()->is($pathRole . '/laporan*') ? 'bg-gray-800' : '' }}">
                         <i data-feather="file-text" class="w-4 h-4 mr-3"></i>
                         Pariwisata
                     </a>
-                </li>
+                </li> --}}
 
                 <li class="px-3 pt-4 pb-2 text-sm font-semibold text-gray-400 uppercase tracking-wider">
                     Rekomendasi DSS

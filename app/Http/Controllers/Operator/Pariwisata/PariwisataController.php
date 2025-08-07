@@ -12,7 +12,7 @@ class PariwisataController extends Controller
 {
     public function index()
     {
-        $data = Pariwisata::with('fasilitas')->latest()->get();
+        $data = Pariwisata::with('fasilitas')->latest()->paginate(10);
         return view('Operator.pariwisata.data.index', compact('data'));
     }
 
