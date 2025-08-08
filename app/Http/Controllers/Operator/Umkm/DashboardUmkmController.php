@@ -11,13 +11,22 @@ class DashboardUmkmController extends Controller
 {
     public function index()
     {
+        // Total data
         $totalProduk = ProdukUmkm::count();
         $totalMember = MemberUmkm::count();
         $totalKategori = KategoriProduk::count();
-        $produkTerbaru = ProdukUmkm::latest()->take(5)->with('member')->get();
 
-        return view('Operator.umkm.ProdukUmkm.dashboard', compact(
-            'totalProduk', 'totalMember', 'totalKategori', 'produkTerbaru'
+        // Produk terbaru (5 terakhir)
+        $produkTerbaru = ProdukUmkm::with('member')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('Operator.umkm.dashboard', compact(
+            'totalProduk',
+            'totalMember',
+            'totalKategori',
+            'produkTerbaru'
         ));
     }
 }
