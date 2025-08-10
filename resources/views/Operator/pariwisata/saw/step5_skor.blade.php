@@ -42,10 +42,17 @@
                                 @foreach (['harga_tiket', 'fasilitas', 'rating', 'waktu_operasional'] as $kriteria)
                                     <td class="px-6 py-4">
                                         <div><strong>Normalisasi:</strong>
-                                            {{ number_format($row['detail'][$kriteria]['normalisasi'], 4) }}</div>
-                                        <div><strong>Bobot:</strong> {{ $row['detail'][$kriteria]['bobot'] }}</div>
-                                        <div><strong>Perkalian:</strong> {{ $row['detail'][$kriteria]['perkalian'] }} =
-                                            {{ number_format($row['detail'][$kriteria]['hasil'], 4) }}</div>
+                                            {{ isset($row['detail'][$kriteria]['normalisasi']) ? number_format($row['detail'][$kriteria]['normalisasi'], 4) : '-' }}
+                                        </div>
+                                        <div><strong>Bobot:</strong>
+                                            {{ isset($row['detail'][$kriteria]['bobot']) ? $row['detail'][$kriteria]['bobot'] : '-' }}
+                                        </div>
+                                        <div><strong>Perkalian:</strong>
+                                            {{ isset($row['detail'][$kriteria]['perkalian']) ? $row['detail'][$kriteria]['perkalian'] : '-' }}
+                                            =
+                                            {{ isset($row['detail'][$kriteria]['hasil']) ? number_format($row['detail'][$kriteria]['hasil'], 4) : '-' }}
+                                        </div>
+
                                     </td>
                                 @endforeach
 

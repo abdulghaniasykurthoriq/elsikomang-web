@@ -10,128 +10,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Phpml\Regression\LeastSquares;
 
-use Phpml\Pipeline\Pipeline;
-use Phpml\Preprocessing\PolynomialTransformer;
-use Phpml\Regression\LeastSquares as Regression;
 
-// use Phpml\Regression\SVR;
-// use Phpml\SupportVectorMachine\Kernel;
-// use Phpml\Preprocessing\MinMaxScaler;
-// use Phpml\Preprocessing\MinMaxScaler; 
-
-// use Phpml\SupportVectorMachine\SupportVectorMachine;
-// use Phpml\SupportVectorMachine\Kernel;
-// use Phpml\SupportVectorMachine\SVM;
 
 class LaporanTransaksiUmkmController extends Controller
 {
-
-
-
-    // public function index(Request $request)
-    // {
-    //     $year = $request->get('tahun', now()->year);
-    //     $months = [
-    //         1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
-    //         7 => 'Jul', 8 => 'Agu', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
-    //     ];
-    //     $dataView = [];
-
-    //     $allProduk = ProdukUmkm::all();
-
-    //     foreach ($allProduk as $produk) {
-    //         $query = DB::table('transaksi_details')
-    //             ->selectRaw('MONTH(created_at) as bulan, SUM(qty * harga) as pendapatan')
-    //             ->where('produk_id', $produk->id)
-    //             ->whereYear('created_at', $year)
-    //             ->groupByRaw('MONTH(created_at)')
-    //             ->orderByRaw('MONTH(created_at)')
-    //             ->get();
-
-    //         $bulanData = [];
-    //         $trainSamples = [];
-    //         $trainTargets = [];
-
-    //         foreach ($query as $row) {
-    //             $bulan = intval($row->bulan);
-    //             $pendapatan = floatval($row->pendapatan);
-
-    //             // Data aktual (input dan target untuk training)
-    //             $trainSamples[] = [$bulan];
-    //             $trainTargets[] = $pendapatan;
-
-    //             // Simpan data aktual
-    //             $bulanData[$bulan] = [
-    //                 'actual' => $pendapatan,
-    //                 'prediksi' => null,
-    //                 'error' => null,
-    //             ];
-    //         }
-
-    //         // Inisialisasi semua bulan agar lengkap
-    //         for ($i = 1; $i <= 12; $i++) {
-    //             if (!isset($bulanData[$i])) {
-    //                 $bulanData[$i] = [
-    //                     'actual' => null,
-    //                     'prediksi' => null,
-    //                     'error' => null,
-    //                 ];
-    //             }
-    //         }
-
-    //         // Proses prediksi hanya jika ada cukup data aktual
-    //         if (count($trainSamples) >= 2) {
-    //             $model = new LeastSquares();
-    //             $model->train($trainSamples, $trainTargets);
-
-    //             $totalError = 0;
-    //             $jumlahError = 0;
-
-    //             for ($i = 1; $i <= 12; $i++) {
-    //                 $prediksi = $model->predict([$i]);
-    //                 $prediksi = max(0, round($prediksi, 2)); 
-    //                 $aktual = $bulanData[$i]['actual'];
-
-    //                 $error = null;
-    //                 if (!is_null($aktual) && $aktual != 0) {
-    //                     $error = abs(($aktual - $prediksi) / $aktual); // error tanpa *100
-    //                     $totalError += $error;
-    //                     $jumlahError++;
-    //                     $error = round($error * 100, 2); // simpan dalam % di UI
-    //                 }
-
-    //                 $bulanData[$i]['prediksi'] = $prediksi;
-    //                 $bulanData[$i]['error'] = $error;
-    //             }
-
-    //             $mape = $jumlahError > 0 ? round($totalError / $jumlahError * 100, 2) : null;
-    //         } else {
-    //             $mape = null;
-    //         }
-
-    //         $dataView[$produk->nama_produk] = [
-    //             'bulan' => $bulanData,
-    //             'mape' => $mape,
-    //         ];
-    //     }
-
-    //     // Grafik (produk pertama)
-    //     $labels = array_values($months);
-    //     $actual = [];
-    //     $prediction = [];
-
-    //     if (!empty($dataView)) {
-    //         $firstProduk = array_key_first($dataView);
-    //         for ($i = 1; $i <= 12; $i++) {
-    //             $actual[] = $dataView[$firstProduk]['bulan'][$i]['actual'] ?? null;
-    //             $prediction[] = $dataView[$firstProduk]['bulan'][$i]['prediksi'] ?? null;
-    //         }
-    //     }
-
-    //     return view('Operator.umkm.Laporan.LaporanTransaksiProdukUmkm.index',
-    //         compact('year', 'months', 'dataView', 'labels', 'actual', 'prediction', 'allProduk'));
-    // }
-
 
     public function index2(Request $request)
     {
@@ -155,6 +37,7 @@ class LaporanTransaksiUmkmController extends Controller
         $trainSamples = [];
         $trainTargets = [];
 
+        // dd($query);
         foreach ($query as $row) {
             $bulan = intval($row->bulan);
             $pendapatan = floatval($row->pendapatan);
@@ -168,6 +51,7 @@ class LaporanTransaksiUmkmController extends Controller
                 'error' => null,
             ];
         }
+        // dd($trainSamples, $trainTargets);
 
         // Inisialisasi semua bulan agar lengkap
         for ($i = 1; $i <= 12; $i++) {
@@ -179,19 +63,25 @@ class LaporanTransaksiUmkmController extends Controller
                 ];
             }
         }
+        //  $trainSamples = [[1], [2], [3], [4], [5], [6], [7]];
+        // $trainTargets = [489002.0, 661041.0, 694801.0, 719686.0, 1075851.0, 1037850.0, 771539.0];
+        // dd($trainSamples, $trainTargets);
 
         // Proses prediksi jika data cukup
         $mape = null;
         if (count($trainSamples) >= 2) {
             $model = new LeastSquares();
             $model->train($trainSamples, $trainTargets);
+            // dd($model);
+            
+
 
             $totalError = 0;
             $jumlahError = 0;
 
             for ($i = 1; $i <= 12; $i++) {
                 $prediksi = $model->predict([$i]);
-                $prediksi = round($prediksi, 3);
+                // $prediksi = round($prediksi, 3);
 
 
                 $aktual = $bulanData[$i]['actual'];
@@ -219,6 +109,8 @@ class LaporanTransaksiUmkmController extends Controller
             $actual[] = $bulanData[$i]['actual'] ?? null;
             $prediction[] = $bulanData[$i]['prediksi'] ?? null;
         }
+        // dd($prediction);
+
 
         return view('Operator.umkm.Laporan.LaporanTransaksiProdukUmkm.index2', [
             'year' => $year,
@@ -230,6 +122,134 @@ class LaporanTransaksiUmkmController extends Controller
             'mape' => $mape,
         ]);
     }
+
+
+// public function index2(Request $request)
+// {
+//     $year = $request->get('tahun', now()->year);
+//     $months = [
+//         1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
+//         7 => 'Jul', 8 => 'Agu', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
+//     ];
+
+//     // Ambil data pendapatan per bulan
+//     $query = DB::table('transaksi_details')
+//         ->selectRaw('MONTH(created_at) as bulan, SUM(qty * harga) as pendapatan')
+//         ->whereYear('created_at', $year)
+//         ->groupByRaw('MONTH(created_at)')
+//         ->orderByRaw('MONTH(created_at)')
+//         ->get();
+
+//     $trainSamples = [];
+//     $trainTargets = [];
+//     $bulanData = [];
+
+//     foreach ($query as $row) {
+//         $bulan = (int)$row->bulan;
+//         $pendapatan = (float)$row->pendapatan;
+
+//         $trainSamples[] = $bulan;
+//         $trainTargets[] = $pendapatan;
+
+//         $bulanData[$bulan] = [
+//             'actual' => $pendapatan,
+//             'prediksi' => null,
+//             'error' => null,
+//         ];
+//     }
+
+//     // Isi data kosong agar lengkap 1-12
+//     for ($i = 1; $i <= 12; $i++) {
+//         if (!isset($bulanData[$i])) {
+//             $bulanData[$i] = [
+//                 'actual' => null,
+//                 'prediksi' => null,
+//                 'error' => null,
+//             ];
+//         }
+//     }
+
+//     // Hitung regresi manual
+//     $n = count($trainSamples);
+//     $sumX = array_sum($trainSamples);
+//     $sumY = array_sum($trainTargets);
+//     $sumXY = 0;
+//     $sumX2 = 0;
+
+//     for ($i = 0; $i < $n; $i++) {
+//         $x = $trainSamples[$i];
+//         $y = $trainTargets[$i];
+//         $sumXY += $x * $y;
+//         $sumX2 += $x * $x;
+//     }
+
+//     $b = ($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX);
+//     $a = ($sumY - $b * $sumX) / $n;
+
+//     // Simpan prediksi
+//     $totalError = 0;
+//     $jumlahError = 0;
+
+//     for ($i = 1; $i <= 12; $i++) {
+//         $prediksi = round($a + $b * $i, 2);
+//         $aktual = $bulanData[$i]['actual'];
+
+//         $error = null;
+//         if (!is_null($aktual) && $aktual != 0) {
+//             $error = abs(($aktual - $prediksi) / $aktual);
+//             $totalError += $error;
+//             $jumlahError++;
+//             $error = round($error * 100, 2);
+//         }
+
+//         $bulanData[$i]['prediksi'] = $prediksi;
+//         $bulanData[$i]['error'] = $error;
+//     }
+
+//     $mape = $jumlahError > 0 ? round($totalError / $jumlahError * 100, 2) : null;
+
+//     // Siapkan chart
+//     $labels = array_values($months);
+//     $actual = [];
+//     $prediction = [];
+
+//     for ($i = 1; $i <= 12; $i++) {
+//         $actual[] = $bulanData[$i]['actual'] ?? null;
+//         $prediction[] = $bulanData[$i]['prediksi'] ?? null;
+//     }
+
+//     return view('Operator.umkm.Laporan.LaporanTransaksiProdukUmkm.index2', [
+//         'year' => $year,
+//         'months' => $months,
+//         'labels' => $labels,
+//         'actual' => $actual,
+//         'prediction' => $prediction,
+//         'bulanData' => $bulanData,
+//         'mape' => $mape,
+//     ]);
+// }
+
+
+private function regresiLinearManual(array $samples, array $targets)
+{
+    $n = count($samples);
+    $sumX = $sumY = $sumXY = $sumX2 = 0;
+
+    for ($i = 0; $i < $n; $i++) {
+        $x = $samples[$i][0];
+        $y = $targets[$i];
+
+        $sumX += $x;
+        $sumY += $y;
+        $sumXY += $x * $y;
+        $sumX2 += $x * $x;
+    }
+
+    $b = ($n * $sumXY - $sumX * $sumY) / ($n * $sumX2 - $sumX * $sumX);
+    $a = ($sumY - $b * $sumX) / $n;
+
+    return [$a, $b];
+}
 
     // Contoh: controller method untuk detail per bulan
 
@@ -288,6 +308,7 @@ class LaporanTransaksiUmkmController extends Controller
             'totalPrediksiAll' => $totalPrediksiAll,
         ]);
     }
+
     
 
 //     public function index(Request $request)

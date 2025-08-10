@@ -58,6 +58,8 @@ class LaporanKlasterProdukController extends Controller
                         'harga' => $harga,
                         'created_at' => $created,
                     ];
+            dd($produkMapping );
+
                 }
             }
         }
@@ -121,7 +123,6 @@ class LaporanKlasterProdukController extends Controller
         foreach ($produkMapping as $i => $produk) {
             $distances = array_map(fn($centroid) => round(abs($produk['harga'] - $centroid[0]), 4), $centroids);
             $minIndex = array_keys($distances, min($distances))[0];
-
             $produkClustered[] = [
                 'produk_umkm_id' => $produk['produk_umkm_id'],
                 'nama_produk' => $produk['nama_produk'],

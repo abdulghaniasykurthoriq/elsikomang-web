@@ -38,6 +38,7 @@
         <div class="p-4 border-b border-gray-100 flex justify-between items-center">
             <h2 class="text-lg font-semibold text-gray-800">Parameter Klasterisasi & Data Produk</h2>
         </div>
+        
 
         <div class="p-4">
             {{-- Tampilkan Error Validasi --}}
@@ -52,7 +53,6 @@
                     </div>
                 </div>
             @endif
-
             {{-- Form Parameter Klasterisasi --}}
             <h3 class="text-lg font-semibold text-gray-800 mb-3">Parameter Klasterisasi</h3>
             <form action="{{ route('klasterisasi-produk.process') }}" method="POST" class="mb-4">

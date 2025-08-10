@@ -12,7 +12,7 @@ class PariwisataController extends Controller
 {
     public function index()
     {
-        $data = Pariwisata::with('fasilitas')->latest()->get();
+        $data = Pariwisata::with('fasilitas')->latest()->paginate(10);
         return view('Operator.pariwisata.data.index', compact('data'));
     }
 
@@ -31,8 +31,6 @@ class PariwisataController extends Controller
             'gambar' => 'required|image|mimes:jpeg,png,jpg|max:5120',
             'harga_tiket' => 'required|integer|min:0',
             'kategori' => 'required|string',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
             'fasilitas' => 'nullable|array',
             'rating' => 'nullable|numeric|min:0|max:5',
             'jam_buka' => 'nullable|regex:/^\d{2}:\d{2}$/',
@@ -79,8 +77,6 @@ class PariwisataController extends Controller
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
             'harga_tiket' => 'required|integer|min:0',
             'kategori' => 'required|string',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
             'fasilitas' => 'nullable|array',
             'rating' => 'nullable|numeric|min:0|max:5',
             'jam_buka' => 'nullable',

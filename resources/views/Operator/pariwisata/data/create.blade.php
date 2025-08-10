@@ -68,25 +68,12 @@
                     <label for="kategori" class="block text-sm font-medium text-gray-700">Kategori / Minat Wisata</label>
                     <select name="kategori" id="kategori" class="form-select mt-1 block w-full" required>
                         <option value="">-- Pilih Kategori --</option>
-                        @foreach (['pantai', 'hutan', 'religi', 'budaya', 'kuliner', 'edukasi'] as $kategori)
+                        @foreach (['pantai','religi', 'budaya', 'kuliner', 'edukasi', 'buatan'] as $kategori)
                             <option value="{{ $kategori }}" {{ old('kategori') == $kategori ? 'selected' : '' }}>
                                 {{ ucfirst($kategori) }}
                             </option>
                         @endforeach
                     </select>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label for="latitude" class="block text-sm font-medium text-gray-700">Latitude</label>
-                        <input type="text" name="latitude" id="latitude" class="form-input mt-1 block w-full"
-                            placeholder="-6.1234567" value="{{ old('latitude') }}">
-                    </div>
-                    <div>
-                        <label for="longitude" class="block text-sm font-medium text-gray-700">Longitude</label>
-                        <input type="text" name="longitude" id="longitude" class="form-input mt-1 block w-full"
-                            placeholder="108.1234567" value="{{ old('longitude') }}">
-                    </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4 mb-4">

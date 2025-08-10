@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Pariwisata;
 use App\Models\PariwisataRating;
 use App\Models\SawBobot;
+use App\Models\SawKriteria;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -63,7 +64,7 @@ class PariwisataController extends Controller
 
         $bobot = SawBobot::pluck('bobot', 'kriteria')->toArray();
 
-        if (count($bobot) < 4) {
+        if (count($bobot) < SawKriteria::count()) {
             return response()->json(
                 [
                     'status' => 'error',
@@ -73,15 +74,20 @@ class PariwisataController extends Controller
             );
         }
 
-        $minHarga = max([$data->min('harga_tiket') ?? 1, 1]);
-        $maxRating = max([$data->max('rating') ?? 1, 1]);
-        $maxFasilitas = max([$data->max('fasilitas_count') ?? 1, 1]);
+        $kategori = $request->kategori;
+
+        $kategoriData = Pariwisata::withCount('fasilitas')->when($kategori, fn($q) => $q->where('kategori', $kategori))->get();
+
+        $minHarga = max([$kategoriData->min('harga_tiket') ?? 1, 1]);
+        $maxRating = max([$kategoriData->max('rating') ?? 1, 1]);
+        $maxFasilitas = max([$kategoriData->max('fasilitas_count') ?? 1, 1]);
+        $maxSkorWaktu = 5;
 
         $result = $data
             ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot) {
                 $durasi = 0;
                 if ($item->jam_buka && $item->jam_tutup) {
-                    $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
+                    $durasi = Carbon::parse($item->jam_buka)->diffInHours(Carbon::parse($item->jam_tutup));
                 }
 
                 $skorWaktu = match (true) {

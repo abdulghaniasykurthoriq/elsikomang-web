@@ -55,8 +55,7 @@
                                         class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600" title="Edit">
                                         <i data-feather="edit" class="w-4 h-4"></i>
                                     </a>
-                                    <form
-                                        action="{{ route('operator.pariwisata.data.destroy', ['id' => $item->id]) }}"
+                                    <form action="{{ route('operator.pariwisata.data.destroy', ['id' => $item->id]) }}"
                                         method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                         @csrf
                                         @method('DELETE')
@@ -74,6 +73,9 @@
                         @endforelse
                     </tbody>
                 </table>
+                <div class="p-4 border-t border-gray-100">
+                    {{ $data->links('pagination::tailwind') }}
+                </div>
             </div>
         </div>
     </div>

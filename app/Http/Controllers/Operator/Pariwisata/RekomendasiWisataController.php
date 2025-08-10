@@ -12,6 +12,7 @@ use App\Models\SawSkor;
 use App\Models\SawRanking;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class RekomendasiWisataController extends Controller
 {
@@ -45,16 +46,10 @@ class RekomendasiWisataController extends Controller
         return redirect()->back()->with('success', 'Kriteria berhasil diperbarui.');
     }
 
-    // STEP 3: Normalisasi
     public function step3Normalisasi(Request $request)
     {
         $allData = Pariwisata::with('fasilitas')->get();
-
         $dataPage = Pariwisata::with('fasilitas')->paginate(10)->withQueryString();
-
-        $minHarga = max($allData->min('harga_tiket'), 1);
-        $maxRating = max($allData->max('rating'), 1);
-        $maxFasilitas = max(1, $allData->map(fn($d) => $d->fasilitas->count())->max());
 
         $normalisasiMap = [];
 
@@ -64,37 +59,32 @@ class RekomendasiWisataController extends Controller
                 $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
             }
 
-            $skorWaktu = match (true) {
-                $durasi >= 24 => 5,
-                $durasi >= 15 => 4,
-                $durasi >= 10 => 3,
-                $durasi >= 9 => 2,
-                default => 1,
-            };
-
             $fasilitasCount = $item->fasilitas->count();
 
-            $hasil = [
-                'harga_tiket' => [
-                    'nilai' => round($minHarga / max($item->harga_tiket, 1), 4),
-                    'rumus' => "{$minHarga} / " . max($item->harga_tiket, 1),
-                ],
-                'fasilitas' => [
-                    'nilai' => round($fasilitasCount / $maxFasilitas, 4),
-                    'rumus' => "{$fasilitasCount} / {$maxFasilitas}",
-                ],
-                'rating' => [
-                    'nilai' => round($item->rating / $maxRating, 4),
-                    'rumus' => "{$item->rating} / {$maxRating}",
-                ],
-                'waktu_operasional' => [
-                    'nilai' => round($skorWaktu / 5, 4),
-                    'rumus' => "{$skorWaktu} / 5",
-                ],
+            // Ambil skor diskrit (1–5)
+            $skor = [
+                'harga_tiket' => $this->getSkorDiskrit('harga_tiket', $item->harga_tiket),
+                'fasilitas' => $this->getSkorDiskrit('fasilitas', $fasilitasCount),
+                'rating' => $this->getSkorDiskrit('rating', $item->rating),
+                'waktu_operasional' => $this->getSkorDiskrit('waktu_operasional', $durasi),
             ];
 
-            foreach ($hasil as $kriteria => $dataHasil) {
-                SawNormalisasi::updateOrCreate(['pariwisata_id' => $item->id, 'kriteria' => $kriteria], ['nilai_normalisasi' => $dataHasil['nilai'], 'rumus' => $dataHasil['rumus']]);
+            $hasil = [];
+
+            foreach ($skor as $kriteria => $nilaiDiskrit) {
+                $normalisasi = round($nilaiDiskrit / 5, 4); // 1–5 jadi 0.2–1.0
+                $hasil[$kriteria] = [
+                    'nilai' => $normalisasi,
+                    'rumus' => "$nilaiDiskrit / 5 = $normalisasi",
+                ];
+
+                SawNormalisasi::updateOrCreate(
+                    ['pariwisata_id' => $item->id, 'kriteria' => $kriteria],
+                    [
+                        'nilai_normalisasi' => $normalisasi,
+                        'rumus' => "$nilaiDiskrit / 5 = $normalisasi",
+                    ],
+                );
             }
 
             $normalisasiMap[$item->id] = $hasil;
@@ -109,6 +99,42 @@ class RekomendasiWisataController extends Controller
                 ],
             ),
         ]);
+    }
+
+    private function getSkorDiskrit(string $kriteria, $value): int
+    {
+        return match ($kriteria) {
+            'harga_tiket' => match (true) {
+                $value <= 10000 => 5,
+                $value <= 20000 => 4,
+                $value <= 30000 => 3,
+                $value <= 40000 => 2,
+                default => 1,
+            },
+            'fasilitas' => match (true) {
+                $value >= 5 => 5,
+                $value === 4 => 4,
+                $value === 3 => 3,
+                $value === 2 => 2,
+                default => 1,
+            },
+            'rating' => match (true) {
+                $value >= 4.8 => 5,
+                $value >= 4.0 => 4,
+                $value >= 3.2 => 3,
+                $value >= 2.5 => 2,
+                default => 1,
+            },
+
+            'waktu_operasional' => match (true) {
+                $value >= 24 => 5,
+                $value >= 15 => 4,
+                $value >= 10 => 3,
+                $value >= 9 => 2,
+                default => 1,
+            },
+            default => 1,
+        };
     }
 
     // STEP 4: Bobot
@@ -149,49 +175,54 @@ class RekomendasiWisataController extends Controller
                 ->withErrors(['msg' => 'Silakan isi semua bobot kriteria terlebih dahulu di Step 4.']);
         }
 
-        $allData = Pariwisata::withCount('fasilitas')->get(); 
-
-        $minHarga = max($allData->min('harga_tiket'), 1);
-        $maxFasilitas = max($allData->max('fasilitas_count'), 1);
-        $maxRating = max($allData->max('rating'), 1);
-
-        $skorMap = []; 
+        $allData = Pariwisata::with('fasilitas')->get();
+        $skorMap = [];
 
         foreach ($allData as $item) {
             $durasi = 0;
             if ($item->jam_buka && $item->jam_tutup) {
                 $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
             }
-            $skorWaktu = match (true) {
-                $durasi >= 24 => 5,
-                $durasi >= 15 => 4,
-                $durasi >= 10 => 3,
-                $durasi >= 9 => 2,
-                default => 1,
-            };
 
-            $norm = [
-                'harga_tiket' => round($minHarga / max($item->harga_tiket, 1), 4),
-                'fasilitas' => round($item->fasilitas_count / $maxFasilitas, 4),
-                'rating' => round($item->rating / $maxRating, 4),
-                'waktu_operasional' => round($skorWaktu / 5, 4),
+            $fasilitasCount = $item->fasilitas->count();
+
+            // Ambil skor diskrit dari helper
+            $skorHarga = $this->getSkorDiskrit('harga_tiket', $item->harga_tiket);
+            $skorFasilitas = $this->getSkorDiskrit('fasilitas', $fasilitasCount);
+            $skorRating = $this->getSkorDiskrit('rating', $item->rating);
+            $skorWaktu = $this->getSkorDiskrit('waktu_operasional', $durasi);
+
+            $skorDiskrit = [
+                'harga_tiket' => $skorHarga,
+                'fasilitas' => $skorFasilitas,
+                'rating' => $skorRating,
+                'waktu_operasional' => $skorWaktu,
             ];
 
             $Vi = 0;
             $detail = [];
-            foreach ($norm as $kriteria => $nilai) {
+
+            foreach ($skorDiskrit as $kriteria => $skor) {
                 $w = $bobot[$kriteria] ?? 0;
-                $res = round($nilai * $w, 4);
-                $Vi += $res;
+                $normalisasi = round($skor / 5, 4);
+                $hasil = round($normalisasi * $w, 4);
+                $Vi += $hasil;
+
                 $detail[$kriteria] = [
-                    'normalisasi' => $nilai,
+                    'skor_diskrit' => $skor,
+                    'normalisasi' => $normalisasi,
                     'bobot' => $w,
-                    'perkalian' => "{$nilai} × {$w}",
-                    'hasil' => $res,
+                    'perkalian' => "{$normalisasi} × {$w}",
+                    'hasil' => $hasil,
                 ];
             }
 
-            SawSkor::updateOrCreate(['pariwisata_id' => $item->id], ['skor_total' => round($Vi, 4)]);
+            SawSkor::updateOrCreate(
+                ['pariwisata_id' => $item->id],
+                [
+                    'skor_total' => round($Vi, 4),
+                ],
+            );
 
             $skorMap[$item->id] = [
                 'skor' => round($Vi, 4),
@@ -199,7 +230,7 @@ class RekomendasiWisataController extends Controller
             ];
         }
 
-        $dataPage = Pariwisata::withCount('fasilitas')->paginate(10)->withQueryString();
+        $dataPage = Pariwisata::with('fasilitas')->paginate(10)->withQueryString();
 
         $skorData = collect($dataPage->items())->map(
             fn($item) => [
@@ -260,6 +291,7 @@ class RekomendasiWisataController extends Controller
             'kategori' => 'nullable|string',
         ]);
 
+        // Ambil data hasil filter preferensi user
         $query = Pariwisata::withCount('fasilitas');
 
         if ($request->max_tiket) {
@@ -280,28 +312,33 @@ class RekomendasiWisataController extends Controller
             return back()->withInput()->with('warning', 'Tidak ditemukan wisata dengan kriteria tersebut.');
         }
 
-        // Ambil bobot dari Step 4 (TABEL)
+        // Ambil bobot
         $bobot = SawBobot::pluck('bobot', 'kriteria')->toArray();
 
-        if (count($bobot) < 4) {
+        if (count($bobot) < SawKriteria::count()) {
             return redirect()
                 ->route('operator.pariwisata.rekomendasi.step4')
                 ->withErrors(['msg' => 'Bobot belum lengkap. Silakan isi di Step 4.']);
         }
 
-        // Cari nilai normalisasi max/min
-        $minHarga = max([$data->min('harga_tiket') ?? 1, 1]);
-        $maxRating = max([$data->max('rating') ?? 1, 1]);
-        $maxFasilitas = max([$data->max('fasilitas_count') ?? 1, 1]);
+        // Ambil nilai acuan dari SELURUH data dalam kategori
+        $kategori = $request->kategori;
 
-        // Hitung normalisasi dan skor per item
+        // Perhatikan: get() untuk bisa menghitung fasilitas_count
+        $kategoriData = Pariwisata::withCount('fasilitas')->when($kategori, fn($q) => $q->where('kategori', $kategori))->get();
+
+        $minHarga = max([$kategoriData->min('harga_tiket') ?? 1, 1]);
+        $maxRating = max([$kategoriData->max('rating') ?? 1, 1]);
+        $maxFasilitas = max([$kategoriData->max('fasilitas_count') ?? 1, 1]);
+        $maxSkorWaktu = 5;
+
+        // Proses perhitungan SAW
         $result = $data
-            ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot) {
+            ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot, $maxSkorWaktu) {
                 $durasi = 0;
                 if ($item->jam_buka && $item->jam_tutup) {
-                    $durasi = Carbon::parse($item->jam_tutup)->diffInHours(Carbon::parse($item->jam_buka));
+                    $durasi = Carbon::parse($item->jam_buka)->diffInHours(Carbon::parse($item->jam_tutup));
                 }
-
                 $skorWaktu = match (true) {
                     $durasi >= 24 => 5,
                     $durasi >= 15 => 4,
@@ -312,9 +349,9 @@ class RekomendasiWisataController extends Controller
 
                 $normalisasi = [
                     'harga_tiket' => round($minHarga / max($item->harga_tiket, 1), 4),
-                    'fasilitas' => round($item->fasilitas_count / max($maxFasilitas, 1), 4),
                     'rating' => round($item->rating / max($maxRating, 1), 4),
-                    'waktu_operasional' => round($skorWaktu / 5, 4),
+                    'fasilitas' => round($item->fasilitas_count / max($maxFasilitas, 1), 4),
+                    'waktu_operasional' => round($skorWaktu / $maxSkorWaktu, 4),
                 ];
 
                 $detail = [];
@@ -342,6 +379,6 @@ class RekomendasiWisataController extends Controller
             ->sortByDesc('skor')
             ->values();
 
-        return view('Operator.pariwisata.rekomendasi.result', compact('result'));
+        return view('Operator.pariwisata.rekomendasi.result', compact('result', 'minHarga', 'maxRating', 'maxFasilitas', 'maxSkorWaktu', 'kategori'));
     }
 }
