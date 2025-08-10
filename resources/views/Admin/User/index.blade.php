@@ -4,7 +4,7 @@
 <div class="container mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-4">
 
-        <h2 class="text-xl font-bold ">Daftar Cover Menu</h2>
+        <h2 class="text-xl font-bold ">Daftar User</h2>
 
     </div>
 

@@ -1,8 +1,8 @@
 <nav class="navbar-vertical navbar">
     <div id="myScrollableElement" class="h-screen" data-simplebar>
         <!-- brand logo -->
-        <a href="{{ route('admin.dashboard') }}" class="navbar-brand text-white text-xl font-bold">     
-            Elsikomang <br/>    
+        <a href="{{ route('admin.dashboard') }}" class="navbar-brand text-white text-xl font-bold">
+            Elsikomang <br/>
         </a>
 
 
@@ -27,7 +27,7 @@
                 </a>
 
                 <div id="navPages" class="collapse " data-bs-parent="#sideNavbar">
-                
+
                     <ul class="nav flex-col">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('operator.index', ['role' => 'umkm']) }}">OP UMKM</a>
@@ -54,7 +54,7 @@
             </li>
             <!-- nav item -->
             <li class="nav-item">
-                <a class="nav-link " href="#">
+                <a class="nav-link " href="{{ route('users.index') }}">
                     <i data-feather="user" class="w-4 h-4 mr-2"></i>
                     Data User
                 </a>

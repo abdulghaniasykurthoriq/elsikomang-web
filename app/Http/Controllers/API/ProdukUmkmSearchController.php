@@ -20,10 +20,17 @@ class ProdukUmkmSearchController extends Controller
         $hasil = (new TfidfSearchService)->search($produk, $query);
 
         return response()->json(['results' => array_map(function ($item) {
+            $produk = $item['produk'];
             return [
-                'id' => $item['produk']->id,
-                'nama_produk' => $item['produk']->nama_produk,
-                'deskripsi' => $item['produk']->deskripsi,
+                'id' => $produk->id,
+                'nama_produk' => $produk->nama_produk,
+                'deskripsi' => $produk->deskripsi,
+                'produk_variant' => $produk->produk_variant, // Tambahkan
+                'images' => $produk->images, // Tambahkan
+                'member' => $produk->member, // Tambahkan
+                'kategori' => $produk->kategori, // Sudah ada
+                'created_at' => $produk->created_at,
+                'updated_at' => $produk->updated_at,
                 'score' => $item['score'],
             ];
         }, $hasil)]);
