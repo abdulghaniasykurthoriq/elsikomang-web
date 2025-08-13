@@ -58,8 +58,6 @@ class LaporanKlasterProdukController extends Controller
                         'harga' => $harga,
                         'created_at' => $created,
                     ];
-            dd($produkMapping );
-
                 }
             }
         }
