@@ -1,16 +1,16 @@
 @extends('layouts.app2')
 
-@section('title', 'Step 2: Jenis Kriteria')
+@section('title', 'Jenis Kriteria')
 
 @section('content')
 
     <!-- Header Section -->
     <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
-        <h1 class="text-xl text-white">Step 2: Jenis Kriteria</h1>
-        <a href="{{ route('operator.pariwisata.rekomendasi.step1') }}"
+        <h1 class="text-xl text-white">Jenis Kriteria</h1>
+        {{-- <a href="{{ route('operator.pariwisata.rekomendasi.step1') }}"
             class="btn bg-white text-indigo-700 hover:bg-indigo-50 shadow font-semibold">
             &larr; Kembali ke Step 1
-        </a>
+        </a> --}}
     </div>
 
     <!-- Table Section -->
@@ -73,12 +73,12 @@
                     </table>
                 </div>
 
-                <div class="pt-6 text-end">
+                {{-- <div class="pt-6 text-end">
                     <a href="{{ route('operator.pariwisata.rekomendasi.step3') }}"
                         class="btn bg-indigo-600 text-white hover:bg-indigo-700">
                         Lanjut ke Step 3 &rarr;
                     </a>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

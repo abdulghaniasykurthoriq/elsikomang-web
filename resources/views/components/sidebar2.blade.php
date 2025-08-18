@@ -147,7 +147,7 @@
                         aria-expanded="{{ request()->is($pathRole . '/rekomendasi/step*') ? 'true' : 'false' }}"
                         aria-controls="navSawProses">
                         <i data-feather="sliders" class="w-4 h-4 mr-3"></i>
-                        <span class="flex-1">SAW Proses</span>
+                        <span class="flex-1">SAW</span>
                         <i data-feather="chevron-down" class="w-4 h-4"></i>
                     </a>
                 </li>
@@ -156,42 +156,42 @@
                     class="collapse {{ request()->is($pathRole . '/rekomendasi/step*') ? 'show' : '' }}"
                     data-bs-parent="#sideNavbar">
                     <ul class="nav flex-col pl-12 py-1 text-sm">
-                        <li>
+                        {{-- <li>
                             <a class="block px-3 py-1 rounded hover:bg-gray-800 {{ request()->is($pathRole . '/rekomendasi') ? 'bg-gray-800' : '' }}"
                                 href="{{ route('operator.pariwisata.rekomendasi.step1') }}">
                                 Step 1: Data Alternatif
                             </a>
-                        </li>
+                        </li> --}}
                         <li>
                             <a class="block px-3 py-1 rounded hover:bg-gray-800 {{ request()->is($pathRole . '/rekomendasi/step2') ? 'bg-gray-800' : '' }}"
                                 href="{{ route('operator.pariwisata.rekomendasi.step2') }}">
-                                Step 2: Kriteria
+                                Kriteria
                             </a>
                         </li>
-                        <li>
+                        {{-- <li>
                             <a class="block px-3 py-1 rounded hover:bg-gray-800 {{ request()->is($pathRole . '/rekomendasi/step3') ? 'bg-gray-800' : '' }}"
                                 href="{{ route('operator.pariwisata.rekomendasi.step3') }}">
                                 Step 3: Normalisasi
                             </a>
-                        </li>
+                        </li> --}}
                         <li>
                             <a class="block px-3 py-1 rounded hover:bg-gray-800 {{ request()->is($pathRole . '/rekomendasi/step4') ? 'bg-gray-800' : '' }}"
                                 href="{{ route('operator.pariwisata.rekomendasi.step4') }}">
-                                Step 4: Bobot
+                                Bobot
                             </a>
                         </li>
-                        <li>
+                        {{-- <li>
                             <a class="block px-3 py-1 rounded hover:bg-gray-800 {{ request()->is($pathRole . '/rekomendasi/step5') ? 'bg-gray-800' : '' }}"
                                 href="{{ route('operator.pariwisata.rekomendasi.step5') }}">
                                 Step 5: Skor Akhir
                             </a>
-                        </li>
-                        <li>
+                        </li> --}}
+                        {{-- <li>
                             <a class="block px-3 py-1 rounded hover:bg-gray-800 {{ request()->is($pathRole . '/rekomendasi/step6') ? 'bg-gray-800' : '' }}"
                                 href="{{ route('operator.pariwisata.rekomendasi.step6') }}">
                                 Step 6: Ranking
                             </a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </div>
 

@@ -1,16 +1,16 @@
 @extends('layouts.app2')
 
-@section('title', 'Step 4: Input Bobot Kriteria')
+@section('title', 'Input Bobot Kriteria')
 
 @section('content')
 
     <!-- Header Section -->
     <div class="bg-indigo-600 px-8 pt-10 lg:pt-14 pb-28 flex justify-between items-center relative z-0">
-        <h1 class="text-xl text-white">Step 4: Input Bobot Kriteria</h1>
-        <a href="{{ route('operator.pariwisata.rekomendasi.step3') }}"
+        <h1 class="text-xl text-white">Input Bobot Kriteria</h1>
+        {{-- <a href="{{ route('operator.pariwisata.rekomendasi.step3') }}"
             class="btn bg-white text-indigo-700 hover:bg-indigo-50 shadow font-semibold">
             &larr; Kembali ke Step 3
-        </a>
+        </a> --}}
     </div>
 
     <!-- Form Section -->
@@ -61,10 +61,10 @@
                         Simpan Bobot
                     </button>
                 
-                    <!-- Tombol Lanjut -->
+                    {{-- <!-- Tombol Lanjut -->
                     <button type="submit" name="lanjut" class="btn bg-indigo-600 text-white hover:bg-indigo-700">
                         Lanjut ke Step 5 &rarr;
-                    </button>
+                    </button> --}}
                 </div>
                 
             </form>
