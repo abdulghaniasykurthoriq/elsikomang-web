@@ -79,7 +79,7 @@
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Kategori / Minat Wisata</label>
                 <select name="kategori" class="form-select block w-full rounded-md">
                     <option value="">-- Semua Kategori --</option>
-                    @foreach (['pantai', 'religi', 'edukasi', 'budaya', 'kuliner'] as $kategori)
+                    @foreach (['pantai', 'religi', 'edukasi', 'budaya', 'kuliner','buatan'] as $kategori)
                         <option value="{{ $kategori }}" {{ old('kategori') == $kategori ? 'selected' : '' }}>
                             {{ ucfirst($kategori) }}
                         </option>
