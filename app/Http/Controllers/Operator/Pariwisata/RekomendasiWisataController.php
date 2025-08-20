@@ -291,12 +291,9 @@ class RekomendasiWisataController extends Controller
             'min_rating' => 'nullable|numeric',
             'kategori' => 'nullable|string',
             'fasilitas' => 'array',
-            'fasilitas.*' => 'exists:fasilitas,id',
         ]);
 
-        $fasilitasDipilih = $request->fasilitas ?? [];
-
-        $query = Pariwisata::with('fasilitas');
+        $query = Pariwisata::withCount('fasilitas');
 
         if ($request->max_tiket) {
             $query->where('harga_tiket', '<=', $request->max_tiket);
@@ -308,6 +305,13 @@ class RekomendasiWisataController extends Controller
 
         if ($request->kategori) {
             $query->where('kategori', $request->kategori);
+        }
+
+        if ($request->has('fasilitas')) {
+            $fasilitasDipilih = $request->fasilitas;
+            $query->whereHas('fasilitas', function ($q) use ($fasilitasDipilih) {
+                $q->whereIn('id', $fasilitasDipilih);
+            });
         }
 
         $data = $query->get();
@@ -326,16 +330,16 @@ class RekomendasiWisataController extends Controller
         }
 
         $kategori = $request->kategori;
-        $kategoriData = Pariwisata::with('fasilitas')->when($kategori, fn($q) => $q->where('kategori', $kategori))->get();
+        $kategoriData = Pariwisata::withCount('fasilitas')->when($kategori, fn($q) => $q->where('kategori', $kategori))->get();
 
         $minHarga = max([$kategoriData->min('harga_tiket') ?? 1, 1]);
         $maxRating = max([$kategoriData->max('rating') ?? 1, 1]);
-        $maxFasilitas = max([$kategoriData->max(fn($item) => $item->fasilitas->count()) ?? 1, 1]);
+        $maxFasilitas = max([$kategoriData->max('fasilitas_count') ?? 1, 1]);
         $maxSkorWaktu = 5;
 
+        // Proses perhitungan SAW
         $result = $data
-            ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot, $maxSkorWaktu, $fasilitasDipilih) {
-                // Hitung durasi
+            ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot, $maxSkorWaktu) {
                 $durasi = 0;
                 if ($item->jam_buka && $item->jam_tutup) {
                     $durasi = Carbon::parse($item->jam_buka)->diffInHours(Carbon::parse($item->jam_tutup));
@@ -348,13 +352,10 @@ class RekomendasiWisataController extends Controller
                     default => 1,
                 };
 
-                $fasilitasWisata = $item->fasilitas->pluck('id')->toArray();
-                $jumlahCocok = count(array_intersect($fasilitasDipilih, $fasilitasWisata));
-
                 $normalisasi = [
                     'harga_tiket' => round($minHarga / max($item->harga_tiket, 1), 4),
                     'rating' => round($item->rating / max($maxRating, 1), 4),
-                    'fasilitas' => round($jumlahCocok / max($maxFasilitas, 1), 4),
+                    'fasilitas' => round($item->fasilitas_count / max($maxFasilitas, 1), 4),
                     'waktu_operasional' => round($skorWaktu / $maxSkorWaktu, 4),
                 ];
 
