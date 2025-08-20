@@ -30,9 +30,10 @@ class PariwisataController extends Controller
     {
         $validated = $request->validate([
             'max_tiket' => 'nullable|numeric',
-            'min_fasilitas' => 'nullable|numeric',
             'min_rating' => 'nullable|numeric',
             'kategori' => 'nullable|string',
+            'fasilitas' => 'nullable|array', 
+            'fasilitas.*' => 'integer|exists:fasilitas,id', 
         ]);
 
         $query = Pariwisata::with('fasilitas')->withCount('fasilitas');
@@ -47,6 +48,15 @@ class PariwisataController extends Controller
 
         if ($request->kategori) {
             $query->where('kategori', $request->kategori);
+        }
+
+        // Filter fasilitas (wajib punya semua fasilitas yg dipilih)
+        if ($request->has('fasilitas') && !empty($request->fasilitas)) {
+            foreach ($request->fasilitas as $fasilitasId) {
+                $query->whereHas('fasilitas', function ($q) use ($fasilitasId) {
+                    $q->where('fasilitas.id', $fasilitasId);
+                });
+            }
         }
 
         $data = $query->get();
@@ -84,7 +94,7 @@ class PariwisataController extends Controller
         $maxSkorWaktu = 5;
 
         $result = $data
-            ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot) {
+            ->map(function ($item) use ($minHarga, $maxRating, $maxFasilitas, $bobot, $maxSkorWaktu) {
                 $durasi = 0;
                 if ($item->jam_buka && $item->jam_tutup) {
                     $durasi = Carbon::parse($item->jam_buka)->diffInHours(Carbon::parse($item->jam_tutup));
@@ -102,7 +112,7 @@ class PariwisataController extends Controller
                     'harga_tiket' => round($minHarga / max($item->harga_tiket, 1), 4),
                     'fasilitas' => round($item->fasilitas_count / max($maxFasilitas, 1), 4),
                     'rating' => round($item->rating / max($maxRating, 1), 4),
-                    'waktu_operasional' => round($skorWaktu / 5, 4),
+                    'waktu_operasional' => round($skorWaktu / $maxSkorWaktu, 4),
                 ];
 
                 $detail = [];
@@ -132,7 +142,7 @@ class PariwisataController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Data rekomendasi berhasil di tampilkan.',
+            'message' => 'Data rekomendasi berhasil ditampilkan.',
             'data' => $result,
         ]);
     }
