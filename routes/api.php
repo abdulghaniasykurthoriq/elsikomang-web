@@ -67,6 +67,7 @@ Route::get('/produk/search', [ProdukUmkmSearchController::class, 'search']);
 Route::get('/pariwisata', [PariwisataController::class, 'index']);
 Route::get('/pariwisata/{id}', [PariwisataController::class, 'show']);
 Route::post('/pariwisata-rekomendasi', [PariwisataController::class, 'rekomendasi']);
+Route::get('/pariwisata-fasilitas', [PariwisataController::class, 'fasilitas']);
 
 
 Route::get('/events', [EventController::class, 'index']);

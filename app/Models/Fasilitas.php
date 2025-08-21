@@ -11,7 +11,6 @@ class Fasilitas extends Model
 
     protected $fillable = ['nama'];
 
-    // Relasi Many-to-Many ke pariwisata
     public function pariwisatas()
     {
         return $this->belongsToMany(Pariwisata::class, 'fasilitas_pariwisata');
