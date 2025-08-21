@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Fasilitas;
 use App\Models\Pariwisata;
 use App\Models\PariwisataRating;
 use App\Models\SawBobot;
@@ -32,8 +33,8 @@ class PariwisataController extends Controller
             'max_tiket' => 'nullable|numeric',
             'min_rating' => 'nullable|numeric',
             'kategori' => 'nullable|string',
-            'fasilitas' => 'nullable|array', 
-            'fasilitas.*' => 'integer|exists:fasilitas,id', 
+            'fasilitas' => 'nullable|array',
+            'fasilitas.*' => 'integer|exists:fasilitas,id',
         ]);
 
         $query = Pariwisata::with('fasilitas')->withCount('fasilitas');
@@ -153,6 +154,16 @@ class PariwisataController extends Controller
         return response()->json([
             'message' => 'Detail data pariwisata',
             'data' => $pariwisata,
+        ]);
+    }
+    public function fasilitas()
+    {
+        $fasilitas = Fasilitas::select('id', 'nama')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Daftar fasilitas berhasil diambil.',
+            'data' => $fasilitas,
         ]);
     }
 
