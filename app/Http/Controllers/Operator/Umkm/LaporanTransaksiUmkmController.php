@@ -601,6 +601,10 @@ public function proses(Request $request)
     foreach ($periodeKeys as $i => $periodeKey) {
         $x = $i - $mid;
         $prediksi = $nilaiA + ($nilaiB * $x);
+        if ($prediksi < 0) {
+            $prediksi = 0;
+        }
+
         $aktual = $data[$periodeKey];
 
         $mad = abs($aktual - $prediksi);
@@ -638,6 +642,9 @@ public function proses(Request $request)
         $target = $bulanMulaiPrediksi->copy()->addMonths($i);
         $x = $n + $i - $mid;
         $prediksi = $nilaiA + ($nilaiB * $x);
+        if ($prediksi < 0) {
+            $prediksi = 0;
+        }
 
         $prediksiKeDepan[] = [
             'bulan' => $target->translatedFormat('F'),

@@ -67,7 +67,7 @@
                         <li>
                             <a href="{{ route('transaksi-produk-umkm.index') }}"
                                 class="block px-3 py-2 rounded-md hover:bg-gray-800 transition text-sm">
-                                Data
+                                Prediksi
                             </a>
                         </li>
                         <li>

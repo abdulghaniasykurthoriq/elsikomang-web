@@ -26,8 +26,11 @@ class TransaksiController extends Controller
             ->addColumn('total_ongkos', fn($row) => 'Rp' . number_format($row->total_ongkos, 0, ',', '.'))
             ->addColumn('payment_method', fn($row) => $row->payment_method ?? '-')
             ->addColumn('status', fn($row) => '<span class="px-2 py-1 rounded bg-' .
-                ($row->status === 'success' ? 'green' : ($row->status === 'failed' ? 'red' : 'yellow')) .
-                '-500 text-white text-xs">' . ucfirst($row->status) . '</span>')
+    ($row->status === 'received' ? 'blue' :
+    ($row->status === 'shipping' ? 'yellow' :
+    ($row->status === 'done' ? 'green' :
+    ($row->status === 'failed' ? 'red' : 'gray')))) .
+    '-500 text-white text-xs">' . ucfirst($row->status) . '</span>')
             ->addColumn('action', function ($row) {
                 if ($row->status === 'failed') {
                     return '<form method="POST" action="' . route('transaksi.destroy', $row->id) . '" onsubmit="return confirm(\'Yakin hapus transaksi ini?\')">
@@ -36,6 +39,7 @@ class TransaksiController extends Controller
                             </form>';
                 } elseif (in_array($row->status, ['success', 'shipping'])) {
                     $label = $row->status === 'success' ? 'Kirim' : 'Edit Resi';
+                    $bglabel = $row->status === 'success' ? 'blue' : 'gray';
                     return '<button 
                         onclick="openEditModal('
                             . $row->id . ', '
@@ -43,8 +47,8 @@ class TransaksiController extends Controller
                             . '\'' . ($row->no_resi ?? '') . '\', '
                             . '\'' . ($row->kurir ?? '') . '\', '
                             . '\'' . ($row->kurir_service ?? '') . '\')"
-                        class="btn btn-sm bg-yellow-500 text-white hover:bg-yellow-600">'
-                        . $label . '</button>';
+                        class="btn btn-sm bg-' . $bglabel . '-500 text-white hover:bg-' . $bglabel . '-600">'
+                . $label . '</button>';
                 } else {
                     return '-';
                 }
