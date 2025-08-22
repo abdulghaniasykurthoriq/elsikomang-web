@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('produk_image', function (Blueprint $table) {
+        Schema::create('product_images', function (Blueprint $table) {
             $table->id();
             $table->foreignId('produk_umkm_id')->constrained('produk_umkm')->onDelete('cascade');
             $table->string('file_path'); // path ke gambar/video
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('produk_image');
+        Schema::dropIfExists('product_images');
     }
 };

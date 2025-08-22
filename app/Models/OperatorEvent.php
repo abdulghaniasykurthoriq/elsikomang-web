@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OperatorEvent extends Model
 {
-    protected $table = 'operator_events';
+    protected $table = 'events';
 
     protected $fillable = [
         'nama_event',

@@ -10,7 +10,7 @@ class Pariwisata extends Model
 {
     use HasFactory;
 
-    protected $table = 'pariwisatas';
+    protected $table = 'tourism_sites';
 
     protected $fillable = ['nama', 'deskripsi', 'gambar', 'harga_tiket', 'rating', 'jam_buka', 'jam_tutup', 'kategori', 'alamat'];
 

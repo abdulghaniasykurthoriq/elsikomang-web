@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class IklanData extends Model
 {
+
+    protected $table = 'advertisement_data';
     protected $fillable = [
         'iklan_id',
         'gambar',

@@ -8,7 +8,7 @@ class CreateMemberUmkmTable extends Migration
 {
     public function up()
     {
-        Schema::create('member_umkm', function (Blueprint $table) {
+        Schema::create('msme_members', function (Blueprint $table) {
             $table->id();
             $table->string('nama_toko');
             $table->string('alamat');
@@ -22,6 +22,6 @@ class CreateMemberUmkmTable extends Migration
     }
     public function down(): void
     {
-        Schema::dropIfExists('member_umkm');
+        Schema::dropIfExists('msme_members');
     }
 };

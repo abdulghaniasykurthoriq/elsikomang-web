@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kecamatan extends Model
 {
+    protected $table = 'districts';
+    
     protected $guarded = [];
     
     public function kota()

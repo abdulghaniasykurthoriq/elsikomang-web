@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Desa extends Model
 {
+    protected $table = 'villages';
+    
     protected $guarded = [];
     public function kecamatan()
     {

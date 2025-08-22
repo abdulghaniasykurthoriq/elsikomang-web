@@ -9,6 +9,9 @@ class Investasi extends Model
 {
     use HasFactory;
 
+    
+        protected $table = 'investments';
+
     protected $fillable = [
         'foto_investasi',
         'nama_investasi',

@@ -9,7 +9,7 @@ use App\Models\KategoriProduk;
 
 class ProdukUmkm extends Model
 {
-    protected $table = 'produk_umkm';
+    protected $table = 'msme_products';
 
     protected $fillable = [
         'member_id',
