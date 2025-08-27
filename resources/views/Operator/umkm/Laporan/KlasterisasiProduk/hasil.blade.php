@@ -157,7 +157,6 @@
                         <table class="table-auto w-full text-sm text-gray-700 border border-gray-300">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-4 py-2">Nama Produk</th>
                                     <th class="px-4 py-2">Harga</th>
                                     @foreach ($iterasi['centroids'] as $i => $c)
                                         <th class="px-4 py-2">Jarak ke C{{ $i + 1 }}</th>
@@ -168,7 +167,6 @@
                             <tbody>
                                 @foreach ($iterasi['jarak_data'] as $row)
                                     <tr>
-                                <td class="px-4 py-2">{{ $row['nama_produk'] }}</td>
                                         <td class="px-4 py-1">Rp {{ number_format($row['harga'], 0, ',', '.') }}</td>
                                         @foreach ($row['distances'] as $d)
                                             <td class="px-4 py-1">{{ number_format($d, 2) }}</td>

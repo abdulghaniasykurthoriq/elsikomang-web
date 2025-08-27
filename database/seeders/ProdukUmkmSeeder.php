@@ -507,6 +507,1067 @@ class ProdukUmkmSeeder extends Seeder
                 'gambar' => 'produk_image/bingkai-foto-vintage.jpg',
                 'kategori_id' => 1
             ],
+                [
+                    'nama_produk' => 'Keripik Singkong Pedas',
+                    'deskripsi' => 'Keripik Singkong Pedas berkualitas tinggi dan populer di kalangan konsumen.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 28000, 'stok' => 10],
+                        ['varian' => '50g', 'berat' => 50, 'harga' => 15000, 'stok' => 15],
+                    ],
+                    'gambar' => 'produk_image/keripik-singkong-pedas.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Keripik Pisang Manis',
+                    'deskripsi' => 'Keripik pisang renyah dengan rasa manis alami.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 30000, 'stok' => 20],
+                        ['varian' => '50g', 'berat' => 50, 'harga' => 16000, 'stok' => 25],
+                    ],
+                    'gambar' => 'produk_image/keripik-pisang-manis.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Sambal Cumi Asin',
+                    'deskripsi' => 'Sambal cumi asin khas Indramayu, pedas gurih.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 45000, 'stok' => 12],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 20000, 'stok' => 18],
+                    ],
+                    'gambar' => 'produk_image/sambal-cumi-asin.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Batik Tulis Indramayu',
+                    'deskripsi' => 'Batik tulis asli dengan motif khas pesisir.',
+                    'varian' => [
+                        ['varian' => 'L', 'berat' => 500, 'harga' => 150000, 'stok' => 5],
+                        ['varian' => 'M', 'berat' => 450, 'harga' => 140000, 'stok' => 7],
+                    ],
+                    'gambar' => 'produk_image/batik-tulis-indramayu.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Kopi Robusta Lokal',
+                    'deskripsi' => 'Kopi robusta hasil petani lokal dengan rasa khas.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 40000, 'stok' => 20],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 22000, 'stok' => 30],
+                    ],
+                    'gambar' => 'produk_image/kopi-robusta-lokal.jpg',
+                    'kategori_id' => 4
+                ],
+                [
+                    'nama_produk' => 'Madu Hutan Asli',
+                    'deskripsi' => 'Madu murni dari hutan alami tanpa campuran.',
+                    'varian' => [
+                        ['varian' => '500ml', 'berat' => 700, 'harga' => 120000, 'stok' => 8],
+                        ['varian' => '250ml', 'berat' => 350, 'harga' => 65000, 'stok' => 15],
+                    ],
+                    'gambar' => 'produk_image/madu-hutan-asli.jpg',
+                    'kategori_id' => 4
+                ],
+                [
+                    'nama_produk' => 'Abon Ikan Tuna',
+                    'deskripsi' => 'Abon ikan tuna gurih dan lezat, cocok untuk lauk.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 50000, 'stok' => 12],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 22000, 'stok' => 18],
+                    ],
+                    'gambar' => 'produk_image/abon-ikan-tuna.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Udang',
+                    'deskripsi' => 'Kerupuk udang renyah dengan rasa gurih khas laut.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 28000, 'stok' => 15],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 15000, 'stok' => 25],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-udang.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Sirup Mangga Indramayu',
+                    'deskripsi' => 'Sirup segar rasa mangga khas Indramayu.',
+                    'varian' => [
+                        ['varian' => '600ml', 'berat' => 800, 'harga' => 35000, 'stok' => 20],
+                        ['varian' => '300ml', 'berat' => 450, 'harga' => 20000, 'stok' => 25],
+                    ],
+                    'gambar' => 'produk_image/sirup-mangga-indramayu.jpg',
+                    'kategori_id' => 4
+                ],
+                [
+                    'nama_produk' => 'Kue Kacang',
+                    'deskripsi' => 'Kue kacang manis legit khas UMKM lokal.',
+                    'varian' => [
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 60000, 'stok' => 10],
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 32000, 'stok' => 18],
+                    ],
+                    'gambar' => 'produk_image/kue-kacang.jpg',
+                    'kategori_id' => 5
+                ],
+                [
+                    'nama_produk' => 'Keripik Talas Asin',
+                    'deskripsi' => 'Keripik Talas renyah dengan rasa asin gurih yang disukai banyak orang.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 30000, 'stok' => 12],
+                        ['varian' => '50g', 'berat' => 50, 'harga' => 16000, 'stok' => 18],
+                    ],
+                    'gambar' => 'produk_image/keripik-talas-asin.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Keripik Kentang Balado',
+                    'deskripsi' => 'Keripik kentang dengan bumbu balado khas Minang yang pedas manis.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 32000, 'stok' => 14],
+                        ['varian' => '50g', 'berat' => 50, 'harga' => 17000, 'stok' => 20],
+                    ],
+                    'gambar' => 'produk_image/keripik-kentang-balado.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Ikan Tenggiri',
+                    'deskripsi' => 'Kerupuk gurih dari ikan tenggiri segar dengan tekstur renyah.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 45000, 'stok' => 8],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 24000, 'stok' => 12],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-ikan-tenggiri.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Udang',
+                    'deskripsi' => 'Kerupuk dengan rasa udang yang kuat dan aroma khas laut.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 40000, 'stok' => 10],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 22000, 'stok' => 16],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-udang.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Bolu Kukus Coklat',
+                    'deskripsi' => 'Bolu kukus lembut dengan rasa coklat premium.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 35000, 'stok' => 6],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 65000, 'stok' => 4],
+                    ],
+                    'gambar' => 'produk_image/bolu-kukus-coklat.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Bolu Kukus Pandan',
+                    'deskripsi' => 'Bolu kukus harum dengan rasa pandan asli.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 34000, 'stok' => 7],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 63000, 'stok' => 5],
+                    ],
+                    'gambar' => 'produk_image/bolu-kukus-pandan.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Kue Lapis Legit',
+                    'deskripsi' => 'Kue lapis legit khas dengan aroma rempah dan tekstur berlapis.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 75000, 'stok' => 4],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 140000, 'stok' => 3],
+                    ],
+                    'gambar' => 'produk_image/kue-lapis-legit.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Kue Nastar',
+                    'deskripsi' => 'Kue nastar isi selai nanas manis dan lumer di mulut.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 60000, 'stok' => 8],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 110000, 'stok' => 5],
+                    ],
+                    'gambar' => 'produk_image/kue-nastar.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Kue Kastengel',
+                    'deskripsi' => 'Kue kastengel keju gurih renyah dengan aroma khas butter.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 65000, 'stok' => 6],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 120000, 'stok' => 3],
+                    ],
+                    'gambar' => 'produk_image/kue-kastengel.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Kue Putri Salju',
+                    'deskripsi' => 'Kue kering lembut dengan taburan gula halus.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 58000, 'stok' => 7],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 110000, 'stok' => 4],
+                    ],
+                    'gambar' => 'produk_image/kue-putri-salju.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Kopi Arabika Gayo',
+                    'deskripsi' => 'Kopi Arabika Gayo dengan cita rasa khas Aceh.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 80000, 'stok' => 9],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 150000, 'stok' => 6],
+                    ],
+                    'gambar' => 'produk_image/kopi-arabika-gayo.jpg',
+                    'kategori_id' => 4
+                ],
+                [
+                    'nama_produk' => 'Kopi Robusta Lampung',
+                    'deskripsi' => 'Kopi Robusta Lampung dengan rasa kuat dan pekat.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 70000, 'stok' => 8],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 130000, 'stok' => 5],
+                    ],
+                    'gambar' => 'produk_image/kopi-robusta-lampung.jpg',
+                    'kategori_id' => 4
+                ],
+                [
+                    'nama_produk' => 'Kopi Luwak',
+                    'deskripsi' => 'Kopi eksklusif dari biji kopi yang dimakan dan dikeluarkan luwak.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 250000, 'stok' => 2],
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 480000, 'stok' => 1],
+                    ],
+                    'gambar' => 'produk_image/kopi-luwak.jpg',
+                    'kategori_id' => 4
+                ],
+                [
+                    'nama_produk' => 'Teh Hijau',
+                    'deskripsi' => 'Teh hijau alami kaya antioksidan, baik untuk kesehatan.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 30000, 'stok' => 10],
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 55000, 'stok' => 7],
+                    ],
+                    'gambar' => 'produk_image/teh-hijau.jpg',
+                    'kategori_id' => 5
+                ],
+                [
+                    'nama_produk' => 'Teh Hitam',
+                    'deskripsi' => 'Teh hitam pekat dengan rasa khas Nusantara.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 28000, 'stok' => 12],
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 50000, 'stok' => 8],
+                    ],
+                    'gambar' => 'produk_image/teh-hitam.jpg',
+                    'kategori_id' => 5
+                ],
+                [
+                    'nama_produk' => 'Teh Bunga Rosella',
+                    'deskripsi' => 'Teh herbal dari bunga rosella segar, menyehatkan tubuh.',
+                    'varian' => [
+                        ['varian' => '50g', 'berat' => 50, 'harga' => 35000, 'stok' => 9],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 65000, 'stok' => 5],
+                    ],
+                    'gambar' => 'produk_image/teh-rosella.jpg',
+                    'kategori_id' => 5
+                ],
+                [
+                    'nama_produk' => 'Madu Hutan Asli',
+                    'deskripsi' => 'Madu alami langsung dari hutan tropis Indonesia.',
+                    'varian' => [
+                        ['varian' => '250ml', 'berat' => 250, 'harga' => 60000, 'stok' => 7],
+                        ['varian' => '500ml', 'berat' => 500, 'harga' => 110000, 'stok' => 4],
+                    ],
+                    'gambar' => 'produk_image/madu-hutan-asli.jpg',
+                    'kategori_id' => 6
+                ],
+                [
+                    'nama_produk' => 'Madu Klanceng',
+                    'deskripsi' => 'Madu klanceng murni dengan rasa khas asam manis.',
+                    'varian' => [
+                        ['varian' => '250ml', 'berat' => 250, 'harga' => 85000, 'stok' => 6],
+                        ['varian' => '500ml', 'berat' => 500, 'harga' => 160000, 'stok' => 3],
+                    ],
+                    'gambar' => 'produk_image/madu-klanceng.jpg',
+                    'kategori_id' => 6
+                ],
+                [
+                    'nama_produk' => 'Minyak Kelapa Murni',
+                    'deskripsi' => 'Minyak kelapa murni (VCO) kaya manfaat untuk kesehatan.',
+                    'varian' => [
+                        ['varian' => '250ml', 'berat' => 250, 'harga' => 70000, 'stok' => 5],
+                        ['varian' => '500ml', 'berat' => 500, 'harga' => 130000, 'stok' => 3],
+                    ],
+                    'gambar' => 'produk_image/minyak-kelapa.jpg',
+                    'kategori_id' => 6
+                ],
+                [
+                    'nama_produk' => 'Minyak Zaitun',
+                    'deskripsi' => 'Minyak zaitun murni untuk kesehatan dan kecantikan.',
+                    'varian' => [
+                        ['varian' => '250ml', 'berat' => 250, 'harga' => 90000, 'stok' => 6],
+                        ['varian' => '500ml', 'berat' => 500, 'harga' => 170000, 'stok' => 4],
+                    ],
+                    'gambar' => 'produk_image/minyak-zaitun.jpg',
+                    'kategori_id' => 6
+                ],
+                [
+                    'nama_produk' => 'Keripik Ubi Ungu',
+                    'deskripsi' => 'Keripik Ubi Ungu gurih dan manis alami, cocok untuk cemilan sehat.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 25000, 'stok' => 12],
+                        ['varian' => '50g', 'berat' => 50, 'harga' => 14000, 'stok' => 20],
+                    ],
+                    'gambar' => 'produk_image/keripik-ubi-ungu.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Kulit Sapi',
+                    'deskripsi' => 'Kerupuk kulit sapi renyah dengan cita rasa khas Nusantara.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 40000, 'stok' => 8],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 22000, 'stok' => 15],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-kulit-sapi.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Udang',
+                    'deskripsi' => 'Kerupuk udang asli dengan aroma khas laut yang gurih.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 45000, 'stok' => 10],
+                        ['varian' => '125g', 'berat' => 125, 'harga' => 24000, 'stok' => 18],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-udang.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Ikan',
+                    'deskripsi' => 'Kerupuk ikan segar dengan tekstur renyah dan rasa gurih alami.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 35000, 'stok' => 9],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 19000, 'stok' => 14],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-ikan.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Rambak',
+                    'deskripsi' => 'Kerupuk rambak asli dengan cita rasa gurih yang khas.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 42000, 'stok' => 10],
+                        ['varian' => '125g', 'berat' => 125, 'harga' => 22000, 'stok' => 15],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-rambak.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Bawang',
+                    'deskripsi' => 'Kerupuk bawang dengan aroma harum dan tekstur gurih renyah.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 30000, 'stok' => 12],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 17000, 'stok' => 20],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-bawang.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kacang Atom',
+                    'deskripsi' => 'Kacang atom gurih dengan balutan tepung renyah.',
+                    'varian' => [
+                        ['varian' => '150g', 'berat' => 150, 'harga' => 25000, 'stok' => 18],
+                        ['varian' => '75g', 'berat' => 75, 'harga' => 14000, 'stok' => 22],
+                    ],
+                    'gambar' => 'produk_image/kacang-atom.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kacang Garing',
+                    'deskripsi' => 'Kacang tanah goreng dengan rasa gurih renyah.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 32000, 'stok' => 10],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 18000, 'stok' => 16],
+                    ],
+                    'gambar' => 'produk_image/kacang-garing.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kacang Telur',
+                    'deskripsi' => 'Kacang tanah dilapisi telur dengan rasa manis gurih.',
+                    'varian' => [
+                        ['varian' => '150g', 'berat' => 150, 'harga' => 28000, 'stok' => 12],
+                        ['varian' => '75g', 'berat' => 75, 'harga' => 15000, 'stok' => 20],
+                    ],
+                    'gambar' => 'produk_image/kacang-telur.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kacang Mede',
+                    'deskripsi' => 'Kacang mede premium dengan cita rasa gurih alami.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 55000, 'stok' => 6],
+                        ['varian' => '50g', 'berat' => 50, 'harga' => 29000, 'stok' => 10],
+                    ],
+                    'gambar' => 'produk_image/kacang-mede.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kacang Koro',
+                    'deskripsi' => 'Kacang koro gurih renyah dengan rasa khas tradisional.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 35000, 'stok' => 11],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 19000, 'stok' => 17],
+                    ],
+                    'gambar' => 'produk_image/kacang-koro.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kacang Kapri',
+                    'deskripsi' => 'Kacang kapri renyah dengan cita rasa gurih nikmat.',
+                    'varian' => [
+                        ['varian' => '150g', 'berat' => 150, 'harga' => 27000, 'stok' => 13],
+                        ['varian' => '75g', 'berat' => 75, 'harga' => 15000, 'stok' => 19],
+                    ],
+                    'gambar' => 'produk_image/kacang-kapri.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kacang Polong',
+                    'deskripsi' => 'Kacang polong gurih dan kaya nutrisi.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 34000, 'stok' => 10],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 19000, 'stok' => 14],
+                    ],
+                    'gambar' => 'produk_image/kacang-polong.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kacang Garuda',
+                    'deskripsi' => 'Kacang tanah pilihan dengan rasa gurih dan renyah.',
+                    'varian' => [
+                        ['varian' => '150g', 'berat' => 150, 'harga' => 26000, 'stok' => 15],
+                        ['varian' => '75g', 'berat' => 75, 'harga' => 14000, 'stok' => 22],
+                    ],
+                    'gambar' => 'produk_image/kacang-garuda.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kacang Oven',
+                    'deskripsi' => 'Kacang oven tanpa minyak dengan rasa gurih sehat.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 27000, 'stok' => 12],
+                        ['varian' => '50g', 'berat' => 50, 'harga' => 15000, 'stok' => 20],
+                    ],
+                    'gambar' => 'produk_image/kacang-oven.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kacang Sangrai',
+                    'deskripsi' => 'Kacang tanah sangrai dengan rasa gurih khas tradisional.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 30000, 'stok' => 14],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 17000, 'stok' => 21],
+                    ],
+                    'gambar' => 'produk_image/kacang-sangrai.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kacang Kedelai',
+                    'deskripsi' => 'Kacang kedelai gurih cocok untuk camilan sehat.',
+                    'varian' => [
+                        ['varian' => '150g', 'berat' => 150, 'harga' => 24000, 'stok' => 16],
+                        ['varian' => '75g', 'berat' => 75, 'harga' => 13000, 'stok' => 24],
+                    ],
+                    'gambar' => 'produk_image/kacang-kedelai.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kacang Almond',
+                    'deskripsi' => 'Kacang almond impor dengan rasa gurih dan tekstur renyah.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 70000, 'stok' => 5],
+                        ['varian' => '50g', 'berat' => 50, 'harga' => 37000, 'stok' => 8],
+                    ],
+                    'gambar' => 'produk_image/kacang-almond.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kacang Pistachio',
+                    'deskripsi' => 'Kacang pistachio dengan rasa gurih lezat.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 80000, 'stok' => 4],
+                        ['varian' => '50g', 'berat' => 50, 'harga' => 42000, 'stok' => 7],
+                    ],
+                    'gambar' => 'produk_image/kacang-pistachio.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Keripik Bayam Renyah',
+                    'deskripsi' => 'Keripik bayam renyah dengan rasa gurih alami.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 23000, 'stok' => 10],
+                        ['varian' => '50g', 'berat' => 50, 'harga' => 12000, 'stok' => 20],
+                    ],
+                    'gambar' => 'produk_image/keripik-bayam-renyah.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Bolu Kukus Pandan',
+                    'deskripsi' => 'Bolu kukus pandan yang lembut dan harum pandan.',
+                    'varian' => [
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 45000, 'stok' => 8],
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 25000, 'stok' => 12],
+                    ],
+                    'gambar' => 'produk_image/bolu-kukus-pandan.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kue Kering Coklat',
+                    'deskripsi' => 'Kue kering coklat dengan rasa manis legit.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 40000, 'stok' => 10],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 18000, 'stok' => 18],
+                    ],
+                    'gambar' => 'produk_image/kue-kering-coklat.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Bawang',
+                    'deskripsi' => 'Kerupuk bawang renyah dan gurih.',
+                    'varian' => [
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 28000, 'stok' => 12],
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 15000, 'stok' => 18],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-bawang.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Brem Tape Ketan',
+                    'deskripsi' => 'Brem tape ketan manis dengan rasa khas.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 30000, 'stok' => 10],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 16000, 'stok' => 15],
+                    ],
+                    'gambar' => 'produk_image/brem-tape-ketan.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Dodol Garut',
+                    'deskripsi' => 'Dodol garut legit dan kenyal, cocok untuk oleh-oleh.',
+                    'varian' => [
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 50000, 'stok' => 10],
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 27000, 'stok' => 14],
+                    ],
+                    'gambar' => 'produk_image/dodol-garut.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Keripik Pisang Sale',
+                    'deskripsi' => 'Keripik pisang sale manis dan gurih.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 25000, 'stok' => 12],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 14000, 'stok' => 20],
+                    ],
+                    'gambar' => 'produk_image/keripik-pisang-sale.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kue Cubit Coklat',
+                    'deskripsi' => 'Kue cubit coklat lembut dan manis.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 22000, 'stok' => 10],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 12000, 'stok' => 15],
+                    ],
+                    'gambar' => 'produk_image/kue-cubit-coklat.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Sagon Kelapa',
+                    'deskripsi' => 'Kue tradisional sagon kelapa manis gurih.',
+                    'varian' => [
+                        ['varian' => '300g', 'berat' => 300, 'harga' => 35000, 'stok' => 8],
+                        ['varian' => '150g', 'berat' => 150, 'harga' => 19000, 'stok' => 12],
+                    ],
+                    'gambar' => 'produk_image/sagon-kelapa.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Rengginang',
+                    'deskripsi' => 'Rengginang gurih renyah khas tradisional.',
+                    'varian' => [
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 26000, 'stok' => 15],
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 14000, 'stok' => 20],
+                    ],
+                    'gambar' => 'produk_image/rengginang.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kue Lumpur Kentang',
+                    'deskripsi' => 'Kue lumpur kentang dengan tekstur lembut.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 20000, 'stok' => 12],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 11000, 'stok' => 18],
+                    ],
+                    'gambar' => 'produk_image/kue-lumpur-kentang.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Keripik Pare',
+                    'deskripsi' => 'Keripik pare unik dengan rasa khas gurih.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 22000, 'stok' => 10],
+                        ['varian' => '50g', 'berat' => 50, 'harga' => 12000, 'stok' => 20],
+                    ],
+                    'gambar' => 'produk_image/keripik-pare.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Getuk Lindri',
+                    'deskripsi' => 'Getuk lindri tradisional dengan taburan kelapa.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 23000, 'stok' => 12],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 13000, 'stok' => 18],
+                    ],
+                    'gambar' => 'produk_image/getuk-lindri.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Wajik Ketan',
+                    'deskripsi' => 'Wajik ketan manis legit khas Jawa.',
+                    'varian' => [
+                        ['varian' => '300g', 'berat' => 300, 'harga' => 28000, 'stok' => 8],
+                        ['varian' => '150g', 'berat' => 150, 'harga' => 16000, 'stok' => 15],
+                    ],
+                    'gambar' => 'produk_image/wajik-ketan.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Kue Kacang Tanah',
+                    'deskripsi' => 'Kue kering kacang tanah manis gurih.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 33000, 'stok' => 10],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 17000, 'stok' => 20],
+                    ],
+                    'gambar' => 'produk_image/kue-kacang-tanah.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Opak Singkong',
+                    'deskripsi' => 'Opak singkong renyah khas pedesaan.',
+                    'varian' => [
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 25000, 'stok' => 12],
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 14000, 'stok' => 18],
+                    ],
+                    'gambar' => 'produk_image/opak-singkong.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Onde-Onde Wijen',
+                    'deskripsi' => 'Onde-onde isi kacang hijau dengan taburan wijen.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 25000, 'stok' => 12],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 14000, 'stok' => 20],
+                    ],
+                    'gambar' => 'produk_image/onde-onde-wijen.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Udang',
+                    'deskripsi' => 'Kerupuk udang gurih dengan aroma khas laut.',
+                    'varian' => [
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 45000, 'stok' => 8],
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 24000, 'stok' => 14],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-udang.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kue Apem Tradisional',
+                    'deskripsi' => 'Kue apem empuk dengan rasa manis tradisional.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 20000, 'stok' => 10],
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 12000, 'stok' => 15],
+                    ],
+                    'gambar' => 'produk_image/kue-apem-tradisional.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Keripik Singkong Rasa Jagung Bakar',
+                    'deskripsi' => 'Keripik singkong dengan rasa jagung bakar yang gurih dan harum.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 23000, 'stok' => 12],
+                        ['varian' => '50g', 'berat' => 50, 'harga' => 12000, 'stok' => 18],
+                    ],
+                    'gambar' => 'produk_image/keripik-singkong-jagung.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kue Kering Keju',
+                    'deskripsi' => 'Kue kering dengan taburan keju yang lezat, cocok untuk camilan santai.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 45000, 'stok' => 9],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 85000, 'stok' => 6],
+                    ],
+                    'gambar' => 'produk_image/kue-kering-keju.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Udang Renyah',
+                    'deskripsi' => 'Kerupuk udang khas Indramayu yang gurih dan renyah.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 27000, 'stok' => 10],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 60000, 'stok' => 8],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-udang.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Opak Singkong',
+                    'deskripsi' => 'Opak singkong gurih yang digoreng hingga renyah.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 22000, 'stok' => 15],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 40000, 'stok' => 12],
+                    ],
+                    'gambar' => 'produk_image/opak-singkong.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Sale Pisang Kering',
+                    'deskripsi' => 'Sale pisang kering khas Indramayu dengan rasa manis alami.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 25000, 'stok' => 12],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 55000, 'stok' => 8],
+                    ],
+                    'gambar' => 'produk_image/sale-pisang.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kue Klepon Kering',
+                    'deskripsi' => 'Inovasi klepon kering dengan rasa manis dan gurih kelapa.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 30000, 'stok' => 9],
+                        ['varian' => '400g', 'berat' => 400, 'harga' => 55000, 'stok' => 6],
+                    ],
+                    'gambar' => 'produk_image/klepon-kering.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kue Nastar Premium',
+                    'deskripsi' => 'Kue nastar isi selai nanas dengan rasa manis dan lembut.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 50000, 'stok' => 7],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 90000, 'stok' => 5],
+                    ],
+                    'gambar' => 'produk_image/nastar-premium.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Manisan Mangga Indramayu',
+                    'deskripsi' => 'Manisan mangga khas Indramayu dengan rasa manis dan asam segar.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 28000, 'stok' => 12],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 60000, 'stok' => 9],
+                    ],
+                    'gambar' => 'produk_image/manisan-mangga.jpg',
+                    'kategori_id' => 4
+                ],
+                [
+                    'nama_produk' => 'Kue Putri Salju',
+                    'deskripsi' => 'Kue kering dengan taburan gula halus yang lembut di mulut.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 48000, 'stok' => 10],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 90000, 'stok' => 7],
+                    ],
+                    'gambar' => 'produk_image/putri-salju.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Kulit Ikan',
+                    'deskripsi' => 'Kerupuk kulit ikan yang gurih, cocok untuk camilan sehat.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 30000, 'stok' => 8],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 70000, 'stok' => 6],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-ikan.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Kue Brownies Kukus',
+                    'deskripsi' => 'Brownies kukus cokelat dengan tekstur lembut dan rasa manis pas.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 55000, 'stok' => 6],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 100000, 'stok' => 4],
+                    ],
+                    'gambar' => 'produk_image/brownies-kukus.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Keripik Tempe Gurih',
+                    'deskripsi' => 'Keripik tempe renyah dengan rasa gurih khas tradisional.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 18000, 'stok' => 14],
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 35000, 'stok' => 9],
+                    ],
+                    'gambar' => 'produk_image/keripik-tempe.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kue Kering Sagu Keju',
+                    'deskripsi' => 'Kue sagu keju dengan tekstur renyah dan rasa keju yang gurih.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 48000, 'stok' => 10],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 90000, 'stok' => 7],
+                    ],
+                    'gambar' => 'produk_image/sagu-keju.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Manisan Salak',
+                    'deskripsi' => 'Manisan salak segar dengan rasa manis asam khas.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 28000, 'stok' => 12],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 60000, 'stok' => 9],
+                    ],
+                    'gambar' => 'produk_image/manisan-salak.jpg',
+                    'kategori_id' => 4
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Jangek (Kerupuk Kulit Sapi)',
+                    'deskripsi' => 'Kerupuk kulit sapi khas dengan rasa gurih renyah.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 35000, 'stok' => 8],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 80000, 'stok' => 5],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-jangek.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Kue Kastengel',
+                    'deskripsi' => 'Kue kering kastengel dengan rasa keju gurih, cocok untuk lebaran.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 55000, 'stok' => 6],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 100000, 'stok' => 4],
+                    ],
+                    'gambar' => 'produk_image/kastengel.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Keripik Balado Pedas',
+                    'deskripsi' => 'Keripik singkong dengan bumbu balado pedas yang khas.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 20000, 'stok' => 13],
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 38000, 'stok' => 9],
+                    ],
+                    'gambar' => 'produk_image/keripik-balado.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Kue Bolen Pisang',
+                    'deskripsi' => 'Kue bolen pisang dengan isian cokelat dan keju.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 60000, 'stok' => 6],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 110000, 'stok' => 4],
+                    ],
+                    'gambar' => 'produk_image/bolen-pisang.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Manisan Kedondong',
+                    'deskripsi' => 'Manisan kedondong dengan rasa asam segar berpadu manis.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 27000, 'stok' => 11],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 58000, 'stok' => 7],
+                    ],
+                    'gambar' => 'produk_image/manisan-kedondong.jpg',
+                    'kategori_id' => 4
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Aci Pedas',
+                    'deskripsi' => 'Kerupuk aci dengan bumbu pedas khas Indramayu.',
+                    'varian' => [
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 25000, 'stok' => 13],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 50000, 'stok' => 9],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-aci-pedas.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Camilan Rengginang Ketan',
+                    'deskripsi' => 'Rengginang ketan khas dengan rasa gurih renyah.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 12000, 'stok' => 25],
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 28000, 'stok' => 15],
+                    ],
+                    'gambar' => 'produk_image/rengginang-ketan.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Udang Asli',
+                    'deskripsi' => 'Kerupuk udang dengan rasa asli laut Indonesia.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 15000, 'stok' => 20],
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 28000, 'stok' => 10],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-udang.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Bolu Kukus Gula Merah',
+                    'deskripsi' => 'Bolu kukus lembut dengan aroma gula merah.',
+                    'varian' => [
+                        ['varian' => '1 pcs', 'berat' => 80, 'harga' => 8000, 'stok' => 30],
+                        ['varian' => 'Pack isi 5', 'berat' => 400, 'harga' => 35000, 'stok' => 10],
+                    ],
+                    'gambar' => 'produk_image/bolu-kukus-gula-merah.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Onde-Onde Wijen',
+                    'deskripsi' => 'Onde-onde dengan isi kacang hijau legit.',
+                    'varian' => [
+                        ['varian' => '1 pcs', 'berat' => 50, 'harga' => 5000, 'stok' => 40],
+                        ['varian' => 'Pack isi 6', 'berat' => 300, 'harga' => 28000, 'stok' => 10],
+                    ],
+                    'gambar' => 'produk_image/onde-onde.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Kue Kering Nastar',
+                    'deskripsi' => 'Nastar isi selai nanas manis legit.',
+                    'varian' => [
+                        ['varian' => '250g', 'berat' => 250, 'harga' => 45000, 'stok' => 15],
+                        ['varian' => '500g', 'berat' => 500, 'harga' => 85000, 'stok' => 8],
+                    ],
+                    'gambar' => 'produk_image/nastar.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Lemper Ayam',
+                    'deskripsi' => 'Lemper isi ayam suwir gurih khas nusantara.',
+                    'varian' => [
+                        ['varian' => '1 pcs', 'berat' => 60, 'harga' => 7000, 'stok' => 25],
+                        ['varian' => 'Pack isi 5', 'berat' => 300, 'harga' => 32000, 'stok' => 12],
+                    ],
+                    'gambar' => 'produk_image/lemper-ayam.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Serabi Kuah Kinca',
+                    'deskripsi' => 'Serabi lembut disajikan dengan kuah kinca manis.',
+                    'varian' => [
+                        ['varian' => '1 pcs', 'berat' => 70, 'harga' => 6000, 'stok' => 30],
+                        ['varian' => 'Pack isi 5', 'berat' => 350, 'harga' => 28000, 'stok' => 12],
+                    ],
+                    'gambar' => 'produk_image/serabi-kinca.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Kue Cubit Cokelat',
+                    'deskripsi' => 'Kue cubit lembut dengan topping cokelat lumer.',
+                    'varian' => [
+                        ['varian' => '1 pcs', 'berat' => 50, 'harga' => 5000, 'stok' => 35],
+                        ['varian' => 'Pack isi 6', 'berat' => 300, 'harga' => 28000, 'stok' => 10],
+                    ],
+                    'gambar' => 'produk_image/kue-cubit.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Peyek Kacang Renyah',
+                    'deskripsi' => 'Peyek kacang gurih, cocok untuk cemilan dan lauk.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 12000, 'stok' => 20],
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 22000, 'stok' => 12],
+                    ],
+                    'gambar' => 'produk_image/peyek-kacang.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Emping Melinjo',
+                    'deskripsi' => 'Emping melinjo asli dengan rasa gurih pahit khas.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 15000, 'stok' => 20],
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 28000, 'stok' => 10],
+                    ],
+                    'gambar' => 'produk_image/emping-melinjo.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Kerupuk Bawang',
+                    'deskripsi' => 'Kerupuk bawang renyah dengan aroma bawang gurih.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 12000, 'stok' => 30],
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 22000, 'stok' => 15],
+                    ],
+                    'gambar' => 'produk_image/kerupuk-bawang.jpg',
+                    'kategori_id' => 2
+                ],
+                [
+                    'nama_produk' => 'Dodol Susu',
+                    'deskripsi' => 'Dodol susu legit khas daerah pedesaan.',
+                    'varian' => [
+                        ['varian' => '100g', 'berat' => 100, 'harga' => 18000, 'stok' => 20],
+                        ['varian' => '200g', 'berat' => 200, 'harga' => 32000, 'stok' => 10],
+                    ],
+                    'gambar' => 'produk_image/dodol-susu.jpg',
+                    'kategori_id' => 1
+                ],
+                [
+                    'nama_produk' => 'Wingko Babat',
+                    'deskripsi' => 'Wingko babat manis gurih khas tradisional.',
+                    'varian' => [
+                        ['varian' => '1 pcs', 'berat' => 80, 'harga' => 8000, 'stok' => 30],
+                        ['varian' => 'Pack isi 6', 'berat' => 480, 'harga' => 45000, 'stok' => 12],
+                    ],
+                    'gambar' => 'produk_image/wingko-babat.jpg',
+                    'kategori_id' => 3
+                ],
+                [
+                    'nama_produk' => 'Tahu Sumedang',
+                    'deskripsi' => 'Tahu khas Sumedang dengan tekstur renyah di luar lembut di dalam.',
+                    'varian' => [
+                        ['varian' => 'Pack isi 10', 'berat' => 400, 'harga' => 25000, 'stok' => 20],
+                        ['varian' => 'Pack isi 20', 'berat' => 800, 'harga' => 48000, 'stok' => 10],
+                    ],
+                    'gambar' => 'produk_image/tahu-sumedang.jpg',
+                    'kategori_id' => 4
+                ],
+                [
+                    'nama_produk' => 'Tempe Mendoan',
+                    'deskripsi' => 'Tempe mendoan khas Banyumas, gurih dan nikmat.',
+                    'varian' => [
+                        ['varian' => 'Pack isi 5', 'berat' => 250, 'harga' => 15000, 'stok' => 20],
+                        ['varian' => 'Pack isi 10', 'berat' => 500, 'harga' => 28000, 'stok' => 10],
+                    ],
+                    'gambar' => 'produk_image/tempe-mendoan.jpg',
+                    'kategori_id' => 4
+                ],
+                [
+                    'nama_produk' => 'Sate Ayam Madura',
+                    'deskripsi' => 'Sate ayam Madura lengkap dengan bumbu kacang.',
+                    'varian' => [
+                        ['varian' => '10 tusuk', 'berat' => 250, 'harga' => 35000, 'stok' => 15],
+                        ['varian' => '20 tusuk', 'berat' => 500, 'harga' => 65000, 'stok' => 8],
+                    ],
+                    'gambar' => 'produk_image/sate-ayam-madura.jpg',
+                    'kategori_id' => 4
+                ],
+                [
+                    'nama_produk' => 'Rawon Daging Sapi',
+                    'deskripsi' => 'Rawon khas Jawa Timur dengan daging sapi pilihan.',
+                    'varian' => [
+                        ['varian' => '1 porsi', 'berat' => 400, 'harga' => 45000, 'stok' => 20],
+                        ['varian' => '2 porsi', 'berat' => 800, 'harga' => 85000, 'stok' => 10],
+                    ],
+                    'gambar' => 'produk_image/rawon-sapi.jpg',
+                    'kategori_id' => 4
+                ],
+                [
+                    'nama_produk' => 'Soto Ayam Lamongan',
+                    'deskripsi' => 'Soto ayam khas Lamongan segar dengan koya.',
+                    'varian' => [
+                        ['varian' => '1 porsi', 'berat' => 350, 'harga' => 30000, 'stok' => 20],
+                        ['varian' => '2 porsi', 'berat' => 700, 'harga' => 58000, 'stok' => 10],
+                    ],
+                    'gambar' => 'produk_image/soto-lamongan.jpg',
+                    'kategori_id' => 4
+                ],
+                
         ];
 
         foreach ($produkList as $item) {

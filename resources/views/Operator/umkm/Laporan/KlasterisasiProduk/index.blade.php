@@ -107,7 +107,7 @@
             <h3 class="text-lg font-semibold text-gray-800 mb-3">Data Produk</h3>
             @if (count($data) > 0)
                 <div class="overflow-x-auto">
-                    <table id="produk-t-table" class="display nowrap w-full text-sm text-left text-gray-700">
+                    <table class="display nowrap w-full text-sm text-left text-gray-700">
                         <thead class="bg-gray-50 border-b border-gray-200">
                             <tr>
                                 <th class="px-4 py-3">Produk</th>
@@ -153,19 +153,6 @@
 @push('scripts')
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#produk-t-table').DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
-            },
-            pageLength: 10,
-            dom: '<"top"f<"spacer">l>rt<"bottom"ip><"clear">'
-        });
-        feather.replace();
-    });
-</script>
-
 
 
 @endpush
